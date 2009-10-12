@@ -1,0 +1,5 @@
+/blib/
+Makefile
+/pm_to_blib
+PostScript-Report-*.tar.gz
+PostScript-Report-*/
