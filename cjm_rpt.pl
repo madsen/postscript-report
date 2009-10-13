@@ -111,6 +111,8 @@ my $data = {
   'revisedDueDate'    => '',
 };
 
+my $rows = [];
+
 use PostScript::Report::FieldTL (); # FIXME
 use PostScript::Report::HBox ();    # FIXME
 use PostScript::Report::Spacer ();  # FIXME
@@ -118,7 +120,7 @@ use PostScript::Report::VBox ();    # FIXME
 
 my $rpt = PostScript::Report::Builder->build($desc);
 
-$rpt->generate($data);
+$rpt->generate($data, $rows);
 
 use Data::Dumper;
 $Data::Dumper::Indent = 1;

@@ -57,7 +57,8 @@ sub draw
 {
   my ($self, $x, $y, $rpt) = @_;
 
-  printf "%3d %3d %s\n", $x, $y, $self->label; # FIXME
+  printf("%3d %3d %-23s %s\n", $x, $y, $self->label,
+         $rpt->get_value($self->value)); # FIXME
 } # end draw
 
 #=====================================================================

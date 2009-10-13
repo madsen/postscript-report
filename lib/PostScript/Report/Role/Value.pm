@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use Moose::Role;
 
-requires 'value';
+requires 'get_value';
 
 #=====================================================================
 # Package Return Value:

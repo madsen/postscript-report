@@ -28,3 +28,6 @@ has value => (
   isa     => Str,
   required => 1,
 );
+
+# Just ignore the $rpt parameter:
+sub get_value { shift->value }

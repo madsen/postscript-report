@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use 5.008;
 use Moose;
-use MooseX::Types::Moose qw(Bool HashRef Int Str);
+use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Str);
 use PostScript::Report::Types ':all';
 use PostScript::File 'pstr';
 
@@ -183,6 +183,32 @@ has _data => (
   init_arg => undef,
 );
 
+has _rows => (
+  is       => 'rw',
+  isa      => ArrayRef[ArrayRef],
+  clearer  => '_clear_rows',
+  init_arg => undef,
+);
+
+has _current_row => (
+  is       => 'rw',
+  isa      => Int,
+  init_arg => undef,
+);
+
+sub get_value
+{
+  my ($self, $value) = @_;
+
+  if (ref $value) {
+    $value->get_value($self);
+  } elsif ($value =~ /^\d+$/) {
+    $self->_rows->[ $self->_current_row ][ $value ];
+  } else {
+    $self->_data->{$value};
+  }
+} # end get_value
+
 #---------------------------------------------------------------------
 has _fonts => (
   is       => 'ro',
@@ -222,15 +248,18 @@ sub _get_metrics
 #---------------------------------------------------------------------
 sub generate
 {
-  my ($self, $data) = @_;
+  my ($self, $data, $rows) = @_;
 
   $self->_data($data);
+  $self->_rows($rows);
+  $self->_current_row(0);
 
   my @bb = $self->ps->get_bounding_box;
 
   $self->page_header->draw(@bb[0,3], $self); # FIXME
 
   $self->_clear_data;
+  $self->_clear_rows;
 } # end generate
 
 #=====================================================================
