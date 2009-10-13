@@ -54,7 +54,7 @@ sub id
 {
   my $self = shift;
 
-  sprintf("%s-%f", $self->font, $self->size);
+  sprintf("%s-%s", $self->font, $self->size);
 }
 
 sub width
@@ -63,6 +63,13 @@ sub width
 
   $self->_metrics->stringwidth(shift, $self->size);
 } # end width
+
+sub wrap
+{
+  my ($self, $width, $text) = @_;
+
+  return $text;                 # FIXME need to wrap
+} # end wrap
 
 #=====================================================================
 no Moose;
