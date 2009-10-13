@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use 5.008;
 use Moose;
-use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Str);
+use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Num Str);
 use PostScript::Report::Types ':all';
 use PostScript::File 'pstr';
 
@@ -107,6 +107,12 @@ my $coerce_font = sub {
 
 around font       => $coerce_font;
 around label_font => $coerce_font;
+
+has line_width => (
+  is      => 'ro',
+  isa     => Num,
+  default => 0.5,
+);
 
 #---------------------------------------------------------------------
 has ps => (

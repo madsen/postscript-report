@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use Moose::Role;
 use MooseX::AttributeTree ();
-use MooseX::Types::Moose qw(Bool Int Str);
+use MooseX::Types::Moose qw(Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
 my @inherited = (traits => [qw/TreeInherit/]);
@@ -64,6 +64,12 @@ has font => (
 has label_font => (
   is  => 'ro',
   isa => FontObj,
+  @inherited,
+);
+
+has line_width => (
+  is  => 'ro',
+  isa => Num,
   @inherited,
 );
 
