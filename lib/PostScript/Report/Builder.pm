@@ -94,8 +94,6 @@ sub build
 
   $self->_clear_fonts;
 
-  $rpt->init;
-
   $rpt;
 } # end build
 

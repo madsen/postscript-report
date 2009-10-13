@@ -57,16 +57,18 @@ has report_footer => (
 
 sub sections { qw(report_header page_header detail page_footer report_footer) }
 
-sub init
+sub _init
 {
   my ($self) = @_;
+
+  $self->_set_ps( $self->_build_ps );
 
   foreach my $sectionName ($self->sections) {
     my $section = $self->$sectionName or next;
     $section->init($self, $self);
     $section->_set_height($self->row_height) unless $section->has_height;
   } # end foreach $sectionName
-} # end init
+} # end _init
 
 #---------------------------------------------------------------------
 
@@ -124,8 +126,7 @@ has line_width => (
 has ps => (
   is      => 'ro',
   isa     => 'PostScript::File',
-  builder => '_build_ps',
-  lazy    => 1,
+  writer  => '_set_ps',
 );
 
 has paper_size => (
@@ -340,6 +341,8 @@ sub generate
   $self->_data($data);
   $self->_rows($rows);
   $self->_current_row(0);
+
+  $self->_init;
 
   $self->_calculate_page_count;
 
