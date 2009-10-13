@@ -52,6 +52,7 @@ has _fonts => (
 );
 
 our @constructor_args = qw(
+  align
   bottom_margin
   landscape
   left_margin
