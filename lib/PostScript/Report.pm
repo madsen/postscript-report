@@ -134,6 +134,12 @@ has left_margin => (
   default => 72,
 );
 
+has right_margin => (
+  is      => 'ro',
+  isa     => Int,
+  default => 72,
+);
+
 has title => (
   is      => 'ro',
   isa     => Str,
@@ -151,8 +157,9 @@ sub _build_ps
   my ($self) = @_;
 
   PostScript::File->new(
-    paper       => $self->paper,
+    paper       => $self->paper_size,
     top         => $self->top_margin,
+    bottom      => $self->bottom_margin,
     left        => $self->left_margin,
     right       => $self->right_margin,
     title       => pstr($self->title),
@@ -213,7 +220,9 @@ sub generate
 
   $self->_data($data);
 
-  $self->page_header->draw(20,20, $self); # FIXME
+  my @bb = $self->ps->get_bounding_box;
+
+  $self->page_header->draw(@bb[0,3], $self); # FIXME
 
   $self->_clear_data;
 } # end generate

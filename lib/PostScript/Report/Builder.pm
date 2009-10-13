@@ -53,6 +53,7 @@ our @constructor_args = qw(
   landscape
   left_margin
   paper_size
+  right_margin
   row_height
   title
   top_margin

@@ -26,10 +26,10 @@ my $desc = {
   label_font => 'label',
 
   landscape     => 1,
-  top_margin    => 20,
+  top_margin    => 30,
   left_margin   => 20,
   right_margin  => 20,
-  bottom_margin => 20,
+  bottom_margin => 30,
   row_height    => 22,
 
   page_header => [
