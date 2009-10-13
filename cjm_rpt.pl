@@ -24,6 +24,7 @@ my $desc = {
 
   font       => 'text',
   label_font => 'label',
+  align      => 'center',
 
   landscape     => 1,
   top_margin    => 30,
@@ -44,6 +45,7 @@ my $desc = {
         width => 156 },
       { label => 'Installed On:',
         value => 'installedOn',
+        align => 'left',
         width => 130 },
       { label => 'Location:',
         value => 'location',
@@ -64,6 +66,7 @@ my $desc = {
         width => 156 },
       { label => 'Material Type:',
         value => 'materialType',
+        align => 'left',
         actual_height => 44,
         multiline     => 1,
         width => 130 },
@@ -79,6 +82,7 @@ my $desc = {
         width => 91 },
       { label => 'Repair/Overhaul Per:',
         value => 'repairPer',
+        align => 'left',
         width => 302 },
       { _class => 'Spacer',
         width  => 130 },
@@ -116,6 +120,8 @@ my $rows = [];
 my $rpt = PostScript::Report::Builder->build($desc);
 
 $rpt->generate($data, $rows);
+
+$rpt->ps->output("/tmp/psreport");
 
 use Data::Dumper;
 $Data::Dumper::Indent = 1;

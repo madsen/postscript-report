@@ -68,6 +68,98 @@ sub _init
     $section->init($self, $self);
     $section->_set_height($self->row_height) unless $section->has_height;
   } # end foreach $sectionName
+
+  $self->ps_functions->{+__PACKAGE__} = <<'END PS';
+%---------------------------------------------------------------------
+% Create a rectangular path:  Left Top Right Bottom boxpath
+
+/boxpath
+{
+  % stack L T R B
+  newpath
+  2 copy moveto                 % move to BR
+  3 index exch lineto	        % line to BL
+  % stack L T R
+  1 index
+  % stack L T R T
+  4 2 roll
+  % stack R T L T
+  lineto                        % line to TL
+  lineto                        % line to TR
+  closepath
+} bind def
+
+%---------------------------------------------------------------------
+% Clip to a rectangle:   Left Top Right Bottom clipbox
+
+/clipbox { boxpath clip } bind def
+
+%---------------------------------------------------------------------
+% Draw a rectangle:   Left Top Right Bottom drawbox
+
+/drawbox { boxpath stroke } bind def
+
+%---------------------------------------------------------------------
+% Print text centered at a point:  X Y STRING showcenter
+%
+% Centers text horizontally
+
+/showcenter
+{
+  newpath
+  0 0 moveto
+  % stack X Y STRING
+  dup 4 1 roll                          % Put a copy of STRING on bottom
+  % stack STRING X Y STRING
+  false charpath flattenpath pathbbox   % Compute bounding box of STRING
+  % stack STRING X Y Lx Ly Ux Uy
+  pop exch pop                          % Discard Y values (... Lx Ux)
+  add 2 div neg                         % Compute X offset
+  % stack STRING X Y Ox
+  0                                     % Use 0 for y offset
+  newpath
+  moveto
+  rmoveto
+  show
+} bind def
+
+%---------------------------------------------------------------------
+% Print left justified text:  X Y STRING showleft
+%
+% Does not adjust vertical placement.
+
+/showleft
+{
+  newpath
+  3 1 roll  % STRING X Y
+  moveto
+  show
+} bind def
+
+%---------------------------------------------------------------------
+% Print right justified text:  X Y STRING showright
+%
+% Does not adjust vertical placement.
+
+/showright
+{
+  newpath
+  0 0 moveto
+  % stack X Y STRING
+  dup 4 1 roll                          % Put a copy of STRING on bottom
+  % stack STRING X Y STRING
+  false charpath flattenpath pathbbox   % Compute bounding box of STRING
+  % stack STRING X Y Lx Ly Ux Uy
+  pop exch pop                          % Discard Y values (... Lx Ux)
+  add neg                               % Compute X offset
+  % stack STRING X Y Ox
+  0                                     % Use 0 for y offset
+  newpath
+  moveto
+  rmoveto
+  show
+} bind def
+END PS
 } # end _init
 
 #---------------------------------------------------------------------
@@ -127,6 +219,13 @@ has ps => (
   is      => 'ro',
   isa     => 'PostScript::File',
   writer  => '_set_ps',
+);
+
+has ps_functions => (
+  is       => 'ro',
+  isa      => HashRef[Str],
+  default  => sub { {} },
+  init_arg => undef,
 );
 
 has paper_size => (
@@ -396,8 +495,41 @@ sub generate
 
   $self->_clear_data;
   $self->_clear_rows;
+
+  $self->_generate_font_list;
+  $self->_attach_ps_resources;
+
   $self->_generated(1);
 } # end generate
+
+#---------------------------------------------------------------------
+sub _generate_font_list
+{
+  my ($self) = @_;
+
+  my %font;
+
+  foreach my $font (values %{ $self->_fonts }) {
+    $font{$font->id} = sprintf("/%s /%s-iso findfont %s scalefont def\n",
+                               $font->id, $font->font, $font->size);
+  } # end foreach $font
+
+  $self->ps_functions->{__PACKAGE__.'-fonts'} = join('', sort values %font);
+} # end _generate_font_list
+
+#---------------------------------------------------------------------
+sub _attach_ps_resources
+{
+  my ($self) = @_;
+
+  my $ps    = $self->ps;
+  my $funcs = $self->ps_functions;
+
+  foreach my $key (sort keys %$funcs) {
+    (my $name = $key) =~ s/:/_/g;
+    $ps->add_function($name, $funcs->{$key});
+  } # end foreach $key
+} # end _attach_ps_resources
 
 #=====================================================================
 # Package Return Value:
