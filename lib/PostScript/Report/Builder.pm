@@ -1,0 +1,199 @@
+#---------------------------------------------------------------------
+package PostScript::Report::Builder;
+#
+# Copyright 2009 Christopher J. Madsen
+#
+# Author: Christopher J. Madsen <perl@cjmweb.net>
+# Created: October 12, 2009
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the same terms as Perl itself.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See either the
+# GNU General Public License or the Artistic License for more details.
+#
+# ABSTRACT: Build a PostScript::Report object
+#---------------------------------------------------------------------
+
+our $VERSION = '0.01';
+
+use 5.008;
+use Moose;
+use MooseX::Types::Moose qw(Bool HashRef Int Str);
+use PostScript::Report::Types ':all';
+
+use PostScript::Report ();
+use String::RewritePrefix ();
+
+use namespace::autoclean;
+
+has default_field_type => (
+  is  => 'ro',
+  isa => Str,
+  default => 'FieldTL',
+);
+
+has report_class => (
+  is      => 'ro',
+  isa     => Str,
+  default => 'PostScript::Report',
+);
+
+has _fonts => (
+  is       => 'rw',
+  isa      => HashRef[FontObj],
+  init_arg => undef,
+  clearer  => '_clear_fonts',
+);
+
+our @constructor_args = qw(
+  bottom_margin
+  landscape
+  left_margin
+  paper_size
+  row_height
+  title
+  top_margin
+);
+
+#---------------------------------------------------------------------
+
+sub build
+{
+  my ($self, $desc) = @_;
+
+  # If we're called as a package method, construct a temporary object:
+  unless (ref $self) {
+    $self = $self->new($desc);
+  }
+
+  # Construct the PostScript::Report object:
+  my $rpt = $self->report_class->new(
+    map { exists $desc->{$_} ? ($_ => $desc->{$_}) : () } @constructor_args
+  );
+
+  # Create the fonts we'll be using:
+  $self->create_fonts( $rpt, $desc->{fonts} );
+
+  # Set the report's default fonts:
+  foreach my $type (qw(font label_font)) {
+    next unless exists $desc->{$type};
+
+    $rpt->$type( $self->get_font( $desc->{$type} ) );
+  }
+
+  foreach my $sectionName (qw(report_header page_header detail
+                              page_footer report_footer)) {
+    my $section = $desc->{$sectionName} or next;
+
+    $rpt->$sectionName( $self->build_section( $section ));
+  } # end foreach $sectionName
+
+  $self->_clear_fonts;
+
+  $rpt->init;
+
+  $rpt;
+} # end build
+
+#---------------------------------------------------------------------
+sub get_font
+{
+  my ($self, $fontname) = @_;
+
+  $self->_fonts->{$fontname}
+      or die "$fontname was not listed in 'fonts'";
+} # end get_font
+
+#---------------------------------------------------------------------
+sub create_fonts
+{
+  my ($self, $rpt, $desc) = @_;
+
+  my %font;
+
+  while (my ($name, $desc) = each %$desc) {
+    $desc =~ /^(.+)-(\d+(?:\.\d+)?)/
+        or die "Invalid font description $desc for $name";
+
+    $font{$name} = $rpt->get_font($1, $2);
+  }
+
+  $self->_fonts(\%font);
+} # end create_fonts
+
+#---------------------------------------------------------------------
+sub build_section
+{
+  my ($self, $desc) = @_;
+
+  my @rows;
+
+  my $defaultClass = $self->default_field_type;
+
+  foreach my $rowDesc (@$desc) {
+    my @cols = map { $self->build_object($_, $defaultClass) } @$rowDesc;
+    push @rows, PostScript::Report::HBox->new(children => \@cols);
+  }
+
+  if (@rows > 1) {
+    PostScript::Report::VBox->new(children => \@rows);
+  } else {
+    $rows[0];
+  }
+} # end build_section
+
+#---------------------------------------------------------------------
+sub build_object
+{
+  my ($self, $desc, $class, $prefix) = @_;
+
+  my %parms = %$desc;
+
+  $class = String::RewritePrefix->rewrite(
+    {'=' => q{},  q{} => ($prefix || 'PostScript::Report::')},
+    ( delete($parms{_class}) || $class )
+  );
+
+  while (my ($key, $val) = each %parms) {
+    if ($key =~ /(?:^|_)font$/) {
+      $parms{$key} = $self->get_font($val);
+    } elsif (ref $val) {
+      if ($key eq 'value') {
+        $parms{$key} = $self->build_object($val, undef,
+                                           'PostScript::Report::Value::');
+      } else {
+        $parms{$key} = $self->build_object($val);
+      }
+    } # end else ref $val
+  } # end while each ($key, $val) in %parms
+
+  $class->new(\%parms);
+} # end build_object
+
+#=====================================================================
+# Package Return Value:
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    use PostScript::Report;
+
+=for author to fill in:
+    Brief code example(s) here showing commonest usage(s).
+    This section will be as far as many users bother reading
+    so make it as educational and exeplary as possible.
+
+
+=head1 DESCRIPTION
+
+=for author to fill in:
+    Write a full description of the module and its features here.
+    Use subsections (=head2, =head3) as appropriate.
