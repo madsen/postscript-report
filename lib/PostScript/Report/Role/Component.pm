@@ -49,6 +49,12 @@ has width => (
   @inherited,
 );
 
+has align => (
+  is  => 'ro',
+  isa => HAlign,
+  @inherited,
+);
+
 has font => (
   is  => 'ro',
   isa => FontObj,

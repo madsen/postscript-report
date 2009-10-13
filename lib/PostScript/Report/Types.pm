@@ -20,7 +20,7 @@ package PostScript::Report::Types;
 our $VERSION = '0.01';
 
 use MooseX::Types -declare => [qw(
-  Component Container FontObj FontMetrics Parent Report RptValue
+  Component Container FontObj FontMetrics HAlign Parent Report RptValue
 )];
 use MooseX::Types::Moose qw(Str);
 
@@ -35,6 +35,8 @@ subtype FontObj,
 
 subtype FontMetrics,
   as class_type('Font::AFM');
+
+enum(HAlign, qw(center left right));
 
 subtype Report,
   as class_type('PostScript::Report');

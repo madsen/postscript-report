@@ -73,6 +73,12 @@ has row_height => (
   isa       => Int,
 );
 
+has align => (
+  is       => 'ro',
+  isa      => HAlign,
+  default  => 'left',
+);
+
 has font => (
   is       => 'rw',
   isa      => FontObj,
