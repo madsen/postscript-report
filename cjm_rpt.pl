@@ -113,11 +113,6 @@ my $data = {
 
 my $rows = [];
 
-use PostScript::Report::FieldTL (); # FIXME
-use PostScript::Report::HBox ();    # FIXME
-use PostScript::Report::Spacer ();  # FIXME
-use PostScript::Report::VBox ();    # FIXME
-
 my $rpt = PostScript::Report::Builder->build($desc);
 
 $rpt->generate($data, $rows);

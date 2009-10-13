@@ -24,10 +24,13 @@ use Moose;
 use MooseX::Types::Moose qw(Bool HashRef Int Str);
 use PostScript::Report::Types ':all';
 
-use PostScript::Report ();
+use PostScript::Report::HBox ();
+use PostScript::Report::VBox ();
 use String::RewritePrefix ();
 
 use namespace::autoclean;
+
+our %loaded_class;
 
 has default_field_type => (
   is  => 'ro',
@@ -71,6 +74,8 @@ sub build
   }
 
   # Construct the PostScript::Report object:
+  $self->require_class( $self->report_class );
+
   my $rpt = $self->report_class->new(
     map { exists $desc->{$_} ? ($_ => $desc->{$_}) : () } @constructor_args
   );
@@ -169,8 +174,22 @@ sub build_object
     } # end else ref $val
   } # end while each ($key, $val) in %parms
 
+  $self->require_class($class);
   $class->new(\%parms);
 } # end build_object
+
+#---------------------------------------------------------------------
+sub require_class
+{
+  my ($self, $class) = @_;
+
+  return if $loaded_class{$class};
+
+  die "Invalid class name $class" unless $class =~ /^[:_A-Z0-9]+$/i;
+  eval "require $class;" or die "Unable to load $class: $@";
+
+  $loaded_class{$class} = 1;
+} # end require_class
 
 #=====================================================================
 # Package Return Value:
