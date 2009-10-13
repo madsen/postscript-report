@@ -47,10 +47,9 @@ has actual_height => (
   isa      => Int,
 );
 
-has lines => (
+has multiline => (
   is       => 'ro',
-  isa      => Int,
-  default  => 1,
+  isa      => Bool,
 );
 
 sub draw
