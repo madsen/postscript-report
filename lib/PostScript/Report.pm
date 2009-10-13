@@ -26,6 +26,9 @@ use PostScript::Report::Types ':all';
 use PostScript::File 'pstr';
 
 use PostScript::Report::Font ();
+use List::Util 'min';
+
+use namespace::autoclean;
 
 has report_header => (
   is  => 'rw',
@@ -52,25 +55,28 @@ has report_footer => (
   isa => Component,
 );
 
+sub sections { qw(report_header page_header detail page_footer report_footer) }
+
 sub init
 {
   my ($self) = @_;
 
-  foreach my $sectionName (qw(report_header page_header detail
-                              page_footer report_footer)) {
-    my $section = $self->$sectionName;
-    $section->init($self, $self) if $section;
+  foreach my $sectionName ($self->sections) {
+    my $section = $self->$sectionName or next;
+    $section->init($self, $self);
+    $section->_set_height($self->row_height) unless $section->has_height;
   } # end foreach $sectionName
 } # end init
 
 #---------------------------------------------------------------------
 
-sub width  { shift->ps->get_width  }
-sub height { shift->ps->get_height }
+sub width  { my @bb = shift->ps->get_bounding_box;  $bb[2] - $bb[0] }
+sub height { my @bb = shift->ps->get_bounding_box;  $bb[3] - $bb[1] }
 
 has row_height => (
   is        => 'ro',
   isa       => Int,
+  default   => 20,
 );
 
 has align => (
@@ -252,6 +258,81 @@ sub _get_metrics
 } # end _get_metrics
 
 #---------------------------------------------------------------------
+has page_count => (
+  is       => 'ro',
+  isa      => Int,
+  writer   => '_set_page_count',
+  init_arg => undef,
+);
+
+has page_number => (
+  is       => 'ro',
+  isa      => Int,
+  writer   => '_set_page_number',
+  init_arg => undef,
+);
+
+sub _calculate_page_count
+{
+  my ($self) = @_;
+
+  my $pageHeight = $self->height;
+  my $rowCount   = @{ $self->_rows };
+
+  # Collect height of each section:
+  my %height;
+  foreach my $sectionName ($self->sections) {
+    if (my $section = $self->$sectionName) {
+      $height{$sectionName} = $section->height;
+    } else {
+      $height{$sectionName} = 0;
+    }
+  } # end foreach $sectionName
+
+  # Perform sanity checks:
+  if ($height{report_header} + $height{page_header} + $height{detail}
+      + $height{page_footer} > $pageHeight) {
+    die "Can't fit report header, page header, page footer, and a detail line on a single page";
+  }
+
+  if ($height{page_header} + $height{detail} + $height{page_footer}
+      + $height{report_footer} > $pageHeight) {
+    die "Can't fit page header, page footer, report footer, and a detail line on a single page";
+  }
+
+  # Calculate how many lines we can fit on each page:
+  my $available = $pageHeight - $height{page_header} - $height{page_footer};
+  my $detail    = $height{detail};
+  my $pageCount = 1;
+  my $rowsThisPage = 0;
+
+  if ($detail) {
+    my $rowsPerPage = int($available / $detail);
+
+    $rowsThisPage = min($rowCount,
+                        int(($available - $height{report_header}) / $detail));
+
+    while ($rowCount > $rowsThisPage) {
+      ++$pageCount;
+      $rowCount -= $rowsThisPage;
+      $rowsThisPage = min($rowCount, $rowsPerPage);
+    } # end while $rowCount > $rowsThisPage
+  } # end if detail section
+
+  # If the report_footer won't fit on the last page, add another page:
+  ++$pageCount
+      if $height{report_footer} > $available - $rowsThisPage * $detail;
+
+  $self->_set_page_count($pageCount);
+} # end _calculate_page_count
+
+#---------------------------------------------------------------------
+has _generated => (
+  is       => 'rw',
+  isa      => Bool,
+  init_arg => undef,
+);
+
 sub generate
 {
   my ($self, $data, $rows) = @_;
@@ -260,12 +341,59 @@ sub generate
   $self->_rows($rows);
   $self->_current_row(0);
 
-  my @bb = $self->ps->get_bounding_box;
+  $self->_calculate_page_count;
 
-  $self->page_header->draw(@bb[0,3], $self); # FIXME
+  my ($x, $yBot, $yTop) = ($self->ps->get_bounding_box)[0,1,3];
+
+  my $report_header = $self->report_header;
+  my $page_header   = $self->page_header;
+  my $page_footer   = $self->page_footer;
+  my $detail        = $self->detail;
+
+  my $minY = $yBot;
+  $minY += $detail->height      if $detail;
+  $minY += $page_footer->height if $page_footer;
+
+  for my $page (1 .. $self->page_count) {
+    $self->_set_page_number($page);
+
+    my $y = $yTop;
+
+    if ($report_header) {
+      $report_header->draw($x, $y, $self);
+      $y -= $report_header->height;
+      undef $report_header;     # Only on first page
+    } # end if $report_header
+
+    if ($page_header) {
+      $page_header->draw($x, $y, $self);
+      $y -= $page_header->height;
+    } # end if $page_header
+
+    if ($detail) {
+      while ($y >= $minY) {
+        $detail->draw($x, $y, $self);
+        $y -= $detail->height;
+        if ($self->_current_row( $self->_current_row + 1 ) > $#$rows) {
+          undef $detail;  # There might be another page for the footer
+          last;
+        } # end if this was the last row
+      } # end while room for another row
+    } # end if $detail
+
+    if ($page_footer) {
+      $page_footer->draw($x, $y, $self);
+      $y -= $page_footer->height;
+    } # end if $page_header
+
+    if ($page == $self->page_count and $self->report_footer) {
+      $self->report_footer->draw($x, $y, $self);
+    }
+  } # end for each $page
 
   $self->_clear_data;
   $self->_clear_rows;
+  $self->_generated(1);
 } # end generate
 
 #=====================================================================
