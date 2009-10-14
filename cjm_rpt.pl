@@ -25,6 +25,8 @@ my $desc = {
     label     => 'Helvetica-6',
     text      => 'Helvetica-9',
     boldText  => 'Helvetica-Bold-9',
+    pageNum   => 'Helvetica-8',
+    bottomRow => 'Helvetica-6',
     disclaimerText => 'Helvetica-Bold-8',
   },
 
@@ -33,10 +35,10 @@ my $desc = {
   align      => 'center',
 
   landscape     => 1,
-  top_margin    => 30,
+  top_margin    => 25,
   left_margin   => 20,
   right_margin  => 20,
-  bottom_margin => 30,
+  bottom_margin => 25,
   row_height    => 22,
 
   report_header => [
@@ -166,6 +168,25 @@ my $desc = {
       { label => 'Date',
         value => $blank,
         width => 258 },
+    ],
+    [ HBox => {
+        border => 1,
+        height => 14,
+        font => 'bottomRow',
+        padding_side => 0,
+        padding_bottom => 4,
+      },
+      [ HBox => { border => 0, font  => 'pageNum' },
+        { _class => 'Field',
+          value => { _class => 'Constant', value => '42410-1' },
+          width => 57 },
+        { _class => 'Spacer',
+          width  => 14 },
+        { _class => 'Field',
+          align => 'left',
+          value => { _class => 'Page', value => 'Page(s): %n OF %t' },
+          width => 377 },
+      ],
     ],
   ], # end page_footer
 };
