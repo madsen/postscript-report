@@ -169,7 +169,8 @@ sub create_columns
   } # end foreach $col
 
   if ($desc->{page_header}) {
-    push @{ $desc->{page_header} }, \@header;
+    # Can't just push, because we don't want to modify the original:
+    $desc->{page_header} = [ @{ $desc->{page_header} }, \@header ];
   } else {
     $desc->{page_header} = \@header;
   }
