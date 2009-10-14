@@ -60,9 +60,10 @@ after init => sub {
 %---------------------------------------------------------------------
 % X Y STRING FONT L T R B Field-X
 
-/Field-C { gsave clipbox setfont showcenter grestore} bind def
-/Field-L { gsave clipbox setfont showleft   grestore} bind def
-/Field-R { gsave clipbox setfont showright  grestore} bind def
+/Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
+/Field-C { Field showcenter grestore } bind def
+/Field-L { Field showleft   grestore } bind def
+/Field-R { Field showright  grestore } bind def
 END PS
 }; # end after init
 
@@ -79,16 +80,15 @@ sub draw
   };
 
   $rpt->ps->add_to_page( sprintf(
-    "%s %s %s %s %d %d %d %d %s-%s\n",
+    "%s %s %s %s %d %d %d %d %s-%s %s db%s\n",
     $x + $xOff, $y - $self->height + $self->padding_bottom,
     pstr( $rpt->get_value($self->value) ),
     $self->font->id,
     $x, $y, $x + $self->width, $y - $self->height,
-    $self->id, $align
+    $self->id, $align,
+    $self->line_width, $self->border,
   ));
 } # end draw
-
-after draw => \&draw_standard_border;
 
 #=====================================================================
 no Moose;
