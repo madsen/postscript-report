@@ -81,6 +81,19 @@ has line_width => (
 
 requires 'draw';
 
+sub draw_standard_border
+{
+  my ($self, $x, $y, $rpt) = @_;
+
+  if ($self->border) {
+    $rpt->ps->add_to_page( sprintf(
+      "%d %d %d %d %s db%s\n",
+      $x, $y, $x + $self->width, $y - $self->height,
+      $self->line_width, $self->border
+    ));
+  }
+} # end draw_standard_border
+
 sub init
 {
   my ($self, $parent, $report) = @_;
