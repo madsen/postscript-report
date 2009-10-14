@@ -141,13 +141,13 @@ sub draw
 
   if ($self->multiline) {
     @lines = $font->wrap($self->width - 1.5 * $self->side_padding_text,
-                               @lines);
+                         @lines);
   } # end if multiline
 
   $rpt->ps->add_to_page( sprintf(
     "%s %s %s %s /FieldTL-%s %d %s %s %s %d %d %d %d %s FieldTL\n",
     $self->line_width,
-    join(' ', map { pstr($_) } @lines),
+    join(' ', map { pstr($_) } reverse @lines),
     $font->size,
     $font->size + $labelSize + $self->top_padding_text,
     uc substr($self->align, 0, 1),

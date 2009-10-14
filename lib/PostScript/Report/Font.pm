@@ -66,9 +66,37 @@ sub width
 
 sub wrap
 {
-  my ($self, $width, $text) = @_;
+  my ($self, $width) = @_; # , $text
 
-  return $text;                 # FIXME need to wrap
+  my $metrics = $self->_metrics;
+  my $size    = $self->size;
+
+  my @lines = '';
+
+  pos($_[2]) = 0;               # Make sure we start at the beginning
+  for ($_[2]) {
+    if (m/\G[ \t]*\n/gc) {
+      push @lines, '';
+    } else {
+      m/\G(\s*(?:[^-\s]+-*|\S+))/g or last;
+      my $word = $1;
+    check_word:
+      if ($metrics->stringwidth($lines[-1] . $word, $size) <= $width) {
+        $lines[-1] .= $word;
+      } elsif ($lines[-1] eq '') {
+        $lines[-1] = $word;
+        warn "$word is too wide for field width $width";
+      } else {
+        push @lines, '';
+        $word =~ s/^\s+//;
+        goto check_word;
+      }
+    } # end else not at LF
+
+    redo;                   # Only the "last" statement above can exit
+  } # end for $_[2] (the text to wrap)
+
+  @lines;
 } # end wrap
 
 #=====================================================================

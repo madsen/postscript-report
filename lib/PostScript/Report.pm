@@ -354,6 +354,8 @@ sub _get_metrics
 {
   my ($self, $name) = @_;
 
+  require Font::AFM;
+
   $self->_font_metrics->{$name} ||= Font::AFM->new($name);
 } # end _get_metrics
 
