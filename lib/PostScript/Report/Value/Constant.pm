@@ -20,6 +20,7 @@ package PostScript::Report::Value::Constant;
 our $VERSION = '0.01';
 
 use Moose;
+use MooseX::Types::Moose qw(Str);
 
 with 'PostScript::Report::Role::Value';
 
@@ -31,3 +32,6 @@ has value => (
 
 # Just ignore the $rpt parameter:
 sub get_value { shift->value }
+
+#=====================================================================
+1;
