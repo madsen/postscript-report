@@ -54,6 +54,7 @@ has _fonts => (
 our @constructor_args = qw(
   align
   bottom_margin
+  footer_align
   landscape
   left_margin
   paper_size

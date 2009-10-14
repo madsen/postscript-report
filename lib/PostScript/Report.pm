@@ -55,6 +55,12 @@ has report_footer => (
   isa => Component,
 );
 
+has footer_align => (
+  is      => 'ro',
+  isa     => VAlign,
+  default => 'bottom',
+);
+
 sub sections { qw(report_header page_header detail page_footer report_footer) }
 
 sub _init
@@ -500,6 +506,7 @@ sub generate
   my $page_header   = $self->page_header;
   my $page_footer   = $self->page_footer;
   my $detail        = $self->detail;
+  my $footer2bottom = ($self->footer_align eq 'bottom');
 
   my $minY = $yBot;
   $minY += $detail->height      if $detail;
@@ -534,6 +541,11 @@ sub generate
     } # end if $detail
 
     if ($page_footer) {
+      if ($footer2bottom) {
+        $y = $yBot + $page_footer->height;
+        $y += $self->report_footer->height
+            if $page == $self->page_count and $self->report_footer;
+      } # end if footers should be at bottom of page
       $page_footer->draw($x, $y, $self);
       $y -= $page_footer->height;
     } # end if $page_header

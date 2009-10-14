@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use MooseX::Types -declare => [qw(
   BorderStyle Component Container FontObj FontMetrics HAlign
-  Parent Report RptValue
+  Parent Report RptValue VAlign
 )];
 use MooseX::Types::Moose qw(Str);
 
@@ -49,5 +49,7 @@ subtype RptValue,
 
 subtype Parent,
   as Container|Report;
+
+enum(VAlign, qw(bottom top));
 
 1;
