@@ -134,21 +134,54 @@ sub build_section
 {
   my ($self, $desc) = @_;
 
-  my @rows;
+  my $type = ref $desc or die "Expected reference";
 
+  # A section could be just a single object:
+  return $self->build_object($desc, $self->default_field_type)
+      if $type eq 'HASH';
+
+  die "Expected array reference" unless $type eq 'ARRAY';
+
+  # By default, we want a VBox, but if it appears we have just one
+  # arrayref, assume we want an HBox:
+  my $boxType = ((ref($desc->[0]) || q{}) eq 'HASH'
+                 ? 'HBox' : 'VBox');
+
+  # Recursively build the box:
+  return $self->build_box($desc, $boxType);
+} # end build_section
+
+#---------------------------------------------------------------------
+sub build_box
+{
+  my ($self, $desc, $boxType) = @_;
+
+  die "Empty box is not allowed" unless @$desc;
+
+  my $start = 0;
+  my $boxParam;
+
+  # If [ className => { ... } ], use it:
+  if (not ref $desc->[0]) {
+    $boxType  = $desc->[0];
+    $boxParam = $desc->[1];
+    $start = 2;
+  } else {
+    $boxParam = {};
+  }
+
+  # Construct the children:
   my $defaultClass = $self->default_field_type;
 
-  foreach my $rowDesc (@$desc) {
-    my @cols = map { $self->build_object($_, $defaultClass) } @$rowDesc;
-    push @rows, PostScript::Report::HBox->new(children => \@cols);
-  }
+  my @children = map {
+    ref $_ eq 'HASH'
+        ? $self->build_object($_, $defaultClass)
+        : $self->build_box($_, ($boxType eq 'HBox' ? 'VBox' : 'HBox'))
+  } @$desc[$start .. $#$desc];
 
-  if (@rows > 1) {
-    PostScript::Report::VBox->new(children => \@rows);
-  } else {
-    $rows[0];
-  }
-} # end build_section
+  # Construct the box:
+  $self->get_class($boxType)->new(children => \@children, %$boxParam);
+} # end build_box
 
 #---------------------------------------------------------------------
 sub build_object
@@ -180,6 +213,8 @@ sub build_object
 sub get_class
 {
   my ($self, $class, $prefix) = @_;
+
+  die "Unable to determine class" unless $class;
 
   return String::RewritePrefix->rewrite(
     {'=' => q{},  q{} => ($prefix || 'PostScript::Report::')},
