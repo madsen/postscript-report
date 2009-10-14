@@ -67,7 +67,8 @@ after init => sub {
 
   $report->ps_functions->{blessed $self} = <<"END PS";
 %---------------------------------------------------------------------
-% LINEWIDTH CONTENT... Csp Cy DISPLAYFUNC LINES CONTENTFONT LABEL Ly L T R B LABELFONT $FieldTL
+% CONTENT... Csp Cy DISPLAYFUNC LINES CONTENTFONT LABEL Ly L T R B LABELFONT $FieldTL
+% Leaves on stack: L T R B
 
 /$FieldTL
 {
@@ -92,13 +93,10 @@ after init => sub {
     11 index cvx exec   % CONTENT... Csp FUNC L T R B L R Ypos
     8 index sub         % CONTENT... Csp FUNC L T R B L R YposNext
   } repeat
-  pop pop pop 		% LINEWIDTH Csp FUNC L T R B
+  pop pop pop 		% Csp FUNC L T R B
+  6 -2 roll             % L T R B Csp FUNC
+  pop pop               % L T R B
   grestore
-  gsave
-  7 -1 roll setlinewidth % Csp FUNC L T R B
-  drawbox                % Csp FUNC
-  grestore
-  pop pop
 } def
 
 %---------------------------------------------------------------------
@@ -148,8 +146,7 @@ sub draw
   } # end if multiline
 
   $rpt->ps->add_to_page( sprintf(
-    "%s %s %s %s /%s-%s %d %s %s %s %d %d %d %d %s %s\n",
-    $self->line_width,
+    "%s %s %s /%s-%s %d %s %s %s %d %d %d %d %s %s %s db%s\n",
     join(' ', map { pstr($_) } reverse @lines),
     $font->size,
     $font->size + $self->top_padding_label+$labelSize + $self->top_padding_text,
@@ -160,7 +157,8 @@ sub draw
     $labelSize + $self->top_padding_label,
     $x, $y, $x + $self->width, $y - ($self->actual_height || $self->height),
     $self->label_font->id,
-    $FieldTL
+    $FieldTL,
+    $self->line_width, $self->border,
   ));
 } # end draw
 
