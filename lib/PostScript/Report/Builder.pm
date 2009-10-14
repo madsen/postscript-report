@@ -157,10 +157,7 @@ sub build_object
 
   my %parms = %$desc;
 
-  $class = String::RewritePrefix->rewrite(
-    {'=' => q{},  q{} => ($prefix || 'PostScript::Report::')},
-    ( delete($parms{_class}) || $class )
-  );
+  $class = $self->get_class(delete($parms{_class}) || $class, $prefix);
 
   while (my ($key, $val) = each %parms) {
     if ($key =~ /(?:^|_)font$/) {
@@ -178,6 +175,17 @@ sub build_object
   $self->require_class($class);
   $class->new(\%parms);
 } # end build_object
+
+#---------------------------------------------------------------------
+sub get_class
+{
+  my ($self, $class, $prefix) = @_;
+
+  return String::RewritePrefix->rewrite(
+    {'=' => q{},  q{} => ($prefix || 'PostScript::Report::')},
+    $class
+  );
+} # end get_class
 
 #---------------------------------------------------------------------
 sub require_class
