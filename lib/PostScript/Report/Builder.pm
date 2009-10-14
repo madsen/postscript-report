@@ -159,15 +159,14 @@ sub build_box
   die "Empty box is not allowed" unless @$desc;
 
   my $start = 0;
-  my $boxParam;
+  my %param;
 
   # If [ className => { ... } ], use it:
   if (not ref $desc->[0]) {
     $boxType  = $desc->[0];
-    $boxParam = $desc->[1];
+    %param = %{ $desc->[1] };
+    $self->_fixup_parms(\%param);
     $start = 2;
-  } else {
-    $boxParam = {};
   }
 
   # Construct the children:
@@ -180,7 +179,7 @@ sub build_box
   } @$desc[$start .. $#$desc];
 
   # Construct the box:
-  $self->get_class($boxType)->new(children => \@children, %$boxParam);
+  $self->get_class($boxType)->new(children => \@children, %param);
 } # end build_box
 
 #---------------------------------------------------------------------
@@ -192,18 +191,7 @@ sub build_object
 
   $class = $self->get_class(delete($parms{_class}) || $class, $prefix);
 
-  while (my ($key, $val) = each %parms) {
-    if ($key =~ /(?:^|_)font$/) {
-      $parms{$key} = $self->get_font($val);
-    } elsif (ref $val) {
-      if ($key eq 'value') {
-        $parms{$key} = $self->build_object($val, undef,
-                                           'PostScript::Report::Value::');
-      } else {
-        $parms{$key} = $self->build_object($val);
-      }
-    } # end else ref $val
-  } # end while each ($key, $val) in %parms
+  $self->_fixup_parms(\%parms);
 
   $self->require_class($class);
   $class->new(\%parms);
@@ -221,6 +209,25 @@ sub get_class
     $class
   );
 } # end get_class
+
+#---------------------------------------------------------------------
+sub _fixup_parms
+{
+  my ($self, $parms) = @_;
+
+  while (my ($key, $val) = each %$parms) {
+    if ($key =~ /(?:^|_)font$/) {
+      $parms->{$key} = $self->get_font($val);
+    } elsif (ref $val) {
+      if ($key eq 'value') {
+        $parms->{$key} = $self->build_object($val, undef,
+                                           'PostScript::Report::Value::');
+      } else {
+        $parms->{$key} = $self->build_object($val);
+      }
+    } # end else ref $val
+  } # end while each ($key, $val) in %$parms
+} # end _fixup_parms
 
 #---------------------------------------------------------------------
 sub require_class
