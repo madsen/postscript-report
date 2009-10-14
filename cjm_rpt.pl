@@ -15,11 +15,17 @@ use lib 'lib';
 
 use PostScript::Report::Builder ();
 
+my $blank = {
+  _class => 'Constant',
+  value => ''
+};
+
 my $desc = {
   fonts => {
     label     => 'Helvetica-6',
     text      => 'Helvetica-9',
     boldText  => 'Helvetica-Bold-9',
+    disclaimerText => 'Helvetica-Bold-8',
   },
 
   font       => 'text',
@@ -141,6 +147,27 @@ my $desc = {
       [ DATE => 79, undef, { _class => 'Spacer' } ],
     ],
   }, # end columns
+
+  page_footer => [
+    VBox => { border => 0 },
+    { _class => 'Field',
+            font   => 'disclaimerText',
+      padding_bottom => 4,
+      value  => { _class => 'Constant',
+                  value => 'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.' },
+    },
+    [ HBox => { border => 1 },
+      { label => 'Inspector',
+        value => $blank,
+        width => 339 },
+      { label => 'Final Inspection Stamp',
+        value => $blank,
+        width => 154 },
+      { label => 'Date',
+        value => $blank,
+        width => 258 },
+    ],
+  ], # end page_footer
 };
 
 my $data = {
