@@ -119,6 +119,28 @@ my $desc = {
         width => 79 },
     ],
   ], # end page_header
+
+  columns => {
+    header => {
+      font           => 'boldText',
+      height         => 19,
+      padding_bottom => 6,
+      padding_side   => 3,
+    },
+    detail => {
+      height         => 19,
+      padding_bottom => 6,
+      padding_side   => 3,
+    },
+    data => [
+      [ 'SEQ#' => 29 ],
+      [ 'STA#' => 40 ],
+      [ 'REPAIR SCOPE' => 450, { align => 'left'}, { align => 'left'} ],
+      [ MECHANIC => 73 ],
+      [ INSPECTOR => 80 ],
+      [ DATE => 79, undef, { _class => 'Spacer' } ],
+    ],
+  }, # end columns
 };
 
 my $data = {
@@ -140,7 +162,34 @@ my $data = {
   'revisedDueDate'    => '',
 };
 
-my $rows = [];
+my $rows = [
+  [ 1, 'I1', 'INSPECT, PN & SN VERIFIED', 'XXXXXXXX', '' ],
+  [ 2, 'I1', 'ADDITIONAL DATA USED: BOEING ASSEMBLY DRAWING 589X1674, GDR9726', 'XXXXXXXX', '' ],
+  [ 3, 'I1', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit', 'XXXXXXXX', '' ],
+  [ 4, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+  [ 5, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+  [ 6, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+  [ 7, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+  [ 8, 'S1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 9, 'W1', 'Lorem ipsum dolor sit amet', '', '' ],
+  [ 10, 'W1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 11, 'W1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 12, 'W1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 13, 'W1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 14, 'W1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 15, 'W1', 'Lorem ipsum dolor sit amet', '', '' ],
+  [ 16, 'P1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 17, 'P1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 18, 'P1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 19, 'P1', 'Lorem ipsum dolor sit amet', '', '' ],
+  [ 20, 'P1', 'Lorem ipsum dolor sit amet', '', '' ],
+  [ 21, 'F1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+  [ 22, 'P1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 23, 'P1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 24, 'S1', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 25, 'SR', 'Lorem ipsum dolor sit amet', '', 'XXXXXXXX' ],
+  [ 26, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
+];
 
 my $rpt = PostScript::Report::Builder->build($desc);
 

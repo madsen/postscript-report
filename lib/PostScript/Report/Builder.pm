@@ -67,37 +67,44 @@ our @constructor_args = qw(
 
 sub build
 {
-  my ($self, $desc) = @_;
+  my ($self, $descHash) = @_;
+
+  my %desc = %$descHash;        # Don't want to change the original
 
   # If we're called as a package method, construct a temporary object:
   unless (ref $self) {
-    $self = $self->new($desc);
+    $self = $self->new(\%desc);
   }
 
   # Construct the PostScript::Report object:
   $self->require_class( $self->report_class );
 
   my $rpt = $self->report_class->new(
-    map { exists $desc->{$_} ? ($_ => $desc->{$_}) : () } @constructor_args
+    map { exists $desc{$_} ? ($_ => $desc{$_}) : () } @constructor_args
   );
 
   # Create the fonts we'll be using:
-  $self->create_fonts( $rpt, $desc->{fonts} );
+  $self->create_fonts( $rpt, $desc{fonts} );
 
   # Set the report's default fonts:
   foreach my $type (qw(font label_font)) {
-    next unless exists $desc->{$type};
+    next unless exists $desc{$type};
 
-    $rpt->$type( $self->get_font( $desc->{$type} ) );
+    $rpt->$type( $self->get_font( $desc{$type} ) );
   }
 
+  # Prepare the columns:
+  $self->create_columns(\%desc) if $desc{columns};
+
+  # Construct the report sections:
   foreach my $sectionName (qw(report_header page_header detail
                               page_footer report_footer)) {
-    my $section = $desc->{$sectionName} or next;
+    my $section = $desc{$sectionName} or next;
 
     $rpt->$sectionName( $self->build_section( $section ));
   } # end foreach $sectionName
 
+  # Clean up and return the report:
   $self->_clear_fonts;
 
   $rpt;
@@ -128,6 +135,46 @@ sub create_fonts
 
   $self->_fonts(\%font);
 } # end create_fonts
+
+#---------------------------------------------------------------------
+sub create_columns
+{
+  my ($self, $desc) = @_;
+
+  confess "Can't use both detail and columns" if $desc->{detail};
+
+  my $columns = $desc->{columns};
+
+  my @header = (HBox => $columns->{header} || {});
+  my @detail = (HBox => $columns->{detail} || {});
+
+  my $colNum = 0;
+  foreach my $col (@{ $columns->{data} }) {
+    my (%headerDef, %detailDef);
+
+    %headerDef = %{ $col->[2] } if $col->[2];
+    %detailDef = %{ $col->[3] } if $col->[3];
+
+    $headerDef{width} = $detailDef{width} = $col->[1];
+
+    $headerDef{_class} ||= 'Field';
+    $detailDef{_class} ||= 'Field';
+
+    $headerDef{value} ||= { qw(_class Constant  value), $col->[0] };
+    $detailDef{value} ||= $colNum++;
+
+    push @header, \%headerDef;
+    push @detail, \%detailDef;
+  } # end foreach $col
+
+  if ($desc->{page_header}) {
+    push @{ $desc->{page_header} }, \@header;
+  } else {
+    $desc->{page_header} = \@header;
+  }
+
+  $desc->{detail} = \@detail;
+} # end create_columns
 
 #---------------------------------------------------------------------
 sub build_section
