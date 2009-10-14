@@ -370,8 +370,29 @@ sub get_font
     document => $self,
     font     => $name,
     size     => $size,
+    id       => $self->_next_font_id,
   );
 } # end get_font
+
+has _font_id_counter => (
+  is       => 'rw',
+  isa      => Str,
+  init_arg => undef,
+  default  => 'A',
+);
+
+sub _next_font_id
+{
+  my ($self) = @_;
+
+  my $id = $self->_font_id_counter;
+
+  my $fontID = "fn$id";
+
+  $self->_font_id_counter(++$id);
+
+  $fontID;
+} # end _next_font_id
 
 # This is only for use by PostScript::Report::Font:
 sub _get_metrics

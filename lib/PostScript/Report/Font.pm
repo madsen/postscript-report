@@ -36,6 +36,12 @@ has font => (
   required => 1,
 );
 
+has id => (
+  is       => 'ro',
+  isa      => Str,
+  required => 1,
+);
+
 has size => (
   is       => 'ro',
   isa      => Num,
@@ -49,13 +55,6 @@ has _metrics => (
   default  => sub { my $self = shift;
                     $self->document->_get_metrics($self->font); },
 );
-
-sub id
-{
-  my $self = shift;
-
-  sprintf("%s-%s", $self->font, $self->size);
-}
 
 sub width
 {
