@@ -21,7 +21,7 @@ our $VERSION = '0.01';
 
 use Moose;
 #use Moose::Autobox;
-use MooseX::Types::Moose qw(Bool Int Str);
+use MooseX::Types::Moose qw(Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
 use PostScript::File 'pstr';
@@ -29,6 +29,8 @@ use PostScript::File 'pstr';
 use namespace::autoclean;
 
 with 'PostScript::Report::Role::Component';
+
+my @inherited = (traits => [qw/TreeInherit/]);
 
 has value => (
   is       => 'ro',
@@ -38,14 +40,14 @@ has value => (
 
 has padding_bottom => (
   is       => 'ro',
-  isa      => Int,
-  default  => 2,
+  isa      => Num,
+  @inherited,
 );
 
 has padding_side => (
   is       => 'ro',
-  isa      => Int,
-  default  => 2,
+  isa      => Num,
+  @inherited,
 );
 
 after init => sub {

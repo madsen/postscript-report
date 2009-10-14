@@ -22,7 +22,7 @@ our $VERSION = '0.01';
 use Moose::Role;
 use Moose::Autobox;
 use MooseX::AttributeHelpers;
-use MooseX::Types::Moose qw(ArrayRef Bool Int Str);
+use MooseX::Types::Moose qw(ArrayRef Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
 with 'PostScript::Report::Role::Component';
@@ -37,6 +37,18 @@ has children => (
   provides  => {
     push => 'add_child',
   },
+);
+
+has padding_bottom => (
+  is       => 'ro',
+  isa      => Num,
+  @inherited,
+);
+
+has padding_side => (
+  is       => 'ro',
+  isa      => Num,
+  @inherited,
 );
 
 has row_height => (

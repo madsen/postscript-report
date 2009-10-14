@@ -226,6 +226,18 @@ has line_width => (
   default => 0.5,
 );
 
+has padding_bottom => (
+  is       => 'ro',
+  isa      => Num,
+  default  => 2,
+);
+
+has padding_side => (
+  is       => 'ro',
+  isa      => Num,
+  default  => 2,
+);
+
 #---------------------------------------------------------------------
 has ps => (
   is      => 'ro',
