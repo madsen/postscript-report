@@ -471,7 +471,9 @@ sub generate
 
   $self->_calculate_page_count;
 
-  my ($x, $yBot, $yTop) = ($self->ps->get_bounding_box)[0,1,3];
+  my $ps = $self->ps;
+
+  my ($x, $yBot, $yTop) = ($ps->get_bounding_box)[0,1,3];
 
   my $report_header = $self->report_header;
   my $page_header   = $self->page_header;
@@ -484,6 +486,7 @@ sub generate
 
   for my $page (1 .. $self->page_count) {
     $self->_set_page_number($page);
+    $ps->newpage($page) if $page > 1;
 
     my $y = $yTop;
 
