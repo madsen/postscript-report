@@ -100,6 +100,12 @@ sub _init
 /drawbox { boxpath stroke } bind def
 
 %---------------------------------------------------------------------
+% Draw border styles: Left Top Right Bottom Linewidth dbX
+
+/db0 { 5 { pop } repeat } bind def
+/db1 { gsave setlinewidth drawbox grestore } bind def
+
+%---------------------------------------------------------------------
 % Print text centered at a point:  X Y STRING showcenter
 %
 % Centers text horizontally
@@ -177,6 +183,12 @@ has align => (
   is       => 'ro',
   isa      => HAlign,
   default  => 'left',
+);
+
+has border => (
+  is       => 'ro',
+  isa      => BorderStyle,
+  default  => 1,
 );
 
 has font => (

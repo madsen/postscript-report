@@ -20,9 +20,12 @@ package PostScript::Report::Types;
 our $VERSION = '0.01';
 
 use MooseX::Types -declare => [qw(
-  Component Container FontObj FontMetrics HAlign Parent Report RptValue
+  BorderStyle Component Container FontObj FontMetrics HAlign
+  Parent Report RptValue
 )];
 use MooseX::Types::Moose qw(Str);
+
+enum(BorderStyle, qw(0 1));
 
 subtype Component,
   as role_type('PostScript::Report::Role::Component');

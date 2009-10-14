@@ -45,6 +45,18 @@ has row_height => (
   @inherited,
 );
 
+after draw => sub {
+  my ($self, $x, $y, $rpt) = @_;
+
+  if ($self->border) {
+    $rpt->ps->add_to_page( sprintf(
+      "%d %d %d %d %s db%s\n",
+      $x, $y, $x + $self->width, $y - $self->height,
+      $self->line_width, $self->border
+    ));
+  }
+}; # end after draw
+
 after init => sub {
   my ($self, $parent, $report) = @_;
 

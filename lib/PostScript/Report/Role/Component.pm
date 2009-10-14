@@ -55,6 +55,12 @@ has align => (
   @inherited,
 );
 
+has border => (
+  is  => 'ro',
+  isa => BorderStyle,
+  @inherited,
+);
+
 has font => (
   is  => 'ro',
   isa => FontObj,
