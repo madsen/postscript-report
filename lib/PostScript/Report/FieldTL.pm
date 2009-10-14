@@ -63,11 +63,13 @@ after init => sub {
   my $lblSide = $self->side_padding_label;
   my $txtSide = $self->side_padding_text;
 
-  $report->ps_functions->{+__PACKAGE__} = <<"END PS";
-%---------------------------------------------------------------------
-% LINEWIDTH CONTENT... Csp Cy DISPLAYFUNC LINES CONTENTFONT LABEL Ly L T R B LABELFONT FieldTL
+  my $FieldTL = $self->id;
 
-/FieldTL
+  $report->ps_functions->{blessed $self} = <<"END PS";
+%---------------------------------------------------------------------
+% LINEWIDTH CONTENT... Csp Cy DISPLAYFUNC LINES CONTENTFONT LABEL Ly L T R B LABELFONT $FieldTL
+
+/$FieldTL
 {
   gsave
   setfont
@@ -102,7 +104,7 @@ after init => sub {
 %---------------------------------------------------------------------
 % Y CONTENT L R
 
-/FieldTL-C {
+/$FieldTL-C {
   add 2 div             % Y CONTENT Xpos
   3 1 roll              % Xpos Y CONTENT
   showcenter
@@ -111,7 +113,7 @@ after init => sub {
 %---------------------------------------------------------------------
 % Y CONTENT L R
 
-/FieldTL-L {
+/$FieldTL-L {
   pop                   % Y CONTENT L
   $txtSide add		% Y CONTENT Xpos
   3 1 roll              % Xpos Y CONTENT
@@ -121,7 +123,7 @@ after init => sub {
 %---------------------------------------------------------------------
 % Y CONTENT L R
 
-/FieldTL-R {
+/$FieldTL-R {
   exch pop              % Y CONTENT R
   $txtSide sub		% Y CONTENT Xpos
   3 1 roll              % Xpos Y CONTENT
@@ -136,6 +138,7 @@ sub draw
 
   my @lines = $rpt->get_value($self->value);
 
+  my $FieldTL   = $self->id;
   my $font      = $self->font;
   my $labelSize = $self->label_font->size;
 
@@ -145,18 +148,19 @@ sub draw
   } # end if multiline
 
   $rpt->ps->add_to_page( sprintf(
-    "%s %s %s %s /FieldTL-%s %d %s %s %s %d %d %d %d %s FieldTL\n",
+    "%s %s %s %s /%s-%s %d %s %s %s %d %d %d %d %s %s\n",
     $self->line_width,
     join(' ', map { pstr($_) } reverse @lines),
     $font->size,
     $font->size + $self->top_padding_label+$labelSize + $self->top_padding_text,
-    uc substr($self->align, 0, 1),
+    $FieldTL, uc substr($self->align, 0, 1),
     scalar @lines,
     $font->id,
     pstr($self->label),
     $labelSize + $self->top_padding_label,
     $x, $y, $x + $self->width, $y - ($self->actual_height || $self->height),
-    $self->label_font->id
+    $self->label_font->id,
+    $FieldTL
   ));
 } # end draw
 

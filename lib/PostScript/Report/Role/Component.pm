@@ -94,6 +94,14 @@ sub draw_standard_border
   }
 } # end draw_standard_border
 
+sub id
+{
+  my $class = blessed shift;
+  $class =~ /([^:]+)$/ or confess "No class";
+
+  $1;
+} # end id
+
 sub init
 {
   my ($self, $parent, $report) = @_;

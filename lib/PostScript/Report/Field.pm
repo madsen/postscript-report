@@ -53,7 +53,11 @@ has padding_side => (
 after init => sub {
   my ($self, $parent, $report) = @_;
 
+  # Use __PACKAGE__ instead of blessed $self because the string is
+  # constant.  Subclasses should either use sub id { 'Field' } or
+  # define their own comparable functions:
   $report->ps_functions->{+__PACKAGE__} = <<'END PS';
+%---------------------------------------------------------------------
 % X Y STRING FONT L T R B Field-X
 
 /Field-C { gsave clipbox setfont showcenter grestore} bind def
@@ -75,12 +79,12 @@ sub draw
   };
 
   $rpt->ps->add_to_page( sprintf(
-    "%s %s %s %s %d %d %d %d Field-%s\n",
+    "%s %s %s %s %d %d %d %d %s-%s\n",
     $x + $xOff, $y - $self->height + $self->padding_bottom,
     pstr( $rpt->get_value($self->value) ),
     $self->font->id,
     $x, $y, $x + $self->width, $y - $self->height,
-    $align
+    $self->id, $align
   ));
 } # end draw
 
