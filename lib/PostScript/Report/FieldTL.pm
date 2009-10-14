@@ -149,7 +149,7 @@ sub draw
     $self->line_width,
     join(' ', map { pstr($_) } reverse @lines),
     $font->size,
-    $font->size + $labelSize + $self->top_padding_text,
+    $font->size + $self->top_padding_label+$labelSize + $self->top_padding_text,
     uc substr($self->align, 0, 1),
     scalar @lines,
     $font->id,
