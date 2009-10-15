@@ -51,12 +51,17 @@ has _fonts => (
   clearer  => '_clear_fonts',
 );
 
+# These parameters should simply be passed through to the Report constructor:
 our @constructor_args = qw(
   align
+  border
   bottom_margin
   footer_align
   landscape
   left_margin
+  line_width
+  padding_bottom
+  padding_side
   paper_size
   right_margin
   row_height

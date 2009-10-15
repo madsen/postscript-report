@@ -34,6 +34,9 @@ my $desc = {
   label_font => 'label',
   align      => 'center',
 
+  padding_bottom => 4,
+  padding_side   => 3,
+
   landscape     => 1,
   top_margin    => 25,
   left_margin   => 20,
@@ -45,7 +48,6 @@ my $desc = {
     HBox => { border => 0,
               font => 'boldText',
               height => 12,
-              padding_bottom => 4,
               padding_side   => 0,
             },
     { _class => 'Field',
@@ -64,7 +66,7 @@ my $desc = {
                   value => 'F.A.A REPAIR STATION NO. L3PF428Q' } },
   ],
 
-  page_header => [ VBox => { padding_side => 3 },
+  page_header => [
     [ { label => 'Customer Name:',
         value => 'custName',
         width => 160 },
@@ -137,12 +139,10 @@ my $desc = {
       font           => 'boldText',
       height         => 19,
       padding_bottom => 6,
-      padding_side   => 3,
     },
     detail => {
       height         => 19,
       padding_bottom => 6,
-      padding_side   => 3,
     },
     data => [
       [ 'SEQ#' => 29 ],
@@ -157,12 +157,11 @@ my $desc = {
   page_footer => [
     VBox => { border => 0 },
     { _class => 'Field',
-            font   => 'disclaimerText',
-      padding_bottom => 4,
+      font   => 'disclaimerText',
       value  => { _class => 'Constant',
                   value => 'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.' },
     },
-    [ HBox => { border => 1, padding_side => 3 },
+    [ HBox => { border => 1 },
       { label => 'Inspector',
         value => $blank,
         width => 339 },
@@ -178,7 +177,6 @@ my $desc = {
         height => 14,
         font => 'bottomRow',
         padding_side => 0,
-        padding_bottom => 4,
       },
       [ HBox => { border => 0, font  => 'pageNum' },
         { _class => 'Field',
