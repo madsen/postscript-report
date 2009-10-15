@@ -42,11 +42,6 @@ has value => (
   required => 1,
 );
 
-has actual_height => (
-  is       => 'ro',
-  isa      => Int,
-);
-
 has multiline => (
   is       => 'ro',
   isa      => Bool,
@@ -155,7 +150,7 @@ sub draw
     $font->id,
     pstr($self->label),
     $labelSize + $self->top_padding_label,
-    $x, $y, $x + $self->width, $y - ($self->actual_height || $self->height),
+    $x, $y, $x + $self->width, $y - $self->height,
     $self->label_font->id,
     $FieldTL,
     $self->line_width, $self->border,
