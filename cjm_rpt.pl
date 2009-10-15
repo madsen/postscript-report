@@ -120,16 +120,13 @@ my $desc = {
         # Don't need an HBox for row 2; it's only one field:
         { label => 'Customer Order Number:',
           value => 'custOrderNum',
-          border=> 1,
           width => 159 },
         # HBox for row 3 right:
         [ { label => 'Part Verified By:',
             value => 'verifiedBy',
-            border=> 1,
             width => 80 },
           { label => 'Revised Due Date:',
             value => 'revisedDueDate',
-            border=> 1,
             width => 79 },
         ] ], # end rows 2 & 3 right
     ], # end rows 2 & 3
