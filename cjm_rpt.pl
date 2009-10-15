@@ -64,7 +64,7 @@ my $desc = {
                   value => 'F.A.A REPAIR STATION NO. L3PF428Q' } },
   ],
 
-  page_header => [
+  page_header => [ VBox => { padding_side => 3 },
     [ { label => 'Customer Name:',
         value => 'custName',
         width => 160 },
@@ -162,7 +162,7 @@ my $desc = {
       value  => { _class => 'Constant',
                   value => 'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.' },
     },
-    [ HBox => { border => 1 },
+    [ HBox => { border => 1, padding_side => 3 },
       { label => 'Inspector',
         value => $blank,
         width => 339 },
