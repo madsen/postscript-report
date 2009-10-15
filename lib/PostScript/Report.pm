@@ -249,6 +249,7 @@ has ps => (
   is      => 'ro',
   isa     => 'PostScript::File',
   writer  => '_set_ps',
+  handles => ['output'],
 );
 
 has ps_functions => (
@@ -312,6 +313,7 @@ sub _build_ps
     right       => $self->right_margin,
     title       => pstr($self->title),
     reencode    => 'ISOLatin1Encoding',
+    file_ext    => '',
     font_suffix => '-iso',
     landscape   => $self->landscape,
   );
@@ -562,6 +564,8 @@ sub generate
   $self->_attach_ps_resources;
 
   $self->_generated(1);
+
+  $self;
 } # end generate
 
 #---------------------------------------------------------------------
@@ -591,6 +595,8 @@ sub _attach_ps_resources
     (my $name = $key) =~ s/:/_/g;
     $ps->add_function($name, $funcs->{$key});
   } # end foreach $key
+
+  %$funcs = ();                 # Clear out ps_functions
 } # end _attach_ps_resources
 
 #=====================================================================
