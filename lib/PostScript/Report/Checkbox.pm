@@ -88,7 +88,6 @@ after init => sub {
     219 90 lineto
     292 240 382 377 526 508 curveto
     418 447 299 331 197 188 curveto
-    75 257 lineto
     closepath
     fill
   }
