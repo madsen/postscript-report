@@ -235,13 +235,13 @@ has line_width => (
 has padding_bottom => (
   is       => 'ro',
   isa      => Num,
-  default  => 2,
+  default  => 4,
 );
 
 has padding_side => (
   is       => 'ro',
   isa      => Num,
-  default  => 2,
+  default  => 3,
 );
 
 #---------------------------------------------------------------------
