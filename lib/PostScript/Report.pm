@@ -514,11 +514,12 @@ sub generate
   $minY += $detail->height      if $detail;
   $minY += $page_footer->height if $page_footer;
 
+  my $y;
   for my $page (1 .. $self->page_count) {
     $self->_set_page_number($page);
     $ps->newpage($page) if $page > 1;
 
-    my $y = $yTop;
+    $y = $yTop;
 
     if ($report_header) {
       $report_header->draw($x, $y, $self);
@@ -550,13 +551,14 @@ sub generate
       } # end if footers should be at bottom of page
       $page_footer->draw($x, $y, $self);
       $y -= $page_footer->height;
-    } # end if $page_header
-
-    if ($page == $self->page_count and $self->report_footer) {
-      $y = $yBot + $self->report_footer->height if $footer2bottom;
-      $self->report_footer->draw($x, $y, $self);
-    } # end if last page and have report_footer
+    } # end if $page_footer
   } # end for each $page
+
+  # Print the report footer on the last page, if we have one:
+  if ($self->report_footer) {
+    $y = $yBot + $self->report_footer->height if $footer2bottom;
+    $self->report_footer->draw($x, $y, $self);
+  } # end if have report_footer
 
   $self->_clear_data;
   $self->_clear_rows;
@@ -566,7 +568,7 @@ sub generate
 
   $self->_generated(1);
 
-  $self;
+  $self;                        # Allow for method chaining
 } # end generate
 
 #---------------------------------------------------------------------
