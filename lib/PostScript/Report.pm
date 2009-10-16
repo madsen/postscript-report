@@ -29,7 +29,33 @@ use PostScript::Report::Font ();
 use List::Util 'min';
 
 use namespace::autoclean;
+#---------------------------------------------------------------------
 
+=method build
+
+  $rpt = PostScript::Report->build(\%description)
+
+This is the usual method for constructing a PostScript::Report.  It
+passes the C<%description> to L<PostScript::Report::Builder>.
+
+=cut
+
+sub build
+{
+  my ($class, $descHash) = @_;
+
+  confess "build is a class method" if ref $class;
+
+  require PostScript::Report::Builder;
+
+  my $builder = PostScript::Report::Builder->new($descHash);
+
+  $builder->report_class($class) unless $descHash->{report_class};
+
+  $builder->build($descHash);
+} # end build
+
+#---------------------------------------------------------------------
 has report_header => (
   is  => 'rw',
   isa => Component,

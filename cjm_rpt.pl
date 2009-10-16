@@ -13,7 +13,7 @@ use autodie ':io';
 
 use lib 'lib';
 
-use PostScript::Report::Builder ();
+use PostScript::Report ();
 
 my $blank = {
   _class => 'Constant',
@@ -292,7 +292,7 @@ my $rows = [
   [ 26, 'I1', 'Lorem ipsum dolor sit amet', 'XXXXXXXX', '' ],
 ];
 
-my $rpt = PostScript::Report::Builder->build($desc);
+my $rpt = PostScript::Report->build($desc);
 
 $rpt->run($data, $rows)->output("/tmp/psreport.ps");
 

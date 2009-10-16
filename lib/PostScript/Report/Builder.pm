@@ -39,7 +39,7 @@ has default_field_type => (
 );
 
 has report_class => (
-  is      => 'ro',
+  is      => 'rw',
   isa     => Str,
   default => 'PostScript::Report',
 );
