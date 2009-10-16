@@ -240,11 +240,30 @@ sub _init
 } bind def
 END PS
 } # end _init
-
 #---------------------------------------------------------------------
+
+=method width
+
+  $width = $rpt->width;
+
+This returns the width of the report (the paper width minus the margins).
+
+=method height
+
+  $height = $rpt->height;
+
+This returns the height of the report (the paper height minus the margins).
+
+=cut
 
 sub width  { my @bb = shift->ps->get_bounding_box;  $bb[2] - $bb[0] }
 sub height { my @bb = shift->ps->get_bounding_box;  $bb[3] - $bb[1] }
+
+=attr-in row_height
+
+This is the default height of a row on the report (default 20).
+
+=cut
 
 has row_height => (
   is        => 'ro',
@@ -252,17 +271,38 @@ has row_height => (
   default   => 20,
 );
 
+=attr-in align
+
+This is the default text alignment.  It may be C<left>, C<center>, or
+C<right> (default C<left>).
+
+=cut
+
 has align => (
   is       => 'ro',
   isa      => HAlign,
   default  => 'left',
 );
 
+=attr-in border
+
+This is the default border style.  It may be 1 for a solid border (the
+default), or 0 for no border.  Additional border styles may be defined
+in the future.  The thickness of the border is controlled by L</line_width>.
+
+=cut
+
 has border => (
   is       => 'ro',
   isa      => BorderStyle,
   default  => 1,
 );
+
+=attr-in font
+
+This is the default font.  It defaults to Helvetica 9.
+
+=cut
 
 has font => (
   is       => 'rw',
@@ -271,6 +311,12 @@ has font => (
   default  => sub { shift->get_font(Helvetica => 9) },
   init_arg => undef,
 );
+
+=attr-in label_font
+
+This is the default label font.  It defaults to Helvetica 6.
+
+=cut
 
 has label_font => (
   is       => 'rw',
@@ -293,11 +339,25 @@ my $coerce_font = sub {
 around font       => $coerce_font;
 around label_font => $coerce_font;
 
+=attr-in line_width
+
+This is the default line width (0.5 by default).
+It's used mainly for component borders.
+
+=cut
+
 has line_width => (
   is      => 'ro',
   isa     => Num,
   default => 0.5,
 );
+
+=attr-in padding_bottom
+
+This indicates the distance between the bottom of a component and the
+baseline of the text inside it (4 by default).
+
+=cut
 
 has padding_bottom => (
   is       => 'ro',
@@ -305,13 +365,28 @@ has padding_bottom => (
   default  => 4,
 );
 
+=attr-in padding_side
+
+This indicates the space between the side of a component and the text
+inside it (3 by default).
+
+=cut
+
 has padding_side => (
   is       => 'ro',
   isa      => Num,
   default  => 3,
 );
-
 #---------------------------------------------------------------------
+
+=attr-o ps
+
+This is the L<PostScript::File> object containing the report.  It's
+constructed by the L</run> method, and can be freed by calling the
+C</clear> method.
+
+=cut
+
 has ps => (
   is      => 'ro',
   isa     => 'PostScript::File',
@@ -320,6 +395,15 @@ has ps => (
   handles => ['output'],
 );
 
+=attr-o ps_functions
+
+This is a hashref of PostScript code blocks that should be added to
+the L<PostScript::File> object.  The key should begin with the package
+inserting the code.  Blocks are added in ASCIIbetical order.  A
+component's C<init> method may add an entry here.
+
+=cut
+
 has ps_functions => (
   is       => 'ro',
   isa      => HashRef[Str],
@@ -327,11 +411,35 @@ has ps_functions => (
   init_arg => undef,
 );
 
+=attr-fmt paper_size
+
+This the paper size (default C<Letter>).  See L<PostScript::File/paper>.
+
+=cut
+
 has paper_size => (
   is      => 'ro',
   isa     => Str,
   default => 'Letter',
 );
+
+=attr-fmt top_margin
+
+This the top margin (default 72, or one inch).
+
+=attr-fmt bottom_margin
+
+This the bottom margin (default 72, or one inch).
+
+=attr-fmt left_margin
+
+This the left margin (default 72, or one inch).
+
+=attr-fmt right_margin
+
+This the bottom margin (default 72, or one inch).
+
+=cut
 
 has top_margin => (
   is      => 'ro',
@@ -357,11 +465,26 @@ has right_margin => (
   default => 72,
 );
 
+=attr-fmt title
+
+This is the report's title, which is used only to set the
+corresponding PostScript comment in the document.
+The default is C<Report>.
+
+=cut
+
 has title => (
   is      => 'ro',
   isa     => Str,
   default => 'Report',
 );
+
+=attr-fmt landscape
+
+If set to a true value, the report will be printed in landscape mode.
+The default is false.
+
+=cut
 
 has landscape => (
   is      => 'ro',
@@ -479,14 +602,28 @@ sub _get_metrics
 
   $self->_font_metrics->{$name} ||= Font::AFM->new($name);
 } # end _get_metrics
-
 #---------------------------------------------------------------------
+
+=attr-o page_count
+
+This contains the number of pages in the report.  It's only valid
+after L</run> has been called.
+
+=cut
+
 has page_count => (
   is       => 'ro',
   isa      => Int,
   writer   => '_set_page_count',
   init_arg => undef,
 );
+
+=attr-o page_number
+
+This contains the number of the page currenly being generated.  It's
+only valid while the L</run> method is processing.
+
+=cut
 
 has page_number => (
   is       => 'ro',
@@ -692,6 +829,10 @@ C<new>.  Instead, you'll pass a report description to the L</"build">
 method, which uses L<PostScript::Report::Builder> to construct the
 appropriate objects.
 
+All measurements in a report are given in points (PostScript's native
+measurement unit).  There are 72 points in one inch
+(1 pt is about 0.3528 mm).
+
 =begin Pod::Loom-group_attr
 
 sec
@@ -707,6 +848,30 @@ L<Container|PostScript::Report::Role::Container>.
 
 fmt
 =head2 Report Formatting
+
+These attributes affect the PostScript::File object, or control the
+formatting of the report as a whole.  All dimensions are in points.
+
+=end Pod::Loom-group_attr
+
+=begin Pod::Loom-group_attr
+
+in
+=head2 Component Formatting
+
+These attributes do not affect the report directly, but are simply
+inherited by components that don't have an explicit value for them.
+All dimensions are in points.
+
+=end Pod::Loom-group_attr
+
+=begin Pod::Loom-group_attr
+
+o
+=head2 Other Attributes
+
+You will probably not need to use these attributes unless you are
+creating your own components or other advanced tasks.
 
 =end Pod::Loom-group_attr
 
