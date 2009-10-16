@@ -614,16 +614,21 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PostScript::Report;
+    use PostScript::Report::Builder ();
 
-=for author to fill in:
-    Brief code example(s) here showing commonest usage(s).
-    This section will be as far as many users bother reading
-    so make it as educational and exeplary as possible.
+    my $rpt = PostScript::Report::Builder->build(\%report_description);
 
+    $rpt->generate(\%data, \@rows)->output("filename.ps");
+
+    $rpt->clear;    # If you want to save this object and run it again
 
 =head1 DESCRIPTION
 
-=for author to fill in:
-    Write a full description of the module and its features here.
-    Use subsections (=head2, =head3) as appropriate.
+PostScript::Report helps you generate nicely formatted reports using
+PostScript.  You do not need any knowledge of PostScript to use this
+package (unless you want to create new field types).
+
+You probably won't create a PostScript::Report object directly.
+Instead, you'll pass a report description to
+PostScript::Report::Builder, which will construct the appropriate
+objects.
