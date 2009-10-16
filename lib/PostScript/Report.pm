@@ -54,8 +54,40 @@ sub build
 
   $builder->build($descHash);
 } # end build
-
 #---------------------------------------------------------------------
+
+=for Pod::Loom-sort_attr
+report_header
+page_header
+detail
+page_footer
+report_footer
+
+=attr-sec report_header
+
+This is printed at the top of the first page.
+
+=attr-sec page_header
+
+This is printed at the top of every page (and below the
+C<report_header> on the first page).
+
+=attr-sec detail
+
+This is printed once for each row of C<@rows>.  See L</"run">.
+
+=attr-sec page_footer
+
+This is printed at the end of every page (and above the
+C<report_footer> on the last page).  Also see L</"footer_align">.
+
+=attr-sec report_footer
+
+This is printed at the end of the last page.
+Also see L</"footer_align">.
+
+=cut
+
 has report_header => (
   is  => 'rw',
   isa => Component,
@@ -80,6 +112,15 @@ has report_footer => (
   is  => 'rw',
   isa => Component,
 );
+
+=attr-fmt footer_align
+
+This may be either C<top> or C<bottom>.  If it's C<bottom> (the
+default), the footers are placed at the very bottom of the page,
+touching the bottom margin.  If it's C<top>, then the footers are
+placed immediately after the last detail row.
+
+=cut
 
 has footer_align => (
   is      => 'ro',
@@ -632,9 +673,9 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PostScript::Report::Builder ();
+    use PostScript::Report ();
 
-    my $rpt = PostScript::Report::Builder->build(\%report_description);
+    my $rpt = PostScript::Report->build(\%report_description);
 
     $rpt->run(\%data, \@rows)->output("filename.ps");
 
@@ -646,7 +687,46 @@ PostScript::Report helps you generate nicely formatted reports using
 PostScript.  You do not need any knowledge of PostScript to use this
 package (unless you want to create new field types).
 
-You probably won't create a PostScript::Report object directly.
-Instead, you'll pass a report description to
-PostScript::Report::Builder, which will construct the appropriate
-objects.
+You probably won't create a PostScript::Report object directly using
+C<new>.  Instead, you'll pass a report description to the L</"build">
+method, which uses L<PostScript::Report::Builder> to construct the
+appropriate objects.
+
+=begin Pod::Loom-group_attr
+
+sec
+=head2 Report Sections
+
+Each section may be any
+L<Component|PostScript::Report::Role::Component>, but is usually a
+L<Container|PostScript::Report::Role::Container>.
+
+=end Pod::Loom-group_attr
+
+=begin Pod::Loom-group_attr
+
+fmt
+=head2 Report Formatting
+
+=end Pod::Loom-group_attr
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+PostScript::Report requires no configuration files or environment variables.
+
+However, it may require L<Font::AFM>, and unfortunately that's
+difficult to configure properly.  I wound up creating symlinks in
+F</usr/local/lib/afm/> (which is one of the default paths that
+Font::AFM searches if you don't have a C<METRICS> environment
+variable):
+
+ Helvetica.afm
+   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvr8a.afm
+ Helvetica-Bold.afm
+   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvb8a.afm
+ Helvetica-Oblique.afm
+   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvro8a.afm
+
+Paths on your system may vary.  I suggest searching for C<.afm> files,
+and then grepping them for "FontName Helvetica".
