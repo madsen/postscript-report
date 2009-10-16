@@ -553,8 +553,9 @@ sub generate
     } # end if $page_header
 
     if ($page == $self->page_count and $self->report_footer) {
+      $y = $yBot + $self->report_footer->height if $footer2bottom;
       $self->report_footer->draw($x, $y, $self);
-    }
+    } # end if last page and have report_footer
   } # end for each $page
 
   $self->_clear_data;
