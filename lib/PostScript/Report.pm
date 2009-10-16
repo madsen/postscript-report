@@ -249,6 +249,7 @@ has ps => (
   is      => 'ro',
   isa     => 'PostScript::File',
   writer  => '_set_ps',
+  clearer => 'clear',
   handles => ['output'],
 );
 
