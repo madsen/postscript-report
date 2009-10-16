@@ -128,7 +128,7 @@ has footer_align => (
   default => 'bottom',
 );
 
-sub sections { qw(report_header page_header detail page_footer report_footer) }
+sub _sections { qw(report_header page_header detail page_footer report_footer) }
 
 sub _init
 {
@@ -136,7 +136,7 @@ sub _init
 
   $self->_set_ps( $self->_build_ps );
 
-  foreach my $sectionName ($self->sections) {
+  foreach my $sectionName ($self->_sections) {
     my $section = $self->$sectionName or next;
     $section->init($self, $self);
     $section->_set_height($self->row_height) unless $section->has_height;
@@ -504,7 +504,7 @@ sub _calculate_page_count
 
   # Collect height of each section:
   my %height;
-  foreach my $sectionName ($self->sections) {
+  foreach my $sectionName ($self->_sections) {
     if (my $section = $self->$sectionName) {
       $height{$sectionName} = $section->height;
     } else {
