@@ -294,7 +294,7 @@ my $rows = [
 
 my $rpt = PostScript::Report::Builder->build($desc);
 
-$rpt->generate($data, $rows)->output("/tmp/psreport.ps");
+$rpt->run($data, $rows)->output("/tmp/psreport.ps");
 
 use Data::Dumper;
 $Data::Dumper::Indent = 1;

@@ -483,13 +483,7 @@ sub _calculate_page_count
 } # end _calculate_page_count
 
 #---------------------------------------------------------------------
-has _generated => (
-  is       => 'rw',
-  isa      => Bool,
-  init_arg => undef,
-);
-
-sub generate
+sub run
 {
   my ($self, $data, $rows) = @_;
 
@@ -567,10 +561,8 @@ sub generate
   $self->_generate_font_list;
   $self->_attach_ps_resources;
 
-  $self->_generated(1);
-
   $self;                        # Allow for method chaining
-} # end generate
+} # end run
 
 #---------------------------------------------------------------------
 sub _generate_font_list
@@ -618,7 +610,7 @@ __END__
 
     my $rpt = PostScript::Report::Builder->build(\%report_description);
 
-    $rpt->generate(\%data, \@rows)->output("filename.ps");
+    $rpt->run(\%data, \@rows)->output("filename.ps");
 
     $rpt->clear;    # If you want to save this object and run it again
 
