@@ -833,47 +833,35 @@ All measurements in a report are given in points (PostScript's native
 measurement unit).  There are 72 points in one inch
 (1 pt is about 0.3528 mm).
 
-=begin Pod::Loom-group_attr
+=begin Pod::Loom-group_attr sec
 
-sec
 =head2 Report Sections
 
 Each section may be any
 L<Component|PostScript::Report::Role::Component>, but is usually a
 L<Container|PostScript::Report::Role::Container>.
 
-=end Pod::Loom-group_attr
+=begin Pod::Loom-group_attr fmt
 
-=begin Pod::Loom-group_attr
-
-fmt
 =head2 Report Formatting
 
 These attributes affect the PostScript::File object, or control the
 formatting of the report as a whole.  All dimensions are in points.
 
-=end Pod::Loom-group_attr
+=begin Pod::Loom-group_attr in
 
-=begin Pod::Loom-group_attr
-
-in
 =head2 Component Formatting
 
 These attributes do not affect the report directly, but are simply
 inherited by components that don't have an explicit value for them.
 All dimensions are in points.
 
-=end Pod::Loom-group_attr
+=begin Pod::Loom-group_attr o
 
-=begin Pod::Loom-group_attr
-
-o
 =head2 Other Attributes
 
 You will probably not need to use these attributes unless you are
 creating your own components or other advanced tasks.
-
-=end Pod::Loom-group_attr
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
