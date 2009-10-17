@@ -56,12 +56,30 @@ has _metrics => (
                     $self->document->_get_metrics($self->font); },
 );
 
+=method width
+
+  $font->width($text)
+
+This returns the width of C<$text> (in points) if it were printed in
+this font.  C<$text> should not contain newlines.
+
+=cut
+
 sub width
 {
   my $self = shift;
 
   $self->_metrics->stringwidth(shift, $self->size);
 } # end width
+
+=method wrap
+
+  @lines = $font->wrap($width, $text)
+
+This wraps C<$text> into lines no more than C<$width> points.  If
+C<$text> contains newlines, they will also cause line breaks.
+
+=cut
 
 sub wrap
 {
@@ -102,3 +120,12 @@ sub wrap
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+=head1 DESCRIPTION
+
+PostScript::Report::Font represents a font in a L<PostScript::Report>.
+You won't deal directly with Font objects unless you are writing your
+own L<Components|PostScript::Report::Role::Component>.
+
+You construct a Font object by calling the report's
+L<PostScript::Report/get_font> method.
