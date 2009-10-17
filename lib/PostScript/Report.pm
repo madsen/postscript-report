@@ -383,7 +383,32 @@ has padding_side => (
 
 This is the L<PostScript::File> object containing the report.  It's
 constructed by the L</run> method, and can be freed by calling the
-C</clear> method.
+L</clear> method.
+
+=method clear
+
+  $rpt->clear()
+
+This releases the PostScript::File object created by running the
+report.  You never need to call this method, but it will free up
+memory if you want to save the report object and run the report again
+later.
+
+=method output
+
+  $rpt->output($filename [, $dir]) # save to file
+  $rpt->output()                   # return as string
+
+This method takes the same parameters as L<PostScript::File/output>.
+You can pass a filename (and optional directory name) to store the
+report in a file.  (No extension will be added to C<$filename>, so it
+should normally end in ".ps".)
+
+If you don't pass a filename, then the PostScript code is returned as
+a string.
+
+If you want to reuse the report object, you can call C<clear>
+afterwards to free up memory.
 
 =cut
 
@@ -531,6 +556,31 @@ has _current_row => (
   init_arg => undef,
 );
 
+=method get_value
+
+  $field_content = $rpt->get_value($value_source)
+
+When a Component needs to fetch the content it should display, it
+calls C<get_value> with its RptValue.  This can be one of three
+things:
+
+=over
+
+=item a non-negative integer
+
+A 0-based column in the current row (normally used only in the
+C<detail> section).
+
+=item a string
+
+An entry in the C<%data> passed to L</run>.
+
+=item an object
+
+This returns C<< $value_source->get_value($rpt) >>.
+
+=cut
+
 sub get_value
 {
   my ($self, $value) = @_;
@@ -558,6 +608,17 @@ has _font_metrics => (
   default   => sub { {} },
   init_arg => undef,
 );
+
+=method get_font
+
+  $font_object = $rpt->get_font($font_name, $font_size)
+
+Because a report needs to know what fonts will be used in it, you must
+use this method to construct L<PostScript::Report::Font> objects.  If
+the specified font has already been used in this report, the same
+C<$font_object> will be returned.
+
+=cut
 
 sub get_font
 {
@@ -685,8 +746,23 @@ sub _calculate_page_count
 
   $self->_set_page_count($pageCount);
 } # end _calculate_page_count
-
 #---------------------------------------------------------------------
+
+=method run
+
+  $rpt->run(\%data, \@rows)
+
+This method runs the report on the specified data.  C<%data> is a hash
+containing values for the report.  C<@rows> is an arrary of arrayrefs
+of strings.  The L</detail> section is printed once for each arrayref.
+
+After running the report, you should call L</output> to store the
+results.  C<run> returns C<$rpt>, so you can chain the method calls:
+
+  $rpt->run(\%data, \@rows)->output($filename);
+
+=cut
+
 sub run
 {
   my ($self, $data, $rows) = @_;
@@ -863,6 +939,11 @@ All dimensions are in points.
 You will probably not need to use these attributes unless you are
 creating your own components or other advanced tasks.
 
+=for Pod::Loom-sort_method
+build
+run
+output
+clear
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
