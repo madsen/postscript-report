@@ -76,7 +76,7 @@ sub width
 
   @lines = $font->wrap($width, $text)
 
-This wraps C<$text> into lines no more than C<$width> points.  If
+This wraps C<$text> into lines of no more than C<$width> points.  If
 C<$text> contains newlines, they will also cause line breaks.
 
 =cut
