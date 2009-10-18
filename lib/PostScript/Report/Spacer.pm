@@ -24,7 +24,7 @@ use Moose;
 
 with 'PostScript::Report::Role::Component';
 
-sub draw { }                 # Nothing to draw
+sub draw { shift->draw_standard_border(@_) }
 
 #=====================================================================
 no Moose;
