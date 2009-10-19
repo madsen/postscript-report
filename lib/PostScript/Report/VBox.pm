@@ -30,6 +30,7 @@ with 'PostScript::Report::Role::Container';
 has _saved_height => (
   is        => 'rw',
   isa       => Int,
+  clearer   => '_clear_saved_height',
 );
 
 around init => sub {
@@ -61,6 +62,7 @@ after init => sub {
 
   # Set our height to the sum of the children:
   my $height = $self->_saved_height;
+  $self->_clear_saved_height;
 
   unless (defined $height) {
 
