@@ -20,8 +20,6 @@ package PostScript::Report::Spacer;
 our $VERSION = '0.01';
 
 use Moose;
-#use Moose::Autobox;
-
 with 'PostScript::Report::Role::Component';
 
 sub draw { shift->draw_standard_border(@_) }
@@ -30,3 +28,15 @@ sub draw { shift->draw_standard_border(@_) }
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Component|PostScript::Report::Role::Component> is simply a
+blank space (possibly with a border).
+
+=for Pod::Coverage draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
