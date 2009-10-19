@@ -38,7 +38,8 @@ sub section_ACKNOWLEDGMENTS
 
 I'd like to thank Micro Technology Services, Inc.
 L<http://www.mitsi.com>, who sponsored development of
-PostScript-Report.  It wouldn't have happened without them.
+PostScript-Report, and fREW Schmidt, who recommended me for the job.
+It wouldn't have happened without them.
 END ACKNOWLEDGMENTS
 } # end section_ACKNOWLEDGMENTS
 
