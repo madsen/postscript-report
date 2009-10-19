@@ -75,6 +75,7 @@ has default_column_type => (
 
 This is the class of object that will be constructed.
 It defaults to L<PostScript::Report>.
+This must always be a full class name.
 
 =cut
 
@@ -365,3 +366,144 @@ __END__
 Because a PostScript::Report involves constructing a number of related
 objects, it's usually more convenient to pass a description of the
 report to a builder object.
+
+You can find example reports in the F<examples> directory of this
+distribution.
+
+The C<%report_description> is a hash with keys as follows:
+
+=head2 Report Attributes
+
+Any of the Report attributes listed under
+L<PostScript::Report/"Report Formatting"> or
+L<PostScript::Report/"Component Formatting"> may be
+set by the report description.
+
+=head2 Builder Attributes
+
+Any of the attributes listed in L</ATTRIBUTES> may be set by the
+report description I<when C<build> is called as a class method>.
+
+=head2 Font Specifications
+
+All fonts used in a report must be defined in a hashref under the
+C<fonts> key (unless you only want to use the report's default fonts).
+The keys in this hashref are arbitrary strings, and the values are
+strings in the form FONTNAME-SIZE.
+
+If you use the same value more than once, then both keys will refer to
+the same font object.  This allows you to use the same font for
+different purposes, while retaining the ability to substitute a
+different font for one of those purposes just by changing the C<fonts>
+hash.
+
+When you set a C<font> or C<label_font> attribute, its value must be
+one of the keys in the C<fonts> hash.
+
+Example:
+
+  fonts => {
+    label    => 'Helvetica-6',
+    text     => 'Helvetica-9',
+  },
+
+  font       => 'text',
+  label_font => 'label',
+
+
+=head2 Report Sections
+
+Any of the sections listed under L<PostScript::Report/"Report Sections">
+may be defined by the report description.
+The value is interpreted as follows:
+
+Components are created by hashrefs.  Containers are created by arrayrefs.
+
+If the section is a container, the initial container type is chosen
+like this: If the first value in the arrayref is a hashref, you get an
+HBox.  Otherwise, you get a VBox.
+
+After that, the box types alternate.  If you place an arrayref in an
+HBox, it becomes a VBox.  An arrayref in a VBox becomes an HBox.
+
+You can override the box type (or pass parameters to its constructor),
+by making the first entry in the arrayref a string (the container
+type) and the second entry a hashref to pass to its constructor.
+
+The hashref that represents a Component is simply passed to its
+constructor, with one exception.  If the hash contains the C<_class>
+key, that value is removed and used as the class name.
+
+=head3 A Note on Class Names
+
+Anywhere you specify a class name, C<PostScript::Report::> is
+automatically prepended to the name you give.  To use a class outside
+that namespace, prefix the class name with C<=>.
+
+There are two exceptions to this:
+
+=over
+
+=item 1.
+
+When you give a hashref as the value of a C<value> attribute, the
+prefix is C<PostScript::Report::Value::> instead of just
+C<PostScript::Report::>.
+
+=item 2.
+
+The C<report_class> is always a complete class name.
+
+=back
+
+=head2 Report Columns
+
+The C<columns> key is provided as a shortcut for the common case of a
+report with column headers and a single-row C<detail> section.
+
+The value should be a hashref with the following keys:
+
+=over
+
+=item header
+
+A hashref of parameters to pass to the constructor of the HBox that
+holds the column headers.  Optional.
+
+=item detail
+
+A hashref of parameters to pass to the constructor of the HBox that
+forms the C<detail> section.  Optional.
+
+=item data
+
+An arrayref of arrayrefs, one per column.  Required.  Each arrayref
+has 4 elements.  The first two are the column title and the column
+width.  The third is an optional hashref of parameters for the header
+component, and the fourth is an optional hashref of parameters for the
+detail component.
+
+If you don't specify a C<_class> for the header component, it defaults
+to C<default_column_header>, and if you don't specify a C<_class> for
+the detail component, it defaults to C<default_column_type>.
+
+If you don't specify a C<value> for the header component, it defaults
+to the column title (as a L<Constant|PostScript::Report::Value::Constant>).
+
+If you don't specify a C<value> for the detail component, it defaults
+to the next column number.  (If you do specify a C<value>, the column
+number is B<not> incremented.)
+
+=back
+
+This assumes that the C<page_header> is a VBox (or that there is no
+C<page_header> aside from the column headers).
+
+If you need a more complex layout than this, don't use C<columns>.
+Instead, define the C<detail> and C<page_header> sections as needed.
+
+=for Pod::Coverage
+build_
+create_
+get_
+require_class
