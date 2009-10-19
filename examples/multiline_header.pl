@@ -1,20 +1,18 @@
 #! /usr/bin/perl
 #---------------------------------------------------------------------
-# Copyright 2009 Christopher J. Madsen
+# This example report is hereby placed in the public domain.
+# You may copy from it freely.
 #
-# Example script for PostScript::Report
+# This is a fairly complex example for PostScript::Report.
+# It includes a header field that spans two rows and uses word wrap.
 #---------------------------------------------------------------------
 
 use strict;
 use warnings;
-use 5.010;
-
-use autodie ':io';
-
-use lib 'lib';
 
 use PostScript::Report ();
 
+# Define a Value::Constant with a blank string:
 my $blank = {
   _class => 'Constant',
   value => ''
@@ -44,6 +42,8 @@ my $desc = {
   bottom_margin => 25,
   row_height    => 22,
 
+  # The report_header is one line with text fields left, center, & right.
+  # All values are constant.
   report_header => [
     HBox => { border => 0,
               font => 'boldText',
@@ -66,7 +66,10 @@ my $desc = {
                   value => 'F.A.A REPAIR STATION NO. L3PF428Q' } },
   ],
 
+  # The page_header is fairly complex.
+  # The Material Type field spans rows 2 and 3.
   page_header => [
+    # This HBox is row 1 of the header:
     [ { label => 'Customer Name:',
         value => 'custName',
         width => 160 },
@@ -88,8 +91,11 @@ my $desc = {
         font  => 'boldText',
         width => 105 },
     ],
-    [ # This HBox contains rows 2 & 3, because Material Type is 2 rows high:
-      [ # This VBox is the left hand side of rows 2 & 3:
+    # This HBox contains rows 2 & 3, because Material Type is 2 rows high:
+    [
+      # This VBox is the left hand side of rows 2 & 3:
+      [
+        # This HBox is the left hand side of row 2:
         [ { label => 'Part Description:',
             value => 'partDesc',
             width => 160 },
@@ -100,6 +106,7 @@ my $desc = {
             value => 'serialNumReturned',
             width => 156 },
         ], # end row 2 left
+        # This HBox is the left hand side of row 3:
         [ { label => 'Date Received:',
             value => 'dateReceived',
             width => 69 },
@@ -118,12 +125,13 @@ my $desc = {
         height    => 44,
         multiline => 1,
         width => 130 },
-      [ # This VBox is the right hand side of rows 2 & 3:
-        # Don't need an HBox for row 2; it's only one field:
+      # This VBox is the right hand side of rows 2 & 3:
+      [
+        # Don't need an HBox for row 2 right; it's only one field:
         { label => 'Customer Order Number:',
           value => 'custOrderNum',
           width => 159 },
-        # HBox for row 3 right:
+        # This HBox is the right hand side of row 3:
         [ { label => 'Part Verified By:',
             value => 'verifiedBy',
             width => 80 },
@@ -150,17 +158,26 @@ my $desc = {
       [ 'REPAIR SCOPE' => 450, { align => 'left'}, { align => 'left'} ],
       [ MECHANIC => 73 ],
       [ INSPECTOR => 80 ],
+      # The DATE column is filled in by hand after printing.  We'll
+      # use a Spacer in the detail section so we don't need a blank
+      # column in each row.  (Note: If this weren't the last column,
+      # we'd also need to pass a fake value to the Spacer to tell the
+      # builder not to increment the column number.)
       [ DATE => 79, undef, { _class => 'Spacer' } ],
     ],
   }, # end columns
 
+  # The footer is also a bit complex:
   page_footer => [
+    # We don't want a border around the whole footer:
     VBox => { border => 0 },
+    # The first row is just one component:
     { _class => 'Field',
       font   => 'disclaimerText',
       value  => { _class => 'Constant',
                   value => 'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.' },
     },
+    # The second row is filled in by hand, so the values are blank:
     [ HBox => { border => 1 },
       { label => 'Inspector',
         value => $blank,
@@ -172,12 +189,14 @@ my $desc = {
         value => $blank,
         width => 258 },
     ],
+    # The third row includes the page number and checkboxes:
     [ HBox => {
         border => 1,
         height => 14,
         font => 'bottomRow',
         padding_side => 0,
       },
+      # This HBox exists just to set parameters on its children:
       [ HBox => { border => 0, font  => 'pageNum' },
         { _class => 'Field',
           value => { _class => 'Constant', value => '42410-1' },
@@ -189,6 +208,7 @@ my $desc = {
           value => { _class => 'Page', value => 'Page(s): %n OF %t' },
           width => 377 },
       ],
+      # This HBox exists just to set parameters on its children:
       [ HBox => { border => 0, padding_bottom => 6, padding_side => 2 },
         { _class => 'Field',
           align => 'right',
@@ -235,7 +255,7 @@ my $desc = {
           value => 'qty',
           width => 27 },
       ],
-    ],
+    ], # end third row of page_footer
   ], # end page_footer
 };
 
@@ -294,9 +314,6 @@ my $rows = [
 
 my $rpt = PostScript::Report->build($desc);
 
-$rpt->run($data, $rows)->output("/tmp/psreport.ps");
+$rpt->run($data, $rows)->output("multiline_header.ps");
 
-use Data::Dumper;
-$Data::Dumper::Indent = 1;
-
-print Dumper($rpt);
+# $rpt->dump;
