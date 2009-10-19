@@ -24,6 +24,12 @@ use MooseX::Types::Moose qw(Str);
 
 with 'PostScript::Report::Role::Value';
 
+=attr value
+
+This is the string returned by C<get_value>.
+
+=cut
+
 has value => (
   is      => 'ro',
   isa     => Str,
@@ -34,4 +40,18 @@ has value => (
 sub get_value { shift->value }
 
 #=====================================================================
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Value|PostScript::Report::Role::Value> simply returns a
+constant string.
+
+=for Pod::Coverage get_value
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
