@@ -20,7 +20,6 @@ package PostScript::Report::Role::Container;
 our $VERSION = '0.01';
 
 use Moose::Role;
-#use Moose::Autobox;
 use MooseX::AttributeHelpers;
 use MooseX::Types::Moose qw(ArrayRef Bool Int Num Str);
 use PostScript::Report::Types ':all';

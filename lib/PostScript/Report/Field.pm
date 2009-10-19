@@ -20,7 +20,6 @@ package PostScript::Report::Field;
 our $VERSION = '0.01';
 
 use Moose;
-#use Moose::Autobox;
 use MooseX::Types::Moose qw(Bool Int Num Str);
 use PostScript::Report::Types ':all';
 

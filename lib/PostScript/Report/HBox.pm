@@ -20,7 +20,6 @@ package PostScript::Report::HBox;
 our $VERSION = '0.01';
 
 use Moose;
-#use Moose::Autobox;
 use MooseX::Types::Moose qw(Bool Int Str);
 use PostScript::Report::Types ':all';
 
