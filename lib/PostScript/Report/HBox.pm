@@ -82,6 +82,7 @@ __END__
 
 This L<Container|PostScript::Report::Role::Container> draws its
 children in a horizontal row.  There is no space between children.
+If the children are of different heights, their tops are aligned.
 
 =head1 ATTRIBUTES
 
