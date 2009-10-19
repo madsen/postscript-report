@@ -32,6 +32,12 @@ with 'PostScript::Report::Role::Component';
 
 my @inherited = (traits => [qw/TreeInherit/]);
 
+=attr label
+
+This string is the label to print in the corner.
+
+=cut
+
 has label => (
   is      => 'ro',
   isa     => Str,
@@ -43,6 +49,17 @@ has value => (
   isa      => RptValue,
   required => 1,
 );
+
+=attr multiline
+
+If true, the value will be wrapped onto multiple lines based on the
+width of the component.  If the value is too long, it will be cropped
+at the bottom.  If a word is too long for a single line, it will be cropped.
+
+If false, (the default) then the value will be printed on a single
+line (and cropped if it is too long).
+
+=cut
 
 has multiline => (
   is       => 'ro',
@@ -170,3 +187,25 @@ sub draw
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Component|PostScript::Report::Role::Component> is a text field
+with a label in the upper left corner.
+
+Note that FieldTL does not have or use the C<padding_bottom>
+attribute.  Instead, the label text is placed at the top of the field,
+and the value text right below that.
+
+=head1 ATTRIBUTES
+
+A Field has all the normal
+L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
+including C<padding_side>, and C<value>, plus the following:
+
+=for Pod::Coverage draw padding_
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
