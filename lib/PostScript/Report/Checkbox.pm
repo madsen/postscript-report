@@ -73,6 +73,10 @@ sub _build_size
 after init => sub {
   my ($self, $parent, $report) = @_;
 
+  # Set the width based on the checkbox size (if it wasn't set already):
+  $self->width( $self->size + 2 * $self->padding_side )
+      unless $self->has_width;
+
   # Use __PACKAGE__ instead of blessed $self because the string is
   # constant.  Subclasses should either use sub id { 'Checkbox' } or
   # define their own comparable functions:
@@ -115,7 +119,7 @@ sub draw
   my $xOff = do {
     if    ($align eq 'C') { ($self->width - $size) / 2 }
     elsif ($align eq 'R') { $self->width - $self->padding_side - $size }
-    else                  { $self->padding_side + $size }
+    else                  { $self->padding_side }
   };
 
   $rpt->ps->add_to_page( sprintf(
