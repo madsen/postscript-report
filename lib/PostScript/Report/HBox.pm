@@ -75,3 +75,34 @@ sub draw
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Container|PostScript::Report::Role::Container> draws its
+children in a horizontal row.  There is no space between children.
+
+=head1 ATTRIBUTES
+
+An HBox has all the normal
+L<container attributes|PostScript::Report::Role::Container/ATTRIBUTES>.
+
+If C<height> is not specified, but any child has an explicit height,
+then the HBox's height is set to the height of the tallest such child.
+Otherwise, the height remains unset.
+
+If C<width> is not specified, then it is set to the sum of the widths
+of the child components.  Each child must have an explicit width.
+
+If you specify a width that is more than the sum of the children's
+widths, the extra space will appear at the right side of the box.
+
+If you specify a width that is less than the sum of the children's
+widths, the children will overflow the right side of the box, which
+may lead to components printing on top of each other.
+
+=for Pod::Coverage draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
