@@ -35,7 +35,7 @@ our %loaded_class;
 =attr default_field_type
 
 This is the default component class used when building the report
-sections.
+sections.  It defaults to L<FieldTL|PostScript::Report::FieldTL>.
 
 =cut
 
@@ -44,6 +44,39 @@ has default_field_type => (
   isa => Str,
   default => 'FieldTL',
 );
+
+=attr default_column_header
+
+This is the default component class used for column headers.
+It defaults to L<Field|PostScript::Report::Field>.
+
+=cut
+
+has default_column_header => (
+  is  => 'ro',
+  isa => Str,
+  default => 'Field',
+);
+
+=attr default_column_type
+
+This is the default component class used for column fields.
+It defaults to L<Field|PostScript::Report::Field>.
+
+=cut
+
+has default_column_type => (
+  is  => 'ro',
+  isa => Str,
+  default => 'Field',
+);
+
+=attr report_class
+
+This is the class of object that will be constructed.
+It defaults to L<PostScript::Report>.
+
+=cut
 
 has report_class => (
   is      => 'rw',
@@ -75,8 +108,18 @@ our @constructor_args = qw(
   title
   top_margin
 );
-
 #---------------------------------------------------------------------
+
+=method build
+
+  $rpt = $builder->build(\%report_description)
+  $rpt = PostScript::Report::Builder->build(\%report_description)
+
+This can be called as either an object or class method.  When called
+as a class method, it constructs a temporary object by passing the
+description to C<new>.
+
+=cut
 
 sub build
 {
@@ -170,8 +213,8 @@ sub create_columns
 
     $headerDef{width} = $detailDef{width} = $col->[1];
 
-    $headerDef{_class} ||= 'Field';
-    $detailDef{_class} ||= 'Field';
+    $headerDef{_class} ||= $self->default_column_header;
+    $detailDef{_class} ||= $self->default_column_type;
 
     $headerDef{value} ||= { qw(_class Constant  value), $col->[0] };
     $detailDef{value} ||= $colNum++;
