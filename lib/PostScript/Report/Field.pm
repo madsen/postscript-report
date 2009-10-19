@@ -94,3 +94,24 @@ sub draw
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Component|PostScript::Report::Role::Component> is a simple text field.
+
+Note:  While you may use a Field as a label by giving it a
+L<constant value|PostScript::Report::Value::Constant>, it always uses
+C<font> to draw the text, not C<label_font>.
+
+=head1 ATTRIBUTES
+
+A Field has all the normal
+L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
+including C<padding_bottom>, C<padding_side>, and C<value>.
+
+=for Pod::Coverage draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
