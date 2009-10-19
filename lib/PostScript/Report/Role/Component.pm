@@ -26,12 +26,27 @@ use PostScript::Report::Types ':all';
 
 my @inherited = (traits => [qw/TreeInherit/]);
 
+=attr-internal parent
+
+This attribute contains a reference to the Container or Report that is
+the direct parent of this Component.  It is used for inheritance of
+attribute values.  It is filled in by the L</init> method, and you
+will probably never deal with it directly.
+
+=cut
+
 has parent => (
   is       => 'ro',
   isa      => Parent,
   weak_ref => 1,
   writer   => '_set_parent',
 );
+
+=attr height
+
+This is the height of the component.
+
+=cut
 
 has height => (
   is        => 'ro',
@@ -41,6 +56,13 @@ has height => (
   @inherited,
 );
 
+=attr width
+
+This is the width of the component.  In most cases, you will need to
+set this explicitly.
+
+=cut
+
 has width => (
   is        => 'ro',
   isa       => Int,
@@ -49,11 +71,26 @@ has width => (
   @inherited,
 );
 
+=attr align
+
+This controls text alignment.  It may be C<left>, C<center>, or
+C<right>.
+
+=cut
+
 has align => (
   is  => 'ro',
   isa => HAlign,
   @inherited,
 );
+
+=attr border
+
+This is the border style.  It may be 1 for a solid border or 0 for no
+border.  Additional border styles may be defined in the future.  The
+thickness of the border is controlled by L</line_width>.
+
+=cut
 
 has border => (
   is  => 'ro',
@@ -61,11 +98,24 @@ has border => (
   @inherited,
 );
 
+=attr font
+
+This is the font used to draw normal text in the Component.
+
+=cut
+
 has font => (
   is  => 'ro',
   isa => FontObj,
   @inherited,
 );
+
+=attr label_font
+
+This is the font used to draw the label.  Not all components have a
+label.
+
+=cut
 
 has label_font => (
   is  => 'ro',
@@ -73,11 +123,36 @@ has label_font => (
   @inherited,
 );
 
+=attr line_width
+
+This is the line width.  It's used mainly as the border width.
+
+=cut
+
 has line_width => (
   is  => 'ro',
   isa => Num,
   @inherited,
 );
+
+=method draw
+
+  $component->draw($x, $y, $report);
+
+This method draws the component on the current page of the report at
+position C<$x>, C<$y>.  This method must be provided by the component.
+
+=method draw_standard_border
+
+  $component->draw_standard_border($x, $y, $report);
+
+This method draws a border around the component as specified by the
+L</border> and L</line_width> attributes.  It can be called by a
+component's C<draw> method, or added as an C<after> modifier:
+
+  after draw => \&draw_standard_border;
+
+=cut
 
 requires 'draw';
 
@@ -94,6 +169,17 @@ sub draw_standard_border
   }
 } # end draw_standard_border
 
+=method id
+
+  $psID = $component->id;
+
+In order to avoid stepping on each other's PostScript code, any
+PostScript identifiers created by a component should begin with this
+string.  The default implementation returns the last component of the
+class name.
+
+=cut
+
 sub id
 {
   my $class = blessed shift;
@@ -102,14 +188,45 @@ sub id
   $1;
 } # end id
 
+=method init
+
+  $component->init($parent, $report);
+
+The init method of each component is called at the beginning of each
+report run.  The default implementation sets the parent link to enable
+inheritance of attribute values.
+
+Most components will need to provide an C<after> modifier to do
+additional initialization, such as calculating C<height> or C<width>.
+Also, the component should add its standard procedures to
+C<< $report->ps_functions >>.
+
+=cut
+
 sub init
 {
   my ($self, $parent, $report) = @_;
 
   $self->_set_parent($parent);
 } # end init
-
 #---------------------------------------------------------------------
+
+=method dump
+
+  $component->dump($level);
+
+This method (for debugging purposes only) prints a representation of
+the component to the currently selected filehandle.  (Inherited values
+are not shown.)  Note that layout calculations are not done until the
+report is run, so you will normally see additional C<height> and
+C<width> values after calling L</run>.
+
+C<$level> (default 0) indicates the level of indentation to use.
+
+The default implementation should be sufficient for most components.
+
+=cut
+
 sub dump
 {
   my ($self, $level) = @_;
@@ -154,3 +271,53 @@ sub dump
 
 __END__
 
+=head1 DESCRIPTION
+
+This role describes an object that knows how to draw itself on a
+report.  A Component that contains other Components is a
+L<Container|PostScript::Report::Role::Container>.
+
+=begin Pod::Loom-group_attr *
+
+=head2 Inherited Attributes
+
+These attributes control the component's formatting.  To avoid having
+to set all of them on every component, their values are inherited much
+like CSS styles are inherited in HTML.  If a component does not have
+an explicit value set, then the value is inherited from the parent.
+The inheritance may bubble up all the way to the Report object, which
+will always provide a default value.
+
+All dimensions are in points.
+
+=begin Pod::Loom-group_attr opt
+
+=head2 Optional Attributes
+
+The following attributes are not present in all components, but when
+they are present, they should behave as described here.  Attributes
+whose value can be inherited from the parent are marked (Inherited).
+
+=attr-opt padding_bottom
+
+(Inherited) This is the amount of space between the bottom of the
+component and the baseline of the text inside it.
+
+=attr-opt padding_side
+
+(Inherited) This is the amount of space between the side of the
+component and the text inside it.
+
+=attr-opt value
+
+This is the C<$value_source> that the component will use to retrieve
+its contents.  See L<PostScript::Report/get_value>.
+
+=begin Pod::Loom-group_attr internal
+
+=head2 Internal Attribute
+
+You probably won't need to use this attribute directly.
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
