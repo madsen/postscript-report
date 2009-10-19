@@ -48,6 +48,13 @@ has padding_side => (
   @inherited,
 );
 
+=attr size
+
+This is the size of the checkbox (in points).  The default is the
+C<height> minus twice the C<padding_bottom>.
+
+=cut
+
 has size => (
   is       => 'ro',
   isa      => Int,
@@ -127,3 +134,27 @@ after draw => \&draw_standard_border;
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Component|PostScript::Report::Role::Component> is a checkbox
+that may be checked or unchecked.
+
+If the value it retrieves is considered true by Perl, then the box
+will be checked.
+
+=head1 ATTRIBUTES
+
+A Field has all the normal
+L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
+including C<padding_bottom>, C<padding_side>, and C<value>.
+
+The C<align>, C<padding_bottom>, and C<padding_side> attributes act on
+the checkbox as if it were text.
+
+=for Pod::Coverage draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
