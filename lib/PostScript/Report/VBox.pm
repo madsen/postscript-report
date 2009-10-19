@@ -40,7 +40,7 @@ around init => sub {
 
   $self->_saved_height($self->height) if $self->has_height;
   $self->_set_height($self->row_height);
-}; # end before init
+}; # end around init
 
 after init => sub {
   my ($self, $parent) = @_;
@@ -96,3 +96,42 @@ sub draw
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Container|PostScript::Report::Role::Container> draws its
+children in a vertical column.  There is no space between children.
+If the children are of different widths, they are all left aligned.
+
+=head1 ATTRIBUTES
+
+A VBox has all the normal
+L<container attributes|PostScript::Report::Role::Container/ATTRIBUTES>.
+
+During layout calculations, a VBox temporarily sets its C<height> to
+its C<row_height> (so that its children will inherit that value).
+After the children have done their layout calculations, any child
+without an explicit height has its height set to the VBox's C<row_height>.
+
+If C<height> is not specified, then the VBox's height is set to the
+sum of the heights of the child components.  If the VBox did have an
+explicit C<height>, then it is restored after the children have
+completed their layout calculations.
+
+If C<width> is not specified, but any child has an explicit width,
+then the VBox's width is set to the width of the widest such child.
+Otherwise, the width remains unset.
+
+If you specify a height that is more than the sum of the children's
+heights, the extra space will appear at the bottom of the box.
+
+If you specify a height that is less than the sum of the children's
+heights, the children will overflow the bottom of the box, which
+may lead to components printing on top of each other.
+
+=for Pod::Coverage draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
