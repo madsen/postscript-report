@@ -23,6 +23,16 @@ use Moose::Role;
 
 requires 'get_value';
 
+#---------------------------------------------------------------------
+sub dump
+{
+  my ($self, $level) = @_;
+
+  my @attrs = sort { $a->name cmp $b->name } $self->meta->get_all_attributes;
+
+  PostScript::Report->_dump_attr($self, $_, $level) for @attrs;
+} # end dump
+
 #=====================================================================
 # Package Return Value:
 

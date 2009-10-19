@@ -579,6 +579,8 @@ An entry in the C<%data> passed to L</run>.
 
 This returns C<< $value_source->get_value($rpt) >>.
 
+=back
+
 =cut
 
 sub get_value
@@ -681,7 +683,7 @@ has page_count => (
 
 =attr-o page_number
 
-This contains the number of the page currenly being generated.  It's
+This contains the number of the page currently being generated.  It's
 only valid while the L</run> method is processing.
 
 =cut
@@ -876,6 +878,66 @@ sub _attach_ps_resources
 } # end _attach_ps_resources
 
 #=====================================================================
+# Debugging support:
+
+=method-dbg dump
+
+  $rpt->dump;
+
+This method (for debugging purposes only) prints a representation of
+the report to the currently selected filehandle.  (Inherited values
+are not shown.)  Note that layout calculations are not done until the
+report is run, so you will normally see additional C<height> and
+C<width> values after calling L</run>.
+
+=cut
+
+sub dump
+{
+  my ($self) = @_;
+
+  my $conMeta = PostScript::Report::Role::Container->meta;
+
+  my @attrs = sort { $a->name cmp $b->name }
+              grep { not $_->name =~ /^(?:_|parent|children)/ and
+                     $conMeta->has_attribute($_->name) }
+              $self->meta->get_all_attributes;
+
+  $self->_dump_attr($self, $_, 0) for @attrs;
+
+  foreach my $sectionName ($self->_sections) {
+    my $section = $self->$sectionName or next;
+
+    print "\n$sectionName:\n";
+    $section->dump(1);
+  } # end foreach $sectionName
+} # end dump
+
+#---------------------------------------------------------------------
+# This is called by sub-objects to dump an attribute's value:
+
+sub _dump_attr
+{
+  my ($selfOrClass, $instance, $attr, $level) = @_;
+
+  return unless $attr->has_value($instance);
+
+  my $val = $attr->get_value($instance);
+
+  if (my $attrClass = blessed $val) {
+    if ($attrClass eq 'PostScript::Report::Font') {
+      $val = $val->font . ' ' . $val->size;
+    } else {
+      printf "%s%-14s: %s\n", '  ' x $level, $attr->name, $attrClass;
+      $val->dump($level+1);
+      return;
+    }
+  } # end if blessed $val
+
+  printf "%s%-14s: %s\n", '  ' x $level, $attr->name, $val;
+} # end _dump_attr
+
+#=====================================================================
 # Package Return Value:
 
 no Moose;
@@ -944,6 +1006,10 @@ build
 run
 output
 clear
+
+=begin Pod::Loom-group_method *
+
+=begin Pod::Loom-group_method dbg
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

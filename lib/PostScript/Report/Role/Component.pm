@@ -109,6 +109,44 @@ sub init
   $self->_set_parent($parent);
 } # end init
 
+#---------------------------------------------------------------------
+sub dump
+{
+  my ($self, $level) = @_;
+  $level ||= 0;
+
+  my $indent = "  " x $level;
+
+  printf "%s%s:\n", $indent, blessed $self;
+
+  my @attrs = sort { $a->name cmp $b->name } $self->meta->get_all_attributes;
+
+  my $is_container;
+  ++$level;
+
+  foreach my $attr (@attrs) {
+    my $name = $attr->name;
+
+    next if $name eq 'parent';
+
+    if ($name eq 'children' and
+        $self->does('PostScript::Report::Role::Component')) {
+      $is_container = 1;
+    } else {
+      PostScript::Report->_dump_attr($self, $attr, $level);
+    }
+  } # end foreach $attr in @attrs
+
+  return unless $is_container;
+
+  print "$indent  children:\n";
+
+  ++$level;
+  foreach my $child (@{ $self->children }) {
+    $child->dump($level);
+  } # end foreach $child
+} # end dump
+
 #=====================================================================
 # Package Return Value:
 
