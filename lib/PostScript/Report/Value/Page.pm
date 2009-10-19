@@ -24,6 +24,29 @@ use MooseX::Types::Moose qw(Str);
 
 with 'PostScript::Report::Role::Value';
 
+=attr value
+
+This string can contain the following C<%> codes, which will be
+substituted when it is returned by C<get_value>.
+
+=over
+
+=item C<%n>
+
+The current page number
+
+=item C<%t>
+
+The total number of pages in the report
+
+=item C<%%>
+
+A literal C<%> sign
+
+=back
+
+=cut
+
 has value => (
   is       => 'ro',
   isa      => Str,
@@ -52,4 +75,18 @@ sub get_value
 } # end get_value
 
 #=====================================================================
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This L<Value|PostScript::Report::Role::Value> substitutes page numbers
+into a string.
+
+=for Pod::Coverage get_value
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
