@@ -53,3 +53,61 @@ subtype Parent,
 enum(VAlign, qw(bottom top));
 
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+These are the custom types used by L<PostScript::Report>.
+
+=head1 TYPES
+
+=head2 BorderStyle
+
+A valid border style (C<0> or C<1>)
+
+=head2 Component
+
+An object that does L<PostScript::Report::Role::Component>.
+
+=head2 Container
+
+An object that does L<PostScript::Report::Role::Container>.
+
+=head2 FontObj
+
+A L<PostScript::Report::Font>.
+
+=head2 FontMetrics
+
+A L<Font::AFM>.
+
+=head2 HAlign
+
+C<center>, C<left>, or C<right>
+
+=head2 Report
+
+A L<PostScript::Report>.
+
+=head2 RptValue
+
+Something you can pass to L<PostScript::Report/get_value>.
+A string or an object that does L<PostScript::Report::Role::Value>.
+
+=head2 Parent
+
+An object that is a suitable C<parent> for a Component.
+
+=head2 VAlign
+
+C<bottom> or C<top>
+
+=head1 SEE ALSO
+
+L<MooseX::Types>, L<MooseX::Types::Moose>.
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
+INCOMPATIBILITIES
+BUGS AND LIMITATIONS
