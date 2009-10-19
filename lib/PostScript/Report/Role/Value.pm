@@ -21,9 +21,32 @@ our $VERSION = '0.01';
 
 use Moose::Role;
 
-requires 'get_value';
+=method get_value
 
+  $value = $value_object->get_value($report)
+
+A Value must provide this method.  It returns the value that should be
+displayed on the report.  It may consult the C<$report> object to
+collect information.
+
+=cut
+
+requires 'get_value';
 #---------------------------------------------------------------------
+
+=method dump
+
+  $value_object->dump($level)
+
+This method (for debugging purposes only) prints a representation of
+the value to the currently selected filehandle.
+
+C<$level> indicates the level of indentation to use.
+
+The default implementation should be sufficient in most cases.
+
+=cut
+
 sub dump
 {
   my ($self, $level) = @_;
@@ -40,3 +63,16 @@ sub dump
 
 __END__
 
+=head1 DESCRIPTION
+
+The Value role describes an object that provides a C<get_value>
+method.  It's used as the L<PostScript::Report::Role::Component/value>
+when something more than a simple hash or array lookup is required.
+See L<PostScript::Report/get_value>.
+
+=for Pod::Loom-sort_method
+get_value
+dump
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
