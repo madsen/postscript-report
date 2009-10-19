@@ -30,17 +30,36 @@ has document => (
   required => 1,
 );
 
+=attr font
+
+This is the PostScript name of the font to use.
+
+=cut
+
 has font => (
   is       => 'ro',
   isa      => Str,
   required => 1,
 );
 
+=attr id
+
+This is the PostScript identifier for the scaled font (assigned by the
+document).
+
+=cut
+
 has id => (
   is       => 'ro',
   isa      => Str,
   required => 1,
 );
+
+=attr size
+
+This is the size of the font in points.
+
+=cut
 
 has size => (
   is       => 'ro',
