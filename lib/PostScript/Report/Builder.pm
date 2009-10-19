@@ -153,8 +153,7 @@ sub build
   $self->create_columns(\%desc) if $desc{columns};
 
   # Construct the report sections:
-  foreach my $sectionName (qw(report_header page_header detail
-                              page_footer report_footer)) {
+  foreach my $sectionName ($rpt->_sections) {
     my $section = $desc{$sectionName} or next;
 
     $rpt->$sectionName( $self->build_section( $section ));
