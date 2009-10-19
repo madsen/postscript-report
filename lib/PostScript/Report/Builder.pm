@@ -32,6 +32,13 @@ use namespace::autoclean;
 
 our %loaded_class;
 
+=attr default_field_type
+
+This is the default component class used when building the report
+sections.
+
+=cut
+
 has default_field_type => (
   is  => 'ro',
   isa => Str,
@@ -307,16 +314,12 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PostScript::Report;
+    use PostScript::Report ();
 
-=for author to fill in:
-    Brief code example(s) here showing commonest usage(s).
-    This section will be as far as many users bother reading
-    so make it as educational and exeplary as possible.
-
+    my $rpt = PostScript::Report->build(\%report_description);
 
 =head1 DESCRIPTION
 
-=for author to fill in:
-    Write a full description of the module and its features here.
-    Use subsections (=head2, =head3) as appropriate.
+Because a PostScript::Report involves constructing a number of related
+objects, it's usually more convenient to pass a description of the
+report to a builder object.
