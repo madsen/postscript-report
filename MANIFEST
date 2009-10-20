@@ -4,7 +4,10 @@ MANIFEST
 META.yml
 Makefile.PL
 README
+examples/image.pl
 examples/multiline_header.pl
+examples/recycle.eps
+examples/simple.pl
 lib/PostScript/Report.pm
 lib/PostScript/Report/Builder.pm
 lib/PostScript/Report/Checkbox.pm
@@ -12,6 +15,7 @@ lib/PostScript/Report/Field.pm
 lib/PostScript/Report/FieldTL.pm
 lib/PostScript/Report/Font.pm
 lib/PostScript/Report/HBox.pm
+lib/PostScript/Report/Image.pm
 lib/PostScript/Report/Role/Component.pm
 lib/PostScript/Report/Role/Container.pm
 lib/PostScript/Report/Role/Value.pm
