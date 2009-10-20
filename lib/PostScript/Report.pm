@@ -977,7 +977,9 @@ measurement unit).  There are 72 points in one inch
 
 Each section may be any
 L<Component|PostScript::Report::Role::Component>, but is usually a
-L<Container|PostScript::Report::Role::Container>.
+L<Container|PostScript::Report::Role::Container>.  All sections are
+optional (but printing a report with no sections will produce a blank
+sheet of paper, so you probably want at least one section).
 
 =begin Pod::Loom-group_attr fmt
 

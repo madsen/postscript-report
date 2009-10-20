@@ -484,8 +484,8 @@ component, and the fourth is an optional hashref of parameters for the
 detail component.
 
 If you don't specify a C<_class> for the header component, it defaults
-to C<default_column_header>, and if you don't specify a C<_class> for
-the detail component, it defaults to C<default_column_type>.
+to L</default_column_header>, and if you don't specify a C<_class> for
+the detail component, it defaults to L</default_column_type>.
 
 If you don't specify a C<value> for the header component, it defaults
 to the column title (as a L<Constant|PostScript::Report::Value::Constant>).
