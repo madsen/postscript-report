@@ -261,14 +261,14 @@ sub height { my @bb = shift->ps->get_bounding_box;  $bb[3] - $bb[1] }
 
 =attr-in row_height
 
-This is the default height of a row on the report (default 20).
+This is the default height of a row on the report (default 15).
 
 =cut
 
 has row_height => (
   is        => 'ro',
   isa       => Int,
-  default   => 20,
+  default   => 15,
 );
 
 =attr-in align
