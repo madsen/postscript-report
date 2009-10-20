@@ -17,3 +17,4 @@
 ^Build.bat$
 ^dist\.ini$
 ^tools/
+^[^/]*\.ps$
