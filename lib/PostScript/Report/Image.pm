@@ -32,6 +32,13 @@ with 'PostScript::Report::Role::Component';
 
 my @inherited = (traits => [qw/TreeInherit/]);
 
+=attr file
+
+The name of the file to include.  If you give a relative path, it will
+be converted to an absolute path.  Required.
+
+=cut
+
 has file => (
   is       => 'ro',
   isa      => Str,
@@ -61,6 +68,16 @@ has padding_side => (
   isa      => Num,
   @inherited,
 );
+
+=attr scale
+
+This is the factor by which the image will be scaled.  If you supply
+an explicit C<height> and/or C<width>, but no C<scale>, then the scale
+will be calculated to make the image fit in the specified dimensions
+(based on the BoundingBox in the EPS file).  Otherwise, the scale
+defaults to 1 (actual size).  Numbers greater than 1 make the image larger.
+
+=cut
 
 has scale => (
   is       => 'ro',
@@ -194,6 +211,29 @@ __PACKAGE__->meta->make_immutable;
 1;
 
 __END__
+
+=head1 DESCRIPTION
+
+This L<Component|PostScript::Report::Role::Component> allows you to
+include an EPS file in your report.
+
+=head1 ATTRIBUTES
+
+An Image has all the normal
+L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
+including C<padding_bottom> and C<padding_side>.
+
+If you specify C<height> but not C<width> (or vice versa), the missing
+attribute is calculated based on the image's size, the attribute you
+did provide, and the C<scale>.
+
+If you specify neither C<height> nor C<width>, then both are
+calculated based on the image size and the C<scale>.
+
+=for Pod::Coverage BUILD draw
+
+=for Pod::Loom-omit
+CONFIGURATION AND ENVIRONMENT
 
 =head1 BUGS AND LIMITATIONS
 
