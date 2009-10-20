@@ -42,6 +42,8 @@ my $desc = {
   bottom_margin => 25,
   row_height    => 22,
 
+  default_field_type => 'FieldTL',
+
   # The report_header is one line with text fields left, center, & right.
   # All values are constant.
   report_header => [

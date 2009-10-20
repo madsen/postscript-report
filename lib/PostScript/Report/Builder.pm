@@ -35,14 +35,14 @@ our %loaded_class;
 =attr default_field_type
 
 This is the default component class used when building the report
-sections.  It defaults to L<FieldTL|PostScript::Report::FieldTL>.
+sections.  It defaults to L<Field|PostScript::Report::Field>.
 
 =cut
 
 has default_field_type => (
   is  => 'ro',
   isa => Str,
-  default => 'FieldTL',
+  default => 'Field',
 );
 
 =attr default_column_header
