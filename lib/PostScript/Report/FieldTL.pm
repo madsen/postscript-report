@@ -200,7 +200,7 @@ and the value text right below that.
 
 =head1 ATTRIBUTES
 
-A Field has all the normal
+A FieldTL has all the normal
 L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
 including C<padding_side>, and C<value>, plus the following:
 
