@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use 5.008;
 use Moose;
@@ -37,6 +37,10 @@ use namespace::autoclean;
 
 This is the usual method for constructing a PostScript::Report.  It
 passes the C<%description> to L<PostScript::Report::Builder>.
+
+If C<%description> does not define C<report_class>, then it is set to
+the class on which you called C<build>.  (This matters only if you
+have subclassed PostScript::Report.)
 
 =cut
 
@@ -755,7 +759,7 @@ sub _calculate_page_count
   $rpt->run(\%data, \@rows)
 
 This method runs the report on the specified data.  C<%data> is a hash
-containing values for the report.  C<@rows> is an arrary of arrayrefs
+containing values for the report.  C<@rows> is an array of arrayrefs
 of strings.  The L</detail> section is printed once for each arrayref.
 
 After running the report, you should call L</output> to store the
@@ -960,7 +964,7 @@ __END__
 
 PostScript::Report helps you generate nicely formatted reports using
 PostScript.  You do not need any knowledge of PostScript to use this
-package (unless you want to create new field types).
+package (unless you want to create new Component types).
 
 You probably won't create a PostScript::Report object directly using
 C<new>.  Instead, you'll pass a report description to the L</"build">
