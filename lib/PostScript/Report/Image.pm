@@ -17,7 +17,7 @@ package PostScript::Report::Image;
 # ABSTRACT: Include an EPS file
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -182,6 +182,7 @@ sub draw
   } else {
     # Can't find bounding box, so force left alignment:
     $x += $self->padding_side;
+    warn "Unable to find BoundingBox for " . $self->file;
   }
 
   $y += $self->padding_bottom - $self->height;
@@ -229,6 +230,10 @@ did provide, and the C<scale>.
 
 If you specify neither C<height> nor C<width>, then both are
 calculated based on the image size and the C<scale>.
+
+C<align> controls the horizontal alignment of the image.  (Unless it
+was unable to find the BoundingBox of the EPS file, in which case left
+alignment is forced.)
 
 =for Pod::Coverage BUILD draw
 
