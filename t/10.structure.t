@@ -33,7 +33,7 @@ if (@ARGV and $ARGV[0] eq 'gen') {
   $generateResults = 1;
   printf "#%s\n\n__DATA__\n", '=' x 69;
 } else {
-  plan tests => 3;
+  plan tests => 6;
 }
 
 my $code = '';
@@ -59,17 +59,32 @@ while (<DATA>) {
     my $output;
     open (my $out, '>', \$output);
     select $out;
+    print "BEFORE _init:\n";
+    $rpt->dump;
+    $rpt->_init;
+    print "\nAFTER _init:\n";
     $rpt->dump;
     select STDOUT;
     $output =~ s/ +$//mg;       # Remove trailing space
 
     if ($generateResults) {
       print "$output---\n";
-    } elsif ($diff) {
-      eq_or_diff($output, $expected, $param->{title}); # if Test::Differences
     } else {
-      is($output, $expected, $param->{title}); # fall back to Test::More
-    }
+      # Split results into before & after:
+      $output =~ s/\n(AFTER _init:\n.*)//s;
+      my $outputA = $1;
+      $expected =~ s/\n(AFTER _init:\n.*)//s;
+      my $expectedA = $1;
+
+      # And compare them:
+      if ($diff) { # use Test::Differences
+        eq_or_diff($output,  $expected,  "$param->{title} before");
+        eq_or_diff($outputA, $expectedA, "$param->{title} after");
+      } else { # fall back to Test::More
+        is($output,  $expected,  "$param->{title} before");
+        is($outputA, $expectedA, "$param->{title} after");
+      }
+    } # end else running tests
 
     # Clean up:
     $code = '';
@@ -97,6 +112,7 @@ __DATA__
   }, # end columns
 };
 <<'---'
+BEFORE _init:
 align         : left
 border        : 1
 line_width    : 0.5
@@ -143,6 +159,58 @@ detail:
         align         : right
         value         : 3
         width         : 60
+
+AFTER _init:
+align         : left
+border        : 1
+line_width    : 0.5
+padding_bottom: 4
+padding_side  : 3
+row_height    : 15
+
+page_header:
+  PostScript::Report::HBox:
+    height        : 15
+    width         : 460
+    children:
+      PostScript::Report::Field:
+        align         : center
+        value         : PostScript::Report::Value::Constant
+          value         : Number
+        width         : 40
+      PostScript::Report::Field:
+        value         : PostScript::Report::Value::Constant
+          value         : Letter
+        width         : 40
+      PostScript::Report::Field:
+        value         : PostScript::Report::Value::Constant
+          value         : Text
+        width         : 320
+      PostScript::Report::Field:
+        align         : right
+        value         : PostScript::Report::Value::Constant
+          value         : Right
+        width         : 60
+
+detail:
+  PostScript::Report::HBox:
+    height        : 15
+    width         : 460
+    children:
+      PostScript::Report::Field:
+        align         : right
+        value         : 0
+        width         : 40
+      PostScript::Report::Field:
+        value         : 1
+        width         : 40
+      PostScript::Report::Field:
+        value         : 2
+        width         : 320
+      PostScript::Report::Field:
+        align         : right
+        value         : 3
+        width         : 60
 ---
 
 {
@@ -168,6 +236,7 @@ detail:
   }, # end columns
 };
 <<'---'
+BEFORE _init:
 align         : left
 border        : 1
 line_width    : 0.5
@@ -219,6 +288,84 @@ page_header:
 
 detail:
   PostScript::Report::HBox:
+    children:
+      PostScript::Report::Field:
+        align         : right
+        value         : 0
+        width         : 40
+      PostScript::Report::Field:
+        value         : 1
+        width         : 40
+      PostScript::Report::Field:
+        value         : 2
+        width         : 320
+      PostScript::Report::Field:
+        align         : right
+        value         : 3
+        width         : 60
+
+AFTER _init:
+align         : left
+border        : 1
+line_width    : 0.5
+padding_bottom: 4
+padding_side  : 3
+row_height    : 15
+
+report_header:
+  PostScript::Report::HBox:
+    border        : 0
+    height        : 64
+    width         : 164
+    children:
+      PostScript::Report::Spacer:
+        height        : 64
+        width         : 64
+      PostScript::Report::VBox:
+        height        : 45
+        width         : 100
+        children:
+          PostScript::Report::Field:
+            height        : 15
+            value         : PostScript::Report::Value::Constant
+              value         : Foo Bar Recycling
+          PostScript::Report::Field:
+            height        : 15
+            value         : PostScript::Report::Value::Constant
+              value         : 123 Any Street
+          PostScript::Report::Field:
+            height        : 15
+            value         : PostScript::Report::Value::Constant
+              value         : Your Town, USA
+
+page_header:
+  PostScript::Report::HBox:
+    height        : 15
+    width         : 460
+    children:
+      PostScript::Report::Field:
+        align         : center
+        value         : PostScript::Report::Value::Constant
+          value         : Number
+        width         : 40
+      PostScript::Report::Field:
+        value         : PostScript::Report::Value::Constant
+          value         : Letter
+        width         : 40
+      PostScript::Report::Field:
+        value         : PostScript::Report::Value::Constant
+          value         : Text
+        width         : 320
+      PostScript::Report::Field:
+        align         : right
+        value         : PostScript::Report::Value::Constant
+          value         : Right
+        width         : 60
+
+detail:
+  PostScript::Report::HBox:
+    height        : 15
+    width         : 460
     children:
       PostScript::Report::Field:
         align         : right
@@ -465,6 +612,7 @@ detail:
   ], # end page_footer
 };
 <<'---'
+BEFORE _init:
 align         : center
 border        : 1
 font          : Helvetica 9
@@ -689,6 +837,311 @@ page_footer:
             border        : 0
             padding_bottom: 6
             padding_side  : 2
+            children:
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : ML
+                width         : 10
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : FXN-
+                width         : 53
+              PostScript::Report::Field:
+                align         : left
+                value         : FXN
+                width         : 28
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : AP
+                width         : 17
+              PostScript::Report::Checkbox:
+                padding_bottom: 3
+                value         : AP
+                width         : 20
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : BP
+                width         : 20
+              PostScript::Report::Checkbox:
+                padding_bottom: 3
+                value         : BP
+                width         : 20
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : Photo
+                width         : 45
+              PostScript::Report::Field:
+                align         : left
+                value         : photo
+                width         : 28
+              PostScript::Report::Field:
+                align         : right
+                value         : PostScript::Report::Value::Constant
+                  value         : QTY
+                width         : 35
+              PostScript::Report::Field:
+                align         : left
+                value         : qty
+                width         : 27
+
+AFTER _init:
+align         : center
+border        : 1
+font          : Helvetica 9
+label_font    : Helvetica 6
+line_width    : 0.5
+padding_bottom: 4
+padding_side  : 3
+row_height    : 22
+
+report_header:
+  PostScript::Report::HBox:
+    border        : 0
+    font          : Helvetica-Bold 9
+    height        : 12
+    padding_side  : 0
+    width         : 751
+    children:
+      PostScript::Report::Field:
+        align         : left
+        value         : PostScript::Report::Value::Constant
+          value         : AIRPLANE COMPONENT FIXING INC.
+        width         : 200
+      PostScript::Report::Field:
+        value         : PostScript::Report::Value::Constant
+          value         : WORK ORDER
+        width         : 351
+      PostScript::Report::Field:
+        align         : right
+        value         : PostScript::Report::Value::Constant
+          value         : F.A.A REPAIR STATION NO. L3PF428Q
+        width         : 200
+
+page_header:
+  PostScript::Report::VBox:
+    height        : 85
+    width         : 751
+    children:
+      PostScript::Report::HBox:
+        height        : 22
+        width         : 751
+        children:
+          PostScript::Report::FieldTL:
+            label         : Customer Name:
+            value         : custName
+            width         : 160
+          PostScript::Report::FieldTL:
+            label         : Part Number Received:
+            value         : partNumReceived
+            width         : 146
+          PostScript::Report::FieldTL:
+            label         : Serial Number Received:
+            value         : serialNumReceived
+            width         : 156
+          PostScript::Report::FieldTL:
+            align         : left
+            label         : Installed On:
+            value         : installedOn
+            width         : 130
+          PostScript::Report::FieldTL:
+            label         : Location:
+            value         : location
+            width         : 54
+          PostScript::Report::FieldTL:
+            font          : Helvetica-Bold 9
+            label         : Work Order#:
+            value         : workOrder
+            width         : 105
+      PostScript::Report::HBox:
+        height        : 44
+        width         : 751
+        children:
+          PostScript::Report::VBox:
+            height        : 44
+            width         : 462
+            children:
+              PostScript::Report::HBox:
+                height        : 22
+                width         : 462
+                children:
+                  PostScript::Report::FieldTL:
+                    label         : Part Description:
+                    value         : partDesc
+                    width         : 160
+                  PostScript::Report::FieldTL:
+                    label         : Part Number Returned:
+                    value         : partNumReturned
+                    width         : 146
+                  PostScript::Report::FieldTL:
+                    label         : Serial Number Returned:
+                    value         : serialNumReturned
+                    width         : 156
+              PostScript::Report::HBox:
+                height        : 22
+                width         : 462
+                children:
+                  PostScript::Report::FieldTL:
+                    label         : Date Received:
+                    value         : dateReceived
+                    width         : 69
+                  PostScript::Report::FieldTL:
+                    label         : RO Due Date:
+                    value         : roDueDate
+                    width         : 91
+                  PostScript::Report::FieldTL:
+                    align         : left
+                    label         : Repair/Overhaul Per:
+                    value         : repairPer
+                    width         : 302
+          PostScript::Report::FieldTL:
+            align         : left
+            height        : 44
+            label         : Material Type:
+            multiline     : 1
+            value         : materialType
+            width         : 130
+          PostScript::Report::VBox:
+            height        : 44
+            width         : 159
+            children:
+              PostScript::Report::FieldTL:
+                height        : 22
+                label         : Customer Order Number:
+                value         : custOrderNum
+                width         : 159
+              PostScript::Report::HBox:
+                height        : 22
+                width         : 159
+                children:
+                  PostScript::Report::FieldTL:
+                    label         : Part Verified By:
+                    value         : verifiedBy
+                    width         : 80
+                  PostScript::Report::FieldTL:
+                    label         : Revised Due Date:
+                    value         : revisedDueDate
+                    width         : 79
+      PostScript::Report::HBox:
+        font          : Helvetica-Bold 9
+        height        : 19
+        padding_bottom: 6
+        width         : 751
+        children:
+          PostScript::Report::Field:
+            value         : PostScript::Report::Value::Constant
+              value         : SEQ#
+            width         : 29
+          PostScript::Report::Field:
+            value         : PostScript::Report::Value::Constant
+              value         : STA#
+            width         : 40
+          PostScript::Report::Field:
+            align         : left
+            value         : PostScript::Report::Value::Constant
+              value         : REPAIR SCOPE
+            width         : 450
+          PostScript::Report::Field:
+            value         : PostScript::Report::Value::Constant
+              value         : MECHANIC
+            width         : 73
+          PostScript::Report::Field:
+            value         : PostScript::Report::Value::Constant
+              value         : INSPECTOR
+            width         : 80
+          PostScript::Report::Field:
+            value         : PostScript::Report::Value::Constant
+              value         : DATE
+            width         : 79
+
+detail:
+  PostScript::Report::HBox:
+    height        : 19
+    padding_bottom: 6
+    width         : 751
+    children:
+      PostScript::Report::Field:
+        value         : 0
+        width         : 29
+      PostScript::Report::Field:
+        value         : 1
+        width         : 40
+      PostScript::Report::Field:
+        align         : left
+        value         : 2
+        width         : 450
+      PostScript::Report::Field:
+        value         : 3
+        width         : 73
+      PostScript::Report::Field:
+        value         : 4
+        width         : 80
+      PostScript::Report::Spacer:
+        width         : 79
+
+page_footer:
+  PostScript::Report::VBox:
+    border        : 0
+    height        : 58
+    width         : 751
+    children:
+      PostScript::Report::Field:
+        font          : Helvetica-Bold 8
+        height        : 22
+        value         : PostScript::Report::Value::Constant
+          value         : The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.
+      PostScript::Report::HBox:
+        border        : 1
+        height        : 22
+        width         : 751
+        children:
+          PostScript::Report::FieldTL:
+            label         : Inspector
+            value         : PostScript::Report::Value::Constant
+              value         :
+            width         : 339
+          PostScript::Report::FieldTL:
+            label         : Final Inspection Stamp
+            value         : PostScript::Report::Value::Constant
+              value         :
+            width         : 154
+          PostScript::Report::FieldTL:
+            label         : Date
+            value         : PostScript::Report::Value::Constant
+              value         :
+            width         : 258
+      PostScript::Report::HBox:
+        border        : 1
+        font          : Helvetica 6
+        height        : 14
+        padding_side  : 0
+        width         : 751
+        children:
+          PostScript::Report::HBox:
+            border        : 0
+            font          : Helvetica 8
+            width         : 448
+            children:
+              PostScript::Report::Field:
+                value         : PostScript::Report::Value::Constant
+                  value         : 42410-1
+                width         : 57
+              PostScript::Report::Spacer:
+                width         : 14
+              PostScript::Report::Field:
+                align         : left
+                value         : PostScript::Report::Value::Page
+                  value         : Page(s): %n OF %t
+                width         : 377
+          PostScript::Report::HBox:
+            border        : 0
+            padding_bottom: 6
+            padding_side  : 2
+            width         : 303
             children:
               PostScript::Report::Field:
                 align         : right
