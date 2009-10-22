@@ -25,5 +25,6 @@ lib/PostScript/Report/VBox.pm
 lib/PostScript/Report/Value/Constant.pm
 lib/PostScript/Report/Value/Page.pm
 t/00.load.t
+t/20.warnings.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t
