@@ -5,6 +5,7 @@ Revision history for PostScript-Report
 	  and _default overrides default_field_type in a container
 	- Warn if a field's value does not exist.
 	  Do not warn about existing but undefined values.
+	- Added the ps_parameters attribute to Report
 	- Updated documentation
 
 0.01   October 20, 2009

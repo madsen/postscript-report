@@ -107,6 +107,7 @@ our @constructor_args = qw(
   padding_bottom
   padding_side
   paper_size
+  ps_parameters
   right_margin
   row_height
   title

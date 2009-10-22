@@ -440,6 +440,22 @@ has ps_functions => (
   init_arg => undef,
 );
 
+=attr-fmt ps_parameters
+
+This is a hashref of additional parameters to pass to
+PostScript::File's constructor.  These values will override the
+parameters that PostScript::Report generates itself (but you should
+reserve this for things that can't be controlled through
+other PostScript::Report attributes).
+
+=cut
+
+has ps_parameters => (
+  is       => 'ro',
+  isa      => HashRef,
+  default  => sub { {} },
+);
+
 =attr-fmt paper_size
 
 This the paper size (default C<Letter>).  See L<PostScript::File/paper>.
@@ -536,6 +552,7 @@ sub _build_ps
     file_ext    => '',
     font_suffix => '-iso',
     landscape   => $self->landscape,
+    %{ $self->ps_parameters },
   );
 } # end _build_ps
 
