@@ -14,7 +14,7 @@ BEGIN {
   plan skip_all => "Test::Warn required for testing warnings" if $@;
 }
 
-plan tests => 1;
+plan tests => 2;
 
 use PostScript::Report ();
 
@@ -63,3 +63,5 @@ warnings_like { $rpt->run(\%data, \@rows) }
    qr/^Row 17 has no column 2 \(only 0 through 1\)/,
    qr/^Row 17 has no column 3 \(only 0 through 1\)/,
   ];
+
+is($rpt->page_count, 1, 'page count');
