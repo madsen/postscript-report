@@ -37,6 +37,9 @@ our %loaded_class;
 This is the default component class used when building the report
 sections.  It defaults to L<Field|PostScript::Report::Field>.
 
+You can temporarily override this by specifying the C<_default> key as
+a container's parameter.
+
 =cut
 
 has default_field_type => (
@@ -252,13 +255,13 @@ sub build_section
                  ? 'HBox' : 'VBox');
 
   # Recursively build the box:
-  return $self->build_box($desc, $boxType);
+  return $self->build_box($desc, $boxType, $self->default_field_type);
 } # end build_section
 
 #---------------------------------------------------------------------
 sub build_box
 {
-  my ($self, $desc, $boxType) = @_;
+  my ($self, $desc, $boxType, $defaultClass) = @_;
 
   die "Empty box is not allowed" unless @$desc;
 
@@ -269,17 +272,16 @@ sub build_box
   if (not ref $desc->[0]) {
     $boxType  = $desc->[0];
     %param = %{ $desc->[1] };
+    $defaultClass = delete $param{_default} if exists $param{_default};
     $self->_fixup_parms(\%param);
     $start = 2;
   }
 
-  # Construct the children:
-  my $defaultClass = $self->default_field_type;
-
   my @children = map {
     ref $_ eq 'HASH'
         ? $self->build_object($_, $defaultClass)
-        : $self->build_box($_, ($boxType eq 'HBox' ? 'VBox' : 'HBox'))
+        : $self->build_box($_, ($boxType eq 'HBox' ? 'VBox' : 'HBox'),
+                           $defaultClass)
   } @$desc[$start .. $#$desc];
 
   # Construct the box:
@@ -431,7 +433,9 @@ HBox, it becomes a VBox.  An arrayref in a VBox becomes an HBox.
 
 You can override the box type (or pass parameters to its constructor),
 by making the first entry in the arrayref a string (the container
-type) and the second entry a hashref to pass to its constructor.
+type) and the second entry a hashref to pass to its constructor.  If
+that hashref contains a C<_default> key, its value becomes the default
+component class inside this container.
 
 The hashref that represents a Component is simply passed to its
 constructor, with one exception.  If the hash contains the C<_class>
