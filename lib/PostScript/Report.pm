@@ -573,11 +573,13 @@ things:
 =item a non-negative integer
 
 A 0-based column in the current row (normally used only in the
-C<detail> section).
+C<detail> section).  A warning will be issued if the current row does
+not have that many columns.
 
 =item a string
 
-An entry in the C<%data> passed to L</run>.
+An entry in the C<%data> passed to L</run>.  A warning will be issued
+if the key does not exist in C<%data>.
 
 =item an object
 
@@ -585,19 +587,33 @@ This returns C<< $value_source->get_value($rpt) >>.
 
 =back
 
+If the result would be C<undef>, the empty string is returned instead.
+(No warning is issued for this.)
+
 =cut
 
 sub get_value
 {
   my ($self, $value) = @_;
 
-  if (ref $value) {
-    $value->get_value($self);
-  } elsif ($value =~ /^\d+$/) {
-    $self->_rows->[ $self->_current_row ][ $value ];
-  } else {
-    $self->_data->{$value};
-  }
+  my $result = do {
+    if (ref $value) {
+      $value->get_value($self);
+    } elsif ($value =~ /^\d+$/) {
+      my $row = $self->_rows->[ $self->_current_row ];
+      warn sprintf("Row %d has no column %d (only 0 through %d)\n",
+                   $self->_current_row, $value, $#$row)
+          unless not $row or $value <= $#$row;
+      $row->[$value];
+    } else {
+      my $dataHash = $self->_data;
+      warn "$value is not a key in this report's \%data\n"
+          unless exists $dataHash->{$value};
+      $dataHash->{$value};
+    }
+  };
+
+  defined($result) ? $result : '';
 } # end get_value
 
 #---------------------------------------------------------------------
