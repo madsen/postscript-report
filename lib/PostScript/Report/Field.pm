@@ -17,7 +17,7 @@ package PostScript::Report::Field;
 # ABSTRACT: A simple field with no label
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -79,7 +79,7 @@ sub draw
   };
 
   $rpt->ps->add_to_page( sprintf(
-    "%s %s %s %s %d %d %d %d %s-%s %s db%s\n",
+    "%s %s\n%s\n%s %d %d %d %d %s-%s %s db%s\n",
     $x + $xOff, $y - $self->height + $self->padding_bottom,
     pstr( $rpt->get_value($self->value) ),
     $self->font->id,
