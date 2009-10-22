@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.02   NOT
+0.02   October 22, 2009
 	- Builder allows scalar ref as shortcut for Value::Constant
 	  and _default overrides default_field_type in a container
 	- Warn if a field's value does not exist.
