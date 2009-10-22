@@ -13,10 +13,7 @@ use warnings;
 use PostScript::Report ();
 
 # Define a Value::Constant with a blank string:
-my $blank = {
-  _class => 'Constant',
-  value => ''
-};
+my $blank = \'';
 
 my $desc = {
   fonts => {
@@ -55,17 +52,14 @@ my $desc = {
     { _class => 'Field',
       width  => 200,
       align  => 'left',
-      value  => { _class => 'Constant',
-                  value => 'AIRPLANE COMPONENT FIXING INC.' } },
+      value  => \'AIRPLANE COMPONENT FIXING INC.' },
     { _class => 'Field',
       width  => 351,
-      value  => { _class => 'Constant',
-                  value => 'WORK ORDER' } },
+      value  => \'WORK ORDER' },
     { _class => 'Field',
       width  => 200,
       align  => 'right',
-      value  => { _class => 'Constant',
-                  value => 'F.A.A REPAIR STATION NO. L3PF428Q' } },
+      value  => \'F.A.A REPAIR STATION NO. L3PF428Q' },
   ],
 
   # The page_header is fairly complex.
@@ -176,8 +170,7 @@ my $desc = {
     # The first row is just one component:
     { _class => 'Field',
       font   => 'disclaimerText',
-      value  => { _class => 'Constant',
-                  value => 'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.' },
+      value  => \'The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.',
     },
     # The second row is filled in by hand, so the values are blank:
     [ HBox => { border => 1 },
@@ -201,7 +194,7 @@ my $desc = {
       # This HBox exists just to set parameters on its children:
       [ HBox => { border => 0, font  => 'pageNum' },
         { _class => 'Field',
-          value => { _class => 'Constant', value => '42410-1' },
+          value => \'42410-1',
           width => 57 },
         { _class => 'Spacer',
           width  => 14 },
@@ -214,11 +207,11 @@ my $desc = {
       [ HBox => { border => 0, padding_bottom => 6, padding_side => 2 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'ML' },
+          value => \'ML',
           width => 10 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'FXN-' },
+          value => \'FXN-',
           width => 53 },
         { _class => 'Field',
           align => 'left',
@@ -226,7 +219,7 @@ my $desc = {
           width => 28 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'AP' },
+          value => \'AP',
           width => 17 },
         { _class => 'Checkbox',
           value => 'AP',
@@ -234,7 +227,7 @@ my $desc = {
           width => 20 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'BP' },
+          value => \'BP',
           width => 20 },
         { _class => 'Checkbox',
           value => 'BP',
@@ -242,7 +235,7 @@ my $desc = {
           width => 20 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'Photo' },
+          value => \'Photo',
           width => 45 },
         { _class => 'Field',
           align => 'left',
@@ -250,7 +243,7 @@ my $desc = {
           width => 28 },
         { _class => 'Field',
           align => 'right',
-          value => { _class => 'Constant', value => 'QTY' },
+          value => \'QTY',
           width => 35 },
         { _class => 'Field',
           align => 'left',

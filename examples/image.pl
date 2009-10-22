@@ -17,9 +17,9 @@ my $desc = {
     { _class => 'Image',
       file   => 'recycle.eps' },
     [ VBox => { width => 100 },
-      { value => { _class => 'Constant', value => 'Foo Bar Recycling' } },
-      { value => { _class => 'Constant', value => '123 Any Street' } },
-      { value => { _class => 'Constant', value => 'Your Town, USA' } },
+      { value => \'Foo Bar Recycling' },
+      { value => \'123 Any Street' },
+      { value => \'Your Town, USA' },
     ],
   ], # end report_header
 

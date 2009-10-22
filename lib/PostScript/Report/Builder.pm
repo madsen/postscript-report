@@ -322,14 +322,17 @@ sub _fixup_parms
   while (my ($key, $val) = each %$parms) {
     if ($key =~ /(?:^|_)font$/) {
       $parms->{$key} = $self->get_font($val);
-    } elsif (ref $val) {
-      if ($key eq 'value') {
-        $parms->{$key} = $self->build_object($val, undef,
-                                           'PostScript::Report::Value::');
+    } elsif ($key eq 'value' and ref $val) {
+      if (ref $val eq 'SCALAR') {
+        $self->require_class('PostScript::Report::Value::Constant');
+        $parms->{$key} = PostScript::Report::Value::Constant->new(
+          value => $$val
+        );
       } else {
-        $parms->{$key} = $self->build_object($val);
+        $parms->{$key} = $self->build_object($val, undef,
+                                             'PostScript::Report::Value::');
       }
-    } # end else ref $val
+    } # end elsif key 'value' and ref $val
   } # end while each ($key, $val) in %$parms
 } # end _fixup_parms
 
@@ -433,6 +436,18 @@ type) and the second entry a hashref to pass to its constructor.
 The hashref that represents a Component is simply passed to its
 constructor, with one exception.  If the hash contains the C<_class>
 key, that value is removed and used as the class name.
+
+=head3 Constant Values
+
+As a special case, you can pass a scalar reference as the C<value> for
+a Component.  This creates a
+L<constant value|PostScript::Report::Value::Constant>.  That is,
+
+  value => \'Label:',
+
+is equivalent to
+
+  value => { _class => 'Constant',  value => 'Label:' },
 
 =head3 A Note on Class Names
 
