@@ -23,7 +23,7 @@ use 5.008;
 use Moose;
 use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 'pstr';
+use PostScript::File 1.04 'pstr';
 
 use PostScript::Report::Font ();
 use List::Util 'min';
@@ -817,6 +817,8 @@ sub run
   $self->_calculate_page_count;
 
   my $ps = $self->ps;
+
+  $ps->add_comment('PageOrder: Ascend');
 
   my ($x, $yBot, $yTop) = ($ps->get_bounding_box)[0,1,3];
 
