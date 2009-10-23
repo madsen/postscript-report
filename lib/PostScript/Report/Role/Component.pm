@@ -17,7 +17,7 @@ package PostScript::Report::Role::Component;
 # ABSTRACT: Something that can be drawn
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 
 use Moose::Role;
 use MooseX::AttributeTree ();
@@ -301,7 +301,10 @@ whose value can be inherited from the parent are marked (Inherited).
 =attr-opt padding_bottom
 
 (Inherited) This is the amount of space between the bottom of the
-component and the baseline of the text inside it.
+component and the baseline of the text inside it.  If this is too
+small, then the descenders (on letters like "p" and "y") will be cut
+off.  (The exact minimum necessary depends on the selected font and
+size.)
 
 =attr-opt padding_side
 

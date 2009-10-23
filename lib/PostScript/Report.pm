@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use 5.008;
 use Moose;
@@ -359,7 +359,9 @@ has line_width => (
 =attr-in padding_bottom
 
 This indicates the distance between the bottom of a component and the
-baseline of the text inside it (4 by default).
+baseline of the text inside it (4 by default).  If this is too small,
+then the descenders (on letters like "p" and "y") will be cut off.
+(The exact minimum necessary depends on the selected font and size.)
 
 =cut
 
