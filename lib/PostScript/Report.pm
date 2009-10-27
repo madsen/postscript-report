@@ -1032,6 +1032,13 @@ sub _dump_attr
     }
   } # end if blessed $val
 
+  # Convert RGB colors from array back to hex triplet:
+  if (ref $val and $attr->has_type_constraint and
+      $attr->type_constraint->name eq 'PostScript::Report::Types::Color') {
+    $val = join('', '#', map { sprintf '%02X', 255 * $_ } @$val);
+  } # end if RGB color
+
+  # Print the attribute and value:
   printf "%s%-14s: %s\n", '  ' x $level, $attr->name, $val;
 } # end _dump_attr
 
