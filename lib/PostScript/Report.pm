@@ -1073,3 +1073,8 @@ variable):
 
 Paths on your system may vary.  I suggest searching for C<.afm> files,
 and then grepping them for "FontName Helvetica".
+
+=head1 BUGS AND LIMITATIONS
+
+PostScript::Report does not support characters outside of Latin-1.
+Unfortunately, supporting Unicode in PostScript is non-trivial.
