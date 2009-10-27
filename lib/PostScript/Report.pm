@@ -21,7 +21,7 @@ our $VERSION = '0.03';
 
 use 5.008;
 use Moose;
-use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Num Str);
+use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
 use PostScript::File 1.04 'pstr';
 
@@ -115,6 +115,25 @@ has page_footer => (
 has report_footer => (
   is  => 'rw',
   isa => Component,
+);
+
+=attr-fmt detail_background
+
+This is a code reference that is called before the detail section is
+drawn.  It receives two parameters: the row number and the row number
+on this page (both 0-based).  It returns the background color for the
+detail section, or C<undef> (which means to use the same color as last
+time).
+
+Note that only Containers have a background.  If your detail section
+is just a Component, it will cause an error (wrap the Component in an
+HBox to avoid that).
+
+=cut
+
+has detail_background => (
+  is      => 'ro',
+  isa     => CodeRef,
 );
 
 =attr-fmt footer_align
@@ -875,7 +894,9 @@ sub run
     } # end if $page_header
 
     if ($detail) {
+      my $rowOnPage = 0;
       while ($y >= $minY) {
+        $self->_stripe_detail($rowOnPage++);
         $detail->draw($x, $y, $self);
         $y -= $detail->height;
         if ($self->_current_row( $self->_current_row + 1 ) > $#$rows) {
@@ -910,6 +931,18 @@ sub run
 
   $self;                        # Allow for method chaining
 } # end run
+
+#---------------------------------------------------------------------
+sub _stripe_detail
+{
+  my ($self, $rowOnPage) = @_;
+
+  my $code = $self->detail_background or return;
+
+  my $color = $code->($self->_current_row, $rowOnPage);
+
+  $self->detail->_set_background($color) if defined $color;
+} # end _stripe_detail
 
 #---------------------------------------------------------------------
 sub _generate_font_list
