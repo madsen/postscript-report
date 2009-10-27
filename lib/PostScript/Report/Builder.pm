@@ -183,20 +183,30 @@ sub get_report_parameters
 
   # See if we're using zebra striping:
   my ($use_param, @colors) = 0;
+  my $stripe_type;
 
   if ($desc->{stripe_page}) {
     die "Cannot combine stripe and stripe_page" if $desc->{stripe};
-    @colors = @{ $desc->{stripe_page} };
+    $stripe_type = 'stripe_page';
     $use_param = 1;         # Use row-on-page instead of row-in-report
   } elsif ($desc->{stripe}) {
-    @colors = @{ $desc->{stripe} };
+    $stripe_type = 'stripe';
   }
 
-  if (@colors) {
-    die "Cannot combine stripe and detail_background"
+  if ($stripe_type) {
+    @colors = @{ $desc->{$stripe_type} };
+
+    die "Cannot combine $stripe_type and detail_background"
         if $param{detail_background};
 
-    # FIXME validate colors here
+    # Make sure each color is valid or undef:
+    foreach my $color (@colors) {
+      if (defined $color) {
+        my $new = to_Color($color);
+        defined($new) or die "Invalid color $color in $stripe_type";
+        $color = $new;
+      } # end if defined $color
+    } # end foreach $color in @colors
 
     $param{detail_background} = sub { $colors[ $_[$use_param] % @colors ] };
   } # end if zebra striping
