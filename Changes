@@ -1,6 +1,7 @@
 Revision history for PostScript-Report
 
 0.03   NOT
+	- Added background attribute to Container
 	- Add PageOrder: Ascend comment
 	- Warn in documentation against making padding_bottom too small
 

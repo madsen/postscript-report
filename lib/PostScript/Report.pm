@@ -183,6 +183,30 @@ sub _init
 /db1 { gsave setlinewidth drawbox grestore } bind def
 
 %---------------------------------------------------------------------
+% Set the color:  RGBarray|BWint setColor
+/setColor
+{
+  dup type (arraytype) eq {
+    aload pop
+    setrgbcolor
+  }{
+    setgray
+  } ifelse
+} bind def
+
+%---------------------------------------------------------------------
+% Fill a box with color:  Left Top Right Bottom Color fillbox
+
+/fillbox
+{
+  gsave
+  setColor
+  boxpath
+  fill
+  grestore
+} bind def
+
+%---------------------------------------------------------------------
 % Print text centered at a point:  X Y STRING showcenter
 %
 % Centers text horizontally
