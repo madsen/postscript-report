@@ -141,9 +141,7 @@ sub build
   # Construct the PostScript::Report object:
   $self->require_class( $self->report_class );
 
-  my $rpt = $self->report_class->new(
-    map { exists $desc{$_} ? ($_ => $desc{$_}) : () } @constructor_args
-  );
+  my $rpt = $self->report_class->new( $self->get_report_parameters(\%desc) );
 
   # Create the fonts we'll be using:
   $self->create_fonts( $rpt, $desc{fonts} );
@@ -170,6 +168,41 @@ sub build
 
   $rpt;
 } # end build
+
+#---------------------------------------------------------------------
+sub get_report_parameters
+{
+  my ($self, $desc) = @_;
+
+  my %param;
+
+  # Copy @constructor_args to %param:
+  foreach my $key (@constructor_args) {
+    $param{$key} = $desc->{$key} if exists $desc->{$key};
+  }
+
+  # See if we're using zebra striping:
+  my ($use_param, @colors) = 0;
+
+  if ($desc->{stripe_page}) {
+    die "Cannot combine stripe and stripe_page" if $desc->{stripe};
+    @colors = @{ $desc->{stripe_page} };
+    $use_param = 1;         # Use row-on-page instead of row-in-report
+  } elsif ($desc->{stripe}) {
+    @colors = @{ $desc->{stripe} };
+  }
+
+  if (@colors) {
+    die "Cannot combine stripe and detail_background"
+        if $param{detail_background};
+
+    # FIXME validate colors here
+
+    $param{detail_background} = sub { $colors[ $_[$use_param] % @colors ] };
+  } # end if zebra striping
+
+  \%param;
+} # end get_report_parameters
 
 #---------------------------------------------------------------------
 sub get_font
@@ -205,6 +238,10 @@ sub create_columns
   confess "Can't use both detail and columns" if $desc->{detail};
 
   my $columns = $desc->{columns};
+
+  foreach my $key (qw(stripe stripe_page)) {
+    confess "$key does not belong inside columns" if $columns->{$key};
+  }
 
   my @header = (HBox => $columns->{header} || {});
   my @detail = (HBox => $columns->{detail} || {});
@@ -522,6 +559,34 @@ C<page_header> aside from the column headers).
 
 If you need a more complex layout than this, don't use C<columns>.
 Instead, define the C<detail> and C<page_header> sections as needed.
+
+=head2 Zebra Striping
+
+The C<stripe> and C<stripe_page> keys are provided as a shortcut for
+the common case of a report with a detail section that cycles through
+a pattern of
+L<background colors|PostScript::Report::Role::Container/background>.
+
+The value should be a arrayref of colors.  The first row uses the
+first color, the second row uses the second color, and so on (wrapping
+around to the beginning of the array).
+
+Use C<stripe_page> if you want the pattern to start over on every
+page, or C<stripe> if you want it to continue from where the previous
+page left off.
+
+For example,
+
+  stripe => [ 1, 0.85 ],
+
+will give every other row a light grey background.
+
+If you need a more complex color scheme, set
+L<PostScript::Report/detail_background> directly.
+
+Note that C<stripe> and C<stripe_page> are B<not> placed inside the
+C<columns> hash, because they can be used even if you define the
+C<detail> section manually.
 
 =for Pod::Coverage
 build_
