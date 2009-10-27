@@ -4,6 +4,7 @@
 # You may copy from it freely.
 #
 # This adds a report_header with image to simple.pl
+# It also adds zebra striping in grey and yellow
 #---------------------------------------------------------------------
 
 use strict;
@@ -22,6 +23,8 @@ my $desc = {
       { value => \'Your Town, USA' },
     ],
   ], # end report_header
+
+  stripe => [ 0.85, '#FF0' ],   # Grey & yellow
 
   columns => {
     data => [
