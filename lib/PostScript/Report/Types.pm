@@ -23,7 +23,7 @@ use Carp 'confess';
 
 use MooseX::Types -declare => [qw(
   BorderStyle BWColor Color Component Container FontObj FontMetrics HAlign
-  Parent Report RGBColor RptValue VAlign
+  Parent Report RGBColor RGBColorHex RptValue VAlign
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
@@ -63,13 +63,15 @@ subtype RGBColor,
   as ArrayRef[BWColor],
   where { @$_ == 3 };
 
-coerce RGBColor,
-  from Str,
-  via {
-    # Must have a multiple of 3 hex digits after initial '#':
-    /^#((?:[0-9a-f]{3})+)$/i or confess "Invalid color $_";
+subtype RGBColorHex,
+  as Str,
+  # Must have a multiple of 3 hex digits after initial '#':
+  where { /^#((?:[0-9a-f]{3})+)$/i };
 
-    my $color = $1;
+coerce RGBColor,
+  from RGBColorHex,
+  via {
+    my $color = substr($_, 1);
 
     my $digits = int(length($color) / 3); # Number of digits per color
     my $max    = hex('F' x $digits);      # Max intensity per color
