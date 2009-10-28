@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.03   NOT
+0.03   October 28, 2009
 	- Added background attribute to Component
 	- Added detail_background attribute to Report
 	- Added stripe & stripe_page to Builder
