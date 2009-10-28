@@ -17,7 +17,7 @@ package PostScript::Report::FieldTL;
 # ABSTRACT: A field with a label in the top left corner
 #---------------------------------------------------------------------
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -110,7 +110,7 @@ after init => sub {
     4 2 roll		% C... Csp Cx FUNC L T R B L R Ypos Ypos CONTENT L R
     12 index		% C... Csp Cx FUNC L T R B L R Ypos Ypos CONTENT L R Cx
     12 index cvx exec	% C... Csp Cx FUNC L T R B L R Ypos
-    8 index sub		% C... Csp Cx FUNC L T R B L R YposNext
+    9 index sub		% C... Csp Cx FUNC L T R B L R YposNext
   } repeat
   pop pop pop		% Csp Cx FUNC L T R B
   7 -3 roll		% L T R B Csp Cx FUNC

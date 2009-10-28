@@ -5,6 +5,7 @@ Revision history for PostScript-Report
 	- Added detail_background attribute to Report
 	- Added stripe & stripe_page to Builder
 	- Add PageOrder: Ascend comment
+	- Fixed bug in multiline FieldTL (was using wrong line height)
 	- Warn in documentation against making padding_bottom too small
 
 0.02   October 22, 2009
