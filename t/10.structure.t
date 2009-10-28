@@ -227,6 +227,7 @@ detail:
   ], # end report_header
 
   columns => {
+    header => { background => '#abc' },
     data => [
       [ 'Number' =>  40, { align => 'center'}, { align => 'right'} ],
       [ 'Letter' =>  40 ],
@@ -266,6 +267,7 @@ report_header:
 
 page_header:
   PostScript::Report::HBox:
+    background    : #AABBCC
     children:
       PostScript::Report::Field:
         align         : center
@@ -340,6 +342,7 @@ report_header:
 
 page_header:
   PostScript::Report::HBox:
+    background    : #AABBCC
     height        : 15
     width         : 460
     children:
