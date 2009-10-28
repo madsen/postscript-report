@@ -76,7 +76,12 @@ coerce RGBColor,
     my $digits = int(length($color) / 3); # Number of digits per color
     my $max    = hex('F' x $digits);      # Max intensity per color
 
-    [ map { hex(substr($color, $_ * $digits, $digits)) / $max } 0 .. 2 ];
+    [ map {
+        my $n = sprintf('%.3f',
+                        hex(substr($color, $_ * $digits, $digits)) / $max);
+        $n =~ s/\.?0+$//;
+        $n
+      } 0 .. 2 ];
   };
 
 subtype Color,
