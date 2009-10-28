@@ -470,6 +470,7 @@ has ps => (
   writer  => '_set_ps',
   clearer => 'clear',
   handles => ['output'],
+  init_arg=> undef,
 );
 
 =attr-o ps_functions
