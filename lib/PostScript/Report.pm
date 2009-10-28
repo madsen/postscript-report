@@ -202,13 +202,16 @@ sub _init
 /db1 { gsave setlinewidth drawbox grestore } bind def
 
 %---------------------------------------------------------------------
-% Set the color:  RGBarray|BWint setColor
+% Set the color:  RGBarray|BWnumber setColor
+
 /setColor
 {
   dup type (arraytype) eq {
+    % We have an array, so it's RGB:
     aload pop
     setrgbcolor
   }{
+    % Otherwise, it must be a gray level:
     setgray
   } ifelse
 } bind def
