@@ -361,5 +361,44 @@ its contents.  See L<PostScript::Report/get_value>.
 
 You probably won't need to use this attribute directly.
 
+=head1 SEE ALSO
+
+The following components are available by default:
+
+=over
+
+=item L<Checkbox|PostScript::Report::Checkbox>
+
+This displays a box, which contains a checkmark if the associated
+value is true.
+
+=item L<Field|PostScript::Report::Field>
+
+This is a standard text field.
+
+=item L<FieldTL|PostScript::Report::FieldTL>
+
+This is a text field with a label in the corner.  It also (optionally)
+supports multiple lines with word wrap.
+
+=item L<HBox|PostScript::Report::HBox>
+
+This Container draws its children in a horizontal row.
+
+=item L<Image|PostScript::Report::Image>
+
+This allows you to include an EPS file.
+
+=item L<Spacer|PostScript::Report::Spacer>
+
+This is just an empty box for padding.
+
+=item L<VBox|PostScript::Report::VBox>
+
+This Container draws its children in a vertical column.
+
+=back
+
 =for Pod::Loom-omit
 CONFIGURATION AND ENVIRONMENT
+

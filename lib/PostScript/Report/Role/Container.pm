@@ -126,5 +126,22 @@ L<PostScript::Report::Role::Component/"Optional Attributes">.
 
 =head2 Other Attributes
 
+
+=head1 SEE ALSO
+
+The following containers are available by default:
+
+=over
+
+=item L<HBox|PostScript::Report::HBox>
+
+This draws its children in a horizontal row.
+
+=item L<VBox|PostScript::Report::VBox>
+
+This draws its children in a vertical column.
+
+=back
+
 =for Pod::Loom-omit
 CONFIGURATION AND ENVIRONMENT
