@@ -216,7 +216,11 @@ __END__
 =head1 DESCRIPTION
 
 This L<Component|PostScript::Report::Role::Component> allows you to
-include an EPS file in your report.
+include an EPS file in your report.  Most vector-based drawing
+programs can save in EPS format.  You can also convert bitmap images
+to EPS using a program like ImageMagick (L<http://www.imagemagick.org>),
+but vector-based formats will generally give you better quality and
+smaller files.
 
 =head1 ATTRIBUTES
 
