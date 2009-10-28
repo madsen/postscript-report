@@ -163,14 +163,6 @@ sub build
     $rpt->$sectionName( $self->build_section( $section ));
   } # end foreach $sectionName
 
-  # If zebra striping, ensure the detail component is a Container:
-  if ($rpt->detail_background and my $detail = $rpt->detail) {
-    # Wrap the detail component in an HBox if necessary:
-    $rpt->detail(
-      PostScript::Report::HBox->new(children => [ $detail ])
-    ) unless $detail->does('PostScript::Report::Role::Container');
-  } # end if using detail_background
-
   # Clean up and return the report:
   $self->_clear_fonts;
 
@@ -583,7 +575,7 @@ Instead, define the C<detail> and C<page_header> sections as needed.
 The C<stripe> and C<stripe_page> keys are provided as a shortcut for
 the common case of a report with a detail section that cycles through
 a pattern of
-L<background colors|PostScript::Report::Role::Container/background>.
+L<background colors|PostScript::Report::Role::Component/background>.
 
 The value should be a arrayref of colors.  The first row uses the
 first color, the second row uses the second color, and so on (wrapping

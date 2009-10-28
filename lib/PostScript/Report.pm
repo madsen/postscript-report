@@ -125,10 +125,6 @@ on this page (both 0-based).  It returns the background color for the
 detail section, or C<undef> (which means to use the same color as last
 time).
 
-Note that only Containers have a background.  If your detail section
-is just a Component, it will cause an error.  Wrap the Component in an
-HBox to avoid that (this will be done automatically if you use L</build>).
-
 =cut
 
 has detail_background => (

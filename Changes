@@ -1,7 +1,7 @@
 Revision history for PostScript-Report
 
 0.03   NOT
-	- Added background attribute to Container
+	- Added background attribute to Component
 	- Added detail_background attribute to Report
 	- Added stripe & stripe_page to Builder
 	- Add PageOrder: Ascend comment

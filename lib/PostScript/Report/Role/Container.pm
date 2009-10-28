@@ -28,29 +28,6 @@ with 'PostScript::Report::Role::Component';
 
 my @inherited = (traits => [qw/TreeInherit/]);
 
-=attr-std background
-
-This is the background color for the Container.  Unlike the other
-formatting attributes, it is not inherited.  (Since the Container
-draws the background for all its Components, they don't need to
-inherit the value.)
-
-The color is a number in the range 0 to 1 (where 0 is black and 1 is
-white) for a grey background, or an arrayref of three numbers C<[ Red,
-Green, Blue ]> where each number is in the range 0 to 1.
-
-In addition, you can specify an RGB color in the HTML hex triplet form
-prefixed by C<#> (like C<#FFFF00> or C<#FF0> for yellow).
-
-=cut
-
-has background => (
-  is       => 'ro',
-  isa      => Color,
-  coerce   => 1,
-  writer   => '_set_background', # Used by Report::_stripe_detail
-);
-
 =attr-std children
 
 This is an arrayref containing the child Components.
@@ -94,24 +71,11 @@ has row_height => (
 
 =method draw
 
-The Container role provides a C<before draw> modifier to draw the
-container's background, and an C<after draw> modifier to draw a border
+The Container role provides an C<after draw> modifier to draw a border
 around the container.  The container must still provide its own
 C<draw> method.
 
 =cut
-
-before draw => sub {
-  my ($self, $x, $y, $rpt) = @_;
-
-  if (defined(my $background = $self->background)) {
-    $rpt->ps->add_to_page( sprintf(
-      "%d %d %d %d %s fillbox\n",
-      $x, $y, $x + $self->width, $y - $self->height,
-      PostScript::File::str($background)
-    ));
-  }
-}; # end before draw
 
 after draw => \&draw_standard_border;
 
