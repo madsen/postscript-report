@@ -146,7 +146,7 @@ after init => sub {
   translate
   dup scale
   /Image-dict_stack countdictstack def
-  /Image-ops_count count 1 sub def
+  count /Image-ops_count exch def
   userdict begin
   /showpage {} def
 } bind def
