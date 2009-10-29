@@ -681,7 +681,6 @@ page_footer:
                 width         : 27
 ---
 %!PS-Adobe-3.0
-%%PageOrder: Ascend
 %%Orientation: Landscape
 %%DocumentSuppliedResources:
 %%+ procset PostScript__Report
@@ -693,6 +692,7 @@ page_footer:
 %%+ procset PostScript_File
 %%Title: (Report)
 %%Pages: 2
+%%PageOrder: Ascend
 %%EndComments
 %%BeginProlog
 %%BeginProcSet: PostScript__Report

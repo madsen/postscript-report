@@ -639,6 +639,7 @@ sub _build_ps
     left        => $self->left_margin,
     right       => $self->right_margin,
     title       => pstr($self->title),
+    order       => 'Ascend',
     reencode    => 'cp1252',
     file_ext    => '',
     font_suffix => '-iso',
@@ -915,8 +916,6 @@ sub run
   $self->_calculate_page_count;
 
   my $ps = $self->ps;
-
-  $ps->add_comment('PageOrder: Ascend');
 
   my ($x, $yBot, $yTop) = ($ps->get_bounding_box)[0,1,3];
 
