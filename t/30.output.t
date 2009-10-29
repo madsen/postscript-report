@@ -40,9 +40,11 @@ my $generateResults = '';
 if (@ARGV and $ARGV[0] eq 'gen') {
   # Just output the actual results, so they can be diffed against this file
   $generateResults = 1;
-  printf "#%s\n\n__DATA__\n", '=' x 69;
+  open(OUT, '>', '/tmp/30.output.t') or die $!;
+  printf OUT "#%s\n\n__DATA__\n", '=' x 69;
 } elsif (@ARGV and $ARGV[0] eq 'ps') {
   $generateResults = 'ps';
+  open(OUT, '>', '/tmp/30.output.ps') or die $!;
 } else {
   plan tests => 3;
 }
@@ -319,10 +321,14 @@ my $data = {
   qty                 => 1,
 };
 
+my $ldquo = chr(0x201C);
+my $rdquo = chr(0x201D);
+my $mdash = chr(0x2014);
+
 my $rows = [
   [  1, 'I1', 'INSPECT, PN & SN VERIFIED', 'XXXXXXXX', '' ],
   [  2, 'I1', 'ADDITIONAL DATA USED: BOEING ASSEMBLY DRAWING 589X1674, GDR9726', 'XXXXXXXX', '' ],
-  [  3, 'I1', '"Fourscore and seven years ago our fathers brought forth on this ', 'XXXXXXXX', '' ],
+  [  3, 'I1', "${ldquo}Fourscore and seven years ago our fathers brought forth on this", 'XXXXXXXX', '' ],
   [  4, 'I1', 'continent a new nation, conceived in liberty and dedicated to the ', 'XXXXXXXX', '' ],
   [  5, 'I1', 'proposition that all men are created equal. Now we are engaged in ', 'XXXXXXXX', '' ],
   [  6, 'I1', 'a great civil war, testing whether that nation or any nation so ', 'XXXXXXXX', '' ],
@@ -338,14 +344,14 @@ my $rows = [
   [ 16, 'P1', 'forget what they did here. It is for us the living rather to be ', '', 'XXXXXXXX' ],
   [ 17, 'P1', 'dedicated here to the unfinished work which they who fought here ', '', 'XXXXXXXX' ],
   [ 18, 'P1', 'have thus far so nobly advanced. It is rather for us to be here ', '', 'XXXXXXXX' ],
-  [ 19, 'P1', 'dedicated to the great task remaining before us--that from these ', '', '' ],
+  [ 19, 'P1', "dedicated to the great task remaining before us${mdash}that from these ", '', '' ],
   [ 20, 'P1', 'honored dead we take increased devotion to that cause for which ', '', '' ],
-  [ 21, 'F1', 'they gave the last full measure of devotion--that we here highly ', 'XXXXXXXX', '' ],
+  [ 21, 'F1', "they gave the last full measure of devotion${mdash}that we here highly", 'XXXXXXXX', '' ],
   [ 22, 'P1', 'resolve that these dead shall not have died in vain, that this ', '', 'XXXXXXXX' ],
   [ 23, 'P1', 'nation under God shall have a new birth of freedom, and that ', '', 'XXXXXXXX' ],
   [ 24, 'S1', 'government of the people, by the people, for the people shall ', '', 'XXXXXXXX' ],
-  [ 25, 'SR', 'not perish from the earth."', '', 'XXXXXXXX' ],
-  [ 26, 'I1', '--Abraham Lincoln', 'XXXXXXXX', '' ],
+  [ 25, 'SR', "not perish from the earth.$rdquo", '', 'XXXXXXXX' ],
+  [ 26, 'I1', "${mdash}Abraham Lincoln", 'XXXXXXXX', '' ],
 ];
 
 my $rpt = PostScript::Report->build($desc);
@@ -359,7 +365,7 @@ my $ps = $rpt->output;
 unless ($generateResults eq 'ps') {
   # Remove PostScript::File generated code:
   $ps =~ s/^%%BeginProcSet: PostScript_File.*?^%%EndProcSet\n//ms;
-  $ps =~ s/^%%BeginResource: Encoded_Fonts.*?^%%EndResource\n//ms;
+  $ps =~ s/^%%BeginResource: Win1252_Encoded_Fonts.*?^%%EndResource\n//ms;
 } # end unless generating PostScript to look at
 
 checkResults($ps, 'generated PostScript');
@@ -374,9 +380,9 @@ sub checkResults
   if ($generateResults) {
     # Write out the actual results:
     if ($generateResults eq 'ps') {
-      print $got if $name eq 'generated PostScript';
+      print OUT $got if $name eq 'generated PostScript';
     } else {
-      print "$got---\n";
+      print OUT "$got---\n";
     }
   } else {
     # Read expected results from DATA:
@@ -683,7 +689,7 @@ page_footer:
 %%+ procset PostScript__Report__Checkbox
 %%+ procset PostScript__Report__Field
 %%+ procset PostScript__Report__FieldTL
-%%+ Encoded_Fonts
+%%+ Win1252_Encoded_Fonts
 %%+ procset PostScript_File
 %%Title: (Report)
 %%Pages: 2
@@ -996,7 +1002,7 @@ fnC 20 452 49 433 Field-C 0.5 db1
 (I1)
 fnC 49 452 89 433 Field-C 0.5 db1
 92 439
-("Fourscore and seven years ago our fathers brought forth on this )
+(“Fourscore and seven years ago our fathers brought forth on this)
 fnC 89 452 539 433 Field-L 0.5 db1
 575.5 439
 (XXXXXXXX)
@@ -1284,7 +1290,7 @@ fnC 20 148 49 129 Field-C 0.5 db1
 (P1)
 fnC 49 148 89 129 Field-C 0.5 db1
 92 135
-(dedicated to the great task remaining before us--that from these )
+(dedicated to the great task remaining before us—that from these )
 fnC 89 148 539 129 Field-L 0.5 db1
 575.5 135
 ()
@@ -1320,7 +1326,7 @@ fnC 20 110 49 91 Field-C 0.5 db1
 (F1)
 fnC 49 110 89 91 Field-C 0.5 db1
 92 97
-(they gave the last full measure of devotion--that we here highly )
+(they gave the last full measure of devotion—that we here highly)
 fnC 89 110 539 91 Field-L 0.5 db1
 575.5 97
 (XXXXXXXX)
@@ -1548,7 +1554,7 @@ fnC 20 445 49 426 Field-C 0.5 db1
 (SR)
 fnC 49 445 89 426 Field-C 0.5 db1
 92 432
-(not perish from the earth.")
+(not perish from the earth.”)
 fnC 89 445 539 426 Field-L 0.5 db1
 575.5 432
 ()
@@ -1566,7 +1572,7 @@ fnC 20 426 49 407 Field-C 0.5 db1
 (I1)
 fnC 49 426 89 407 Field-C 0.5 db1
 92 413
-(--Abraham Lincoln)
+(—Abraham Lincoln)
 fnC 89 426 539 407 Field-L 0.5 db1
 575.5 413
 (XXXXXXXX)

@@ -17,13 +17,13 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use 5.008;
 use Moose;
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 1.04 'pstr';
+use PostScript::File 1.05 'pstr'; # Need cp1252 support
 
 use PostScript::Report::Font ();
 use List::Util 'min';
@@ -593,7 +593,7 @@ sub _build_ps
     left        => $self->left_margin,
     right       => $self->right_margin,
     title       => pstr($self->title),
-    reencode    => 'ISOLatin1Encoding',
+    reencode    => 'cp1252',
     file_ext    => '',
     font_suffix => '-iso',
     landscape   => $self->landscape,
