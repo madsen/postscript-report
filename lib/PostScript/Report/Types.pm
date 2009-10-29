@@ -17,17 +17,37 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Carp 'confess';
 
 use MooseX::Types -declare => [qw(
-  BorderStyle BWColor Color Component Container FontObj FontMetrics HAlign
+  BorderStyle BorderStyleNC BWColor Color Component Container
+  FontObj FontMetrics HAlign
   Parent Report RGBColor RGBColorHex RptValue VAlign
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
-enum(BorderStyle, qw(0 1));
+enum(BorderStyle, qw(0 1 T B L R TB LR TL TR BL BR TLR BLR TBL TBR));
+
+subtype BorderStyleNC,
+  as Str,
+  where { /^(?: [01] | [TBLR]* )$/xi };
+
+coerce BorderStyle,
+  from BorderStyleNC,
+  via {
+    return 0 unless $_;
+    return 1 if /1/;
+
+    my $style = '';
+    foreach my $side (qw(T B L R)) {
+      $style .= $side if /$side/i;
+    }
+
+    return 1 if $style eq 'TBLR';
+    $style;
+  }; # end coerce BorderStyle from BorderStyleNC
 
 subtype Component,
   as role_type('PostScript::Report::Role::Component');
@@ -99,7 +119,8 @@ These are the custom types used by L<PostScript::Report>.
 
 =head2 BorderStyle
 
-A valid border style (C<0> or C<1>)
+A valid border style (C<0>, C<1>, or any combination of C<T>, C<B>,
+C<L>, and C<R>).  Will be forced into canonical form.
 
 =head2 Color
 

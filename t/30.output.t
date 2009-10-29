@@ -711,6 +711,30 @@ closepath
 /drawbox { boxpath stroke } bind def
 /db0 { 5 { pop } repeat } bind def
 /db1 { gsave setlinewidth drawbox grestore } bind def
+/boxLT { 3 index  3 index } bind def
+/boxRT { 1 index  3 index } bind def
+/boxLB { 3 index  1 index } bind def
+/boxRB { 2 copy           } bind def
+/bdrB { gsave setlinewidth } bind def
+/bdrE {
+lineto stroke			% Finish the line and stroke it
+pop pop pop pop		% Remove L T R B
+grestore
+} bind def
+/dbT { bdrB  boxLT moveto  boxRT bdrE } bind def
+/dbB { bdrB  boxLB moveto  boxRB bdrE } bind def
+/dbL { bdrB  boxLT moveto  boxLB bdrE } bind def
+/dbR { bdrB  boxRT moveto  boxRB bdrE } bind def
+/dbTB { 5 copy  dbT dbB } bind def
+/dbLR { 5 copy  dbL dbR } bind def
+/dbTL { bdrB  boxRT moveto  boxLT lineto  boxLB bdrE } bind def
+/dbTR { bdrB  boxLT moveto  boxRT lineto  boxRB bdrE } bind def
+/dbBL { bdrB  boxRB moveto  boxLB lineto  boxLT bdrE } bind def
+/dbBR { bdrB  boxLB moveto  boxRB lineto  boxRT bdrE } bind def
+/dbTLR { bdrB  boxLB moveto  boxLT lineto  boxRT lineto  boxRB bdrE } bind def
+/dbBLR { bdrB  boxLT moveto  boxLB lineto  boxRB lineto  boxRT bdrE } bind def
+/dbTBL { bdrB  boxRT moveto  boxLT lineto  boxLB lineto  boxRB bdrE } bind def
+/dbTBR { bdrB  boxLT moveto  boxRT lineto  boxRB lineto  boxLB bdrE } bind def
 /setColor
 {
 dup type (arraytype) eq {

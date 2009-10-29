@@ -197,6 +197,43 @@ sub _init
 /db0 { 5 { pop } repeat } bind def
 /db1 { gsave setlinewidth drawbox grestore } bind def
 
+% Easy access to the corners of a box:
+% 3 3 1 1
+% L T R B
+
+/boxLT { 3 index  3 index } bind def
+/boxRT { 1 index  3 index } bind def
+/boxLB { 3 index  1 index } bind def
+/boxRB { 2 copy           } bind def
+
+% Start drawing a border:  L T R B LW bdrB
+/bdrB { gsave setlinewidth } bind def
+
+% Finish drawing a border:  L T R B X Y bdrE
+/bdrE {
+  lineto stroke			% Finish the line and stroke it
+  pop pop pop pop		% Remove L T R B
+  grestore
+} bind def
+
+/dbT { bdrB  boxLT moveto  boxRT bdrE } bind def
+/dbB { bdrB  boxLB moveto  boxRB bdrE } bind def
+/dbL { bdrB  boxLT moveto  boxLB bdrE } bind def
+/dbR { bdrB  boxRT moveto  boxRB bdrE } bind def
+
+/dbTB { 5 copy  dbT dbB } bind def
+/dbLR { 5 copy  dbL dbR } bind def
+
+/dbTL { bdrB  boxRT moveto  boxLT lineto  boxLB bdrE } bind def
+/dbTR { bdrB  boxLT moveto  boxRT lineto  boxRB bdrE } bind def
+/dbBL { bdrB  boxRB moveto  boxLB lineto  boxLT bdrE } bind def
+/dbBR { bdrB  boxLB moveto  boxRB lineto  boxRT bdrE } bind def
+
+/dbTLR { bdrB  boxLB moveto  boxLT lineto  boxRT lineto  boxRB bdrE } bind def
+/dbBLR { bdrB  boxLT moveto  boxLB lineto  boxRB lineto  boxRT bdrE } bind def
+/dbTBL { bdrB  boxRT moveto  boxLT lineto  boxLB lineto  boxRB bdrE } bind def
+/dbTBR { bdrB  boxLT moveto  boxRT lineto  boxRB lineto  boxLB bdrE } bind def
+
 %---------------------------------------------------------------------
 % Set the color:  RGBarray|BWnumber setColor
 
@@ -333,14 +370,22 @@ has align => (
 =attr-in border
 
 This is the default border style.  It may be 1 for a solid border (the
-default), or 0 for no border.  Additional border styles may be defined
-in the future.  The thickness of the border is controlled by L</line_width>.
+default), or 0 for no border.  In addition, you may specify any
+combination of the letters T, B, L, and R (meaning top, bottom, left,
+and right) to have a border only on the specified side(s).
+
+The thickness of the border is controlled by L</line_width>.
+
+(Note: The string you give will be converted into the canonical
+representation, which has the letters upper case and in the order
+TBLR.)
 
 =cut
 
 has border => (
   is       => 'ro',
   isa      => BorderStyle,
+  coerce   => 1,
   default  => 1,
 );
 

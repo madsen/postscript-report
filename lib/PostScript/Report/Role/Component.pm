@@ -17,7 +17,7 @@ package PostScript::Report::Role::Component;
 # ABSTRACT: Something that can be drawn
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Moose::Role;
 use MooseX::AttributeTree ();
@@ -110,14 +110,22 @@ has background => (
 =attr border
 
 This is the border style.  It may be 1 for a solid border or 0 for no
-border.  Additional border styles may be defined in the future.  The
-thickness of the border is controlled by L</line_width>.
+border.  In addition, you may specify any combination of the letters
+T, B, L, and R (meaning top, bottom, left, and right) to have a border
+only on the specified side(s).
+
+The thickness of the border is controlled by L</line_width>.
+
+(Note: The string you give will be converted into the canonical
+representation, which has the letters upper case and in the order
+TBLR.)
 
 =cut
 
 has border => (
   is  => 'ro',
   isa => BorderStyle,
+  coerce => 1,
   @inherited,
 );
 
