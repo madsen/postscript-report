@@ -1007,8 +1007,10 @@ sub _generate_font_list
   my %font;
 
   foreach my $font (values %{ $self->_fonts }) {
-    $font{$font->id} = sprintf("/%s /%s-iso findfont %s scalefont def\n",
-                               $font->id, $font->font, $font->size);
+    my $name = $font->font;
+    $name .= '-iso' unless $name eq 'Symbol';
+    $font{$font->id} = sprintf("/%s /%s findfont %s scalefont def\n",
+                               $font->id, $name, $font->size);
   } # end foreach $font
 
   $self->ps_functions->{__PACKAGE__.'-fonts'} = join('', sort values %font);
