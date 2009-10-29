@@ -2,6 +2,7 @@ Revision history for PostScript-Report
 
 0.04   NOT
 	- Use cp1252 encoding (requires PostScript::File 1.05)
+	- Fixed bug (crashed because of a VBox with only 1 child)
 
 0.03   October 28, 2009
 	- Added background attribute to Component

@@ -17,7 +17,7 @@ package PostScript::Report::VBox;
 # ABSTRACT: Hold components in a vertical column
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Str);
@@ -67,7 +67,7 @@ after init => sub {
   unless (defined $height) {
 
     if (@$children == 1) {
-      my $height = $children->[0]->height;
+      $height = $children->[0]->height;
     } else {
       my $row_height = $self->row_height;
       $height = 0;
