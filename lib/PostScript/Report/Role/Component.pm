@@ -157,6 +157,7 @@ has label_font => (
 =attr line_width
 
 This is the line width.  It's used mainly as the border width.
+A line width of 0 means "as thin as possible".
 
 =cut
 

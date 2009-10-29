@@ -435,6 +435,7 @@ around label_font => $coerce_font;
 
 This is the default line width (0.5 by default).
 It's used mainly for component borders.
+A line width of 0 means "as thin as possible".
 
 =cut
 
