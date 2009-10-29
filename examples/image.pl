@@ -48,6 +48,6 @@ my @rows = map { my $r=[ $_, $letter, "$_ $letter", "Right $_" ];
 # Build the report and run it:
 my $rpt = PostScript::Report->build($desc);
 
-$rpt->run({}, \@rows)->output("image.ps");
+$rpt->run(\@rows)->output("image.ps");
 
 #$rpt->dump;

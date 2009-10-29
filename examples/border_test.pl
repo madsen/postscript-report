@@ -64,6 +64,6 @@ my $desc = {
 # Build the report and run it:
 my $rpt = PostScript::Report->build($desc);
 
-$rpt->run({}, [])->output("border_test.ps");
+$rpt->run->output("border_test.ps");
 
 #$rpt->dump;

@@ -27,6 +27,7 @@ use PostScript::File 1.05 'pstr'; # Need cp1252 support
 
 use PostScript::Report::Font ();
 use List::Util 'min';
+use Scalar::Util 'reftype';
 
 use namespace::autoclean;
 #---------------------------------------------------------------------
@@ -890,14 +891,23 @@ results.  C<run> returns C<$rpt>, so you can chain the method calls:
 
   $rpt->run(\%data, \@rows)->output($filename);
 
+If you omit either C<%data> or C<@rows> (or pass C<undef>), an empty
+hash or array will be substituted.
+
 =cut
 
 sub run
 {
   my ($self, $data, $rows) = @_;
 
-  $self->_data($data);
-  $self->_rows($rows);
+  # Handle $rpt->run(\@rows):
+  if (not defined $rows and (reftype($data)||'') eq 'ARRAY') {
+    $rows = $data;
+    $data = {};
+  } # end if only one parameter, and it's an arrayref
+
+  $self->_data($data ||= {});
+  $self->_rows($rows ||= []);
   $self->_current_row(0);
 
   $self->_init;
