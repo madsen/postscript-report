@@ -17,7 +17,7 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Carp 'confess';
 
@@ -59,7 +59,7 @@ subtype FontObj,
   as class_type('PostScript::Report::Font');
 
 subtype FontMetrics,
-  as class_type('Font::AFM');
+  as class_type('PostScript::File::Metrics');
 
 enum(HAlign, qw(center left right));
 

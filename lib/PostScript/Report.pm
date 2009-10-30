@@ -17,13 +17,13 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use 5.008;
 use Moose;
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 1.05 'pstr'; # Need cp1252 support
+use PostScript::File 1.06 'pstr'; # Need metrics support
 
 use PostScript::Report::Font ();
 use List::Util 'min';
@@ -734,13 +734,6 @@ has _fonts => (
   init_arg => undef,
 );
 
-has _font_metrics => (
-  is       => 'ro',
-  isa      => HashRef[FontMetrics],
-  default   => sub { {} },
-  init_arg => undef,
-);
-
 =method get_font
 
   $font_object = $rpt->get_font($font_name, $font_size)
@@ -755,6 +748,10 @@ C<$font_object> will be returned.
 sub get_font
 {
   my ($self, $name, $size) = @_;
+
+  unless ($name =~ s/^=//) {
+    $name .= '-iso' unless $name eq 'Symbol';
+  }
 
   my $fontname = "$name-$size";
 
@@ -785,16 +782,6 @@ sub _next_font_id
 
   $fontID;
 } # end _next_font_id
-
-# This is only for use by PostScript::Report::Font:
-sub _get_metrics
-{
-  my ($self, $name) = @_;
-
-  require Font::AFM;
-
-  $self->_font_metrics->{$name} ||= Font::AFM->new($name);
-} # end _get_metrics
 #---------------------------------------------------------------------
 
 =attr-o page_count
@@ -1008,7 +995,6 @@ sub _generate_font_list
 
   foreach my $font (values %{ $self->_fonts }) {
     my $name = $font->font;
-    $name .= '-iso' unless $name eq 'Symbol';
     $font{$font->id} = sprintf("/%s /%s findfont %s scalefont def\n",
                                $font->id, $name, $font->size);
   } # end foreach $font
@@ -1175,27 +1161,9 @@ clear
 
 =begin Pod::Loom-group_method dbg
 
-=head1 CONFIGURATION AND ENVIRONMENT
-
-PostScript::Report requires no configuration files or environment variables.
-
-However, it may require L<Font::AFM>, and unfortunately that's
-difficult to configure properly.  I wound up creating symlinks in
-F</usr/local/lib/afm/> (which is one of the default paths that
-Font::AFM searches if you don't have a C<METRICS> environment
-variable):
-
- Helvetica.afm
-   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvr8a.afm
- Helvetica-Bold.afm
-   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvb8a.afm
- Helvetica-Oblique.afm
-   -> /usr/share/texmf-dist/fonts/afm/adobe/helvetic/phvro8a.afm
-
-Paths on your system may vary.  I suggest searching for C<.afm> files,
-and then grepping them for "FontName Helvetica".
-
 =head1 BUGS AND LIMITATIONS
 
-PostScript::Report does not support characters outside of Latin-1.
-Unfortunately, supporting Unicode in PostScript is non-trivial.
+PostScript::Report does not support characters outside of Windows code
+page 1252 (aka WinLatin1), which is a superset of the printable
+characters in ISO-8859-1 (aka Latin1).  Unfortunately, supporting
+Unicode in PostScript is non-trivial.

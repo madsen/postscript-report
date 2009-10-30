@@ -618,8 +618,8 @@ detail:
 BEFORE _init:
 align         : center
 border        : 1
-font          : Helvetica 9
-label_font    : Helvetica 6
+font          : Helvetica-iso 9
+label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
@@ -628,7 +628,7 @@ row_height    : 22
 report_header:
   PostScript::Report::HBox:
     border        : 0
-    font          : Helvetica-Bold 9
+    font          : Helvetica-Bold-iso 9
     height        : 12
     padding_side  : 0
     children:
@@ -674,7 +674,7 @@ page_header:
             value         : location
             width         : 54
           PostScript::Report::FieldTL:
-            font          : Helvetica-Bold 9
+            font          : Helvetica-Bold-iso 9
             label         : Work Order#:
             value         : workOrder
             width         : 105
@@ -735,7 +735,7 @@ page_header:
                     value         : revisedDueDate
                     width         : 79
       PostScript::Report::HBox:
-        font          : Helvetica-Bold 9
+        font          : Helvetica-Bold-iso 9
         height        : 19
         padding_bottom: 6
         children:
@@ -794,7 +794,7 @@ page_footer:
     border        : 0
     children:
       PostScript::Report::Field:
-        font          : Helvetica-Bold 8
+        font          : Helvetica-Bold-iso 8
         value         : PostScript::Report::Value::Constant
           value         : The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.
       PostScript::Report::HBox:
@@ -817,13 +817,13 @@ page_footer:
             width         : 258
       PostScript::Report::HBox:
         border        : 1
-        font          : Helvetica 6
+        font          : Helvetica-iso 6
         height        : 14
         padding_side  : 0
         children:
           PostScript::Report::HBox:
             border        : 0
-            font          : Helvetica 8
+            font          : Helvetica-iso 8
             children:
               PostScript::Report::Field:
                 value         : PostScript::Report::Value::Constant
@@ -895,8 +895,8 @@ page_footer:
 AFTER _init:
 align         : center
 border        : 1
-font          : Helvetica 9
-label_font    : Helvetica 6
+font          : Helvetica-iso 9
+label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
@@ -905,7 +905,7 @@ row_height    : 22
 report_header:
   PostScript::Report::HBox:
     border        : 0
-    font          : Helvetica-Bold 9
+    font          : Helvetica-Bold-iso 9
     height        : 12
     padding_side  : 0
     width         : 751
@@ -956,7 +956,7 @@ page_header:
             value         : location
             width         : 54
           PostScript::Report::FieldTL:
-            font          : Helvetica-Bold 9
+            font          : Helvetica-Bold-iso 9
             label         : Work Order#:
             value         : workOrder
             width         : 105
@@ -1030,7 +1030,7 @@ page_header:
                     value         : revisedDueDate
                     width         : 79
       PostScript::Report::HBox:
-        font          : Helvetica-Bold 9
+        font          : Helvetica-Bold-iso 9
         height        : 19
         padding_bottom: 6
         width         : 751
@@ -1093,7 +1093,7 @@ page_footer:
     width         : 751
     children:
       PostScript::Report::Field:
-        font          : Helvetica-Bold 8
+        font          : Helvetica-Bold-iso 8
         height        : 22
         value         : PostScript::Report::Value::Constant
           value         : The component identified above was repaired/overhauled/inspected IAW current federal aviation regulations and in respect to that work, was found airworthy for return to service.
@@ -1119,14 +1119,14 @@ page_footer:
             width         : 258
       PostScript::Report::HBox:
         border        : 1
-        font          : Helvetica 6
+        font          : Helvetica-iso 6
         height        : 14
         padding_side  : 0
         width         : 751
         children:
           PostScript::Report::HBox:
             border        : 0
-            font          : Helvetica 8
+            font          : Helvetica-iso 8
             width         : 448
             children:
               PostScript::Report::Field:
