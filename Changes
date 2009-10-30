@@ -1,10 +1,10 @@
 Revision history for PostScript-Report
 
-0.04   NOT
+0.04   October 29, 2009
 	- You can now indicate which sides should have a border
 	- You can now omit \%data and/or \@rows when calling run
 	- Use cp1252 encoding (requires PostScript::File 1.05)
-	- Fixed bug (crashed because of a VBox with only 1 child)
+	- Fixed crash caused by a VBox with only 1 child
 
 0.03   October 28, 2009
 	- Added background attribute to Component
