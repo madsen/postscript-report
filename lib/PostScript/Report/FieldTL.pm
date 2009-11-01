@@ -23,8 +23,6 @@ use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
-use PostScript::File 'pstr';
-
 use namespace::autoclean;
 
 with 'PostScript::Report::Role::Component';
@@ -163,16 +161,17 @@ sub draw
                          @lines);
   } # end if multiline
 
-  $rpt->ps->add_to_page( sprintf(
+  my $ps = $rpt->ps;
+  $ps->add_to_page( sprintf(
     "%s\n%s %s %s /%s-%s %d %s\n%s\n%s %s %d %d %d %d %s %s %s db%s\n",
-    join("\n", map { pstr($_) } reverse @lines),
+    join("\n", map { $ps->pstr($_) } reverse @lines),
     $font->size,
     $self->padding_text_side,
     $font->size + $self->padding_label_top+$labelSize + $self->padding_text_top,
     $FieldTL, uc substr($self->align, 0, 1),
     scalar @lines,
     $font->id,
-    pstr($self->label),
+    $ps->pstr($self->label),
     $self->padding_label_side,
     $labelSize + $self->padding_label_top,
     $x, $y, $x + $self->width, $y - $self->height,

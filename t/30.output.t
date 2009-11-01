@@ -291,7 +291,7 @@ my $desc = {
 my $data = {
   'custName'          => 'IMAGINARY AIRWAYS',
   'partNumReceived'   => '957X1427-3',
-  'serialNumReceived' => 'N/A',
+  'serialNumReceived' => '-45',
   'installedOn'       => '797',
   'location'          => 'A1',
   'workOrder'         => '68452-8',
@@ -884,11 +884,11 @@ fnA 571 587 771 575 Field-R 0.5 db0
 9 3 15 /FieldTL-C 1 fnC
 (Customer Name:)
 3 6 20 575 180 553 fnE FieldTL 0.5 db1
-(957X1427-3)
+(957X1427­3)
 9 3 15 /FieldTL-C 1 fnC
 (Part Number Received:)
 3 6 180 575 326 553 fnE FieldTL 0.5 db1
-(N/A)
+(-45)
 9 3 15 /FieldTL-C 1 fnC
 (Serial Number Received:)
 3 6 326 575 482 553 fnE FieldTL 0.5 db1
@@ -900,7 +900,7 @@ fnA 571 587 771 575 Field-R 0.5 db0
 9 3 15 /FieldTL-C 1 fnC
 (Location:)
 3 6 612 575 666 553 fnE FieldTL 0.5 db1
-(68452-8)
+(68452­8)
 9 3 15 /FieldTL-C 1 fnA
 (Work Order#:)
 3 6 666 575 771 553 fnE FieldTL 0.5 db1
@@ -909,7 +909,7 @@ fnA 571 587 771 575 Field-R 0.5 db0
 9 3 15 /FieldTL-C 1 fnC
 (Part Description:)
 3 6 20 553 180 531 fnE FieldTL 0.5 db1
-(957X1427-3)
+(957X1427­3)
 9 3 15 /FieldTL-C 1 fnC
 (Part Number Returned:)
 3 6 180 553 326 531 fnE FieldTL 0.5 db1
@@ -926,7 +926,7 @@ fnA 571 587 771 575 Field-R 0.5 db0
 9 3 15 /FieldTL-C 1 fnC
 (RO Due Date:)
 3 6 89 531 180 509 fnE FieldTL 0.5 db1
-(REPAIR PER B797 CMM 47-42-96 REV 40 DATED 07MAY2009)
+(REPAIR PER B797 CMM 47­42­96 REV 40 DATED 07MAY2009)
 9 3 15 /FieldTL-L 1 fnC
 (Repair/Overhaul Per:)
 3 6 180 531 482 509 fnE FieldTL 0.5 db1
@@ -1125,7 +1125,7 @@ fnC 20 338 49 319 Field-C 0.5 db1
 (W1)
 fnC 49 338 89 319 Field-C 0.5 db1
 92 325
-(that field as a final resting-place for those who here gave their )
+(that field as a final resting­place for those who here gave their )
 fnC 89 338 539 319 Field-L 0.5 db1
 575.5 325
 ()
@@ -1368,7 +1368,7 @@ fnB 20 83 771 61 Field-C 0.5 db0
 3 6 513 61 771 39 fnE FieldTL 0.5 db1
 20 61 771 39 0.5 db1
 48.5 29
-(42410-1)
+(42410­1)
 fnD 20 39 77 25 Field-C 0.5 db0
 91 29
 (Page\(s\): 1 OF 2)
@@ -1377,7 +1377,7 @@ fnD 91 39 468 25 Field-L 0.5 db0
 (ML)
 fnE 468 39 478 25 Field-R 0.5 db0
 529 31
-(FXN-)
+(FXN­)
 fnE 478 39 531 25 Field-R 0.5 db0
 533 31
 (0)
@@ -1418,11 +1418,11 @@ userdict begin
 9 3 15 /FieldTL-C 1 fnC
 (Customer Name:)
 3 6 20 587 180 565 fnE FieldTL 0.5 db1
-(957X1427-3)
+(957X1427­3)
 9 3 15 /FieldTL-C 1 fnC
 (Part Number Received:)
 3 6 180 587 326 565 fnE FieldTL 0.5 db1
-(N/A)
+(-45)
 9 3 15 /FieldTL-C 1 fnC
 (Serial Number Received:)
 3 6 326 587 482 565 fnE FieldTL 0.5 db1
@@ -1434,7 +1434,7 @@ userdict begin
 9 3 15 /FieldTL-C 1 fnC
 (Location:)
 3 6 612 587 666 565 fnE FieldTL 0.5 db1
-(68452-8)
+(68452­8)
 9 3 15 /FieldTL-C 1 fnA
 (Work Order#:)
 3 6 666 587 771 565 fnE FieldTL 0.5 db1
@@ -1443,7 +1443,7 @@ userdict begin
 9 3 15 /FieldTL-C 1 fnC
 (Part Description:)
 3 6 20 565 180 543 fnE FieldTL 0.5 db1
-(957X1427-3)
+(957X1427­3)
 9 3 15 /FieldTL-C 1 fnC
 (Part Number Returned:)
 3 6 180 565 326 543 fnE FieldTL 0.5 db1
@@ -1460,7 +1460,7 @@ userdict begin
 9 3 15 /FieldTL-C 1 fnC
 (RO Due Date:)
 3 6 89 543 180 521 fnE FieldTL 0.5 db1
-(REPAIR PER B797 CMM 47-42-96 REV 40 DATED 07MAY2009)
+(REPAIR PER B797 CMM 47­42­96 REV 40 DATED 07MAY2009)
 9 3 15 /FieldTL-L 1 fnC
 (Repair/Overhaul Per:)
 3 6 180 543 482 521 fnE FieldTL 0.5 db1
@@ -1614,7 +1614,7 @@ fnB 20 83 771 61 Field-C 0.5 db0
 3 6 513 61 771 39 fnE FieldTL 0.5 db1
 20 61 771 39 0.5 db1
 48.5 29
-(42410-1)
+(42410­1)
 fnD 20 39 77 25 Field-C 0.5 db0
 91 29
 (Page\(s\): 2 OF 2)
@@ -1623,7 +1623,7 @@ fnD 91 39 468 25 Field-L 0.5 db0
 (ML)
 fnE 468 39 478 25 Field-R 0.5 db0
 529 31
-(FXN-)
+(FXN­)
 fnE 478 39 531 25 Field-R 0.5 db0
 533 31
 (0)

@@ -23,8 +23,6 @@ use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
-use PostScript::File 'pstr';
-
 use namespace::autoclean;
 
 with 'PostScript::Report::Role::Component';
@@ -78,10 +76,11 @@ sub draw
     else                  { $self->padding_side }
   };
 
-  $rpt->ps->add_to_page( sprintf(
+  my $ps = $rpt->ps;
+  $ps->add_to_page( sprintf(
     "%s %s\n%s\n%s %d %d %d %d %s-%s %s db%s\n",
     $x + $xOff, $y - $self->height + $self->padding_bottom,
-    pstr( $rpt->get_value($self->value) ),
+    $ps->pstr( $rpt->get_value($self->value) ),
     $self->font->id,
     $x, $y, $x + $self->width, $y - $self->height,
     $self->id, $align,

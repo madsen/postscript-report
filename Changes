@@ -2,6 +2,8 @@ Revision history for PostScript-Report
 
 0.05   NOT
 	- Use PostScript::File::Metrics (requires PostScript::File 1.06)
+	- Call pstr as a method to take advantage of auto_hyphen
+	  processing in PostScript::File 1.06
 	- Fixed memory leak (Font should have used a weak reference)
 
 0.04   October 29, 2009
