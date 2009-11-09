@@ -7,6 +7,7 @@ Revision history for PostScript-Report
 	  processing in PostScript::File 2.00.	You should read
 	  Hyphens and Minus Signs in PostScript::File's documentation.
 	- Fixed memory leak (Font should have used a weak reference)
+	- Fixed Image to correctly initialize graphics state for EPS file
 
 0.04   October 29, 2009
 	- You can now indicate which sides should have a border

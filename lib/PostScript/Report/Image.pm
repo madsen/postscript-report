@@ -149,9 +149,25 @@ after init => sub {
   count /Image-ops_count exch def
   userdict begin
   /showpage {} def
+  % Reset graphics state to defaults:
+  0 setgray
+  0 setlinecap
+  1 setlinewidth
+  0 setlinejoin
+  10 setmiterlimit
+  [] 0 setdash
+  newpath
+  % If level != 1 then set strokeadjust and overprint to defaults
+  /languagelevel where {
+    pop
+    languagelevel 1 ne {
+      false setstrokeadjust
+      false setoverprint
+    } if
+  } if
 } bind def
 
-/Image-EPSFCleanUp { % clean up after EPSF inclusion
+/Image-EPSFCleanUp {
   count Image-ops_count sub {pop} repeat
   countdictstack Image-dict_stack sub {end} repeat
   Image-PreEPS_state restore
