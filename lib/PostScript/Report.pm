@@ -23,7 +23,7 @@ use 5.008;
 use Moose;
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 1.06 'pstr'; # Need metrics support
+use PostScript::File 2.00 'pstr'; # Need metrics support
 
 use PostScript::Report::Font ();
 use List::Util 'min';
