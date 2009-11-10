@@ -1653,6 +1653,10 @@ fnE 744 39 771 25 Field-L 0.5 db0
 end
 pagelevel restore
 showpage
+%%Trailer
+% Local Variables:
+% coding: cp1252
+% End:
 %%EOF
 ---
 align         : center
