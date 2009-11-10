@@ -8,6 +8,7 @@ Revision history for PostScript-Report
 	  Hyphens and Minus Signs in PostScript::File's documentation.
 	- Fixed memory leak (Font should have used a weak reference)
 	- Fixed Image to correctly initialize graphics state for EPS file
+	- Added get__PostScript_File method for PostScript::Convert
 
 0.04   October 29, 2009
 	- You can now indicate which sides should have a border

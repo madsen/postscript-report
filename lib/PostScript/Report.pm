@@ -516,6 +516,11 @@ has ps => (
   init_arg=> undef,
 );
 
+*get__PostScript_File = \&ps;   # Alias for PostScript::Convert
+
+=for Pod::Coverage
+get__PostScript_File
+
 =attr-o ps_functions
 
 This is a hashref of PostScript code blocks that should be added to
@@ -1100,7 +1105,12 @@ __END__
 
     my $rpt = PostScript::Report->build(\%report_description);
 
+    # Run the report and save PostScript to a file:
     $rpt->run(\%data, \@rows)->output("filename.ps");
+
+    # Or, if you want PDF output instead of PostScript:
+    use PostScript::Convert;
+    psconvert($rpt->run(\%data, \@rows), "filename.pdf");
 
     $rpt->clear;    # If you want to save this object and run it again
 
@@ -1118,6 +1128,9 @@ appropriate objects.
 All measurements in a report are given in points (PostScript's native
 measurement unit).  There are 72 points in one inch
 (1 pt is about 0.3528 mm).
+
+If you want to save the report as PDF, you can pass a report object
+(after calling C<run>) to L<PostScript::Convert/psconvert>.
 
 =begin Pod::Loom-group_attr sec
 
