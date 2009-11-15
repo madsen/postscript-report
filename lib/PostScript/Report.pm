@@ -1004,7 +1004,8 @@ sub _generate_font_list
                                $font->id, $name, $font->size);
   } # end foreach $font
 
-  $self->ps_functions->{__PACKAGE__.'-fonts'} = join('', sort values %font);
+  $self->ps->add_setup(join('', "% begin report fonts\n",
+                            (sort values %font), "% end report fonts\n"));
 } # end _generate_font_list
 
 #---------------------------------------------------------------------
