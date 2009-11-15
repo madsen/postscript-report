@@ -997,15 +997,20 @@ sub _generate_font_list
   my ($self) = @_;
 
   my %font;
+  my $ps = $self->ps;
 
   foreach my $font (values %{ $self->_fonts }) {
     my $name = $font->font;
     $font{$font->id} = sprintf("/%s /%s findfont %s scalefont def\n",
                                $font->id, $name, $font->size);
+
+    $name =~ s/-iso$//;
+    $ps->need_resource(font => $name);
   } # end foreach $font
 
-  $self->ps->add_setup(join('', "% begin report fonts\n",
-                            (sort values %font), "% end report fonts\n"));
+  $ps->add_setup(join('',
+    "% begin report fonts\n", (sort values %font), "% end report fonts\n"
+  ));
 } # end _generate_font_list
 
 #---------------------------------------------------------------------

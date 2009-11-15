@@ -355,8 +355,10 @@ my $ps = $rpt->output;
 
 unless ($generateResults eq 'ps') {
   # Remove PostScript::File generated code:
-  $ps =~ s/^%%BeginProcSet: PostScript_File.*?^%%EndProcSet\n//ms;
-  $ps =~ s/^%%BeginResource: Win1252_Encoded_Fonts.*?^%%EndResource\n//ms;
+  $ps =~ s/^%%BeginResource: procset PostScript_File.*?^%%EndResource\n//msg;
+  $ps =~ s/^%%\+ procset PostScript_File.*\n//mg;
+  $ps =~ s/^% Handle font encoding:\n.*?^% end font encoding\n//ms;
+
 } # end unless generating PostScript to look at
 
 checkResults($ps, 'generated PostScript');
@@ -673,20 +675,19 @@ page_footer:
 ---
 %!PS-Adobe-3.0
 %%Orientation: Landscape
+%%DocumentNeededResources:
+%%+ font Helvetica Helvetica-Bold
 %%DocumentSuppliedResources:
-%%+ procset PostScript__Report
-%%+ procset PostScript__Report-fonts
-%%+ procset PostScript__Report__Checkbox
-%%+ procset PostScript__Report__Field
-%%+ procset PostScript__Report__FieldTL
-%%+ Win1252_Encoded_Fonts
-%%+ procset PostScript_File
+%%+ procset PostScript__Report 0 0
+%%+ procset PostScript__Report__Checkbox 0 0
+%%+ procset PostScript__Report__Field 0 0
+%%+ procset PostScript__Report__FieldTL 0 0
 %%Title: (Report)
 %%Pages: 2
 %%PageOrder: Ascend
 %%EndComments
 %%BeginProlog
-%%BeginProcSet: PostScript__Report
+%%BeginProcSet: PostScript__Report 0 0
 /boxpath
 {
 newpath
@@ -779,14 +780,7 @@ rmoveto
 show
 } bind def
 %%EndProcSet
-%%BeginProcSet: PostScript__Report-fonts
-/fnA /Helvetica-Bold-iso findfont 9 scalefont def
-/fnB /Helvetica-Bold-iso findfont 8 scalefont def
-/fnC /Helvetica-iso findfont 9 scalefont def
-/fnD /Helvetica-iso findfont 8 scalefont def
-/fnE /Helvetica-iso findfont 6 scalefont def
-%%EndProcSet
-%%BeginProcSet: PostScript__Report__Checkbox
+%%BeginProcSet: PostScript__Report__Checkbox 0 0
 /Checkbox
 {
 gsave
@@ -809,13 +803,13 @@ fill
 grestore
 } bind def
 %%EndProcSet
-%%BeginProcSet: PostScript__Report__Field
+%%BeginProcSet: PostScript__Report__Field 0 0
 /Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
 /Field-C { Field showcenter grestore } bind def
 /Field-L { Field showleft   grestore } bind def
 /Field-R { Field showright  grestore } bind def
 %%EndProcSet
-%%BeginProcSet: PostScript__Report__FieldTL
+%%BeginProcSet: PostScript__Report__FieldTL 0 0
 /FieldTL
 {
 gsave
@@ -864,6 +858,13 @@ showright
 } def
 %%EndProcSet
 %%EndProlog
+%%BeginSetup
+/fnA /Helvetica-Bold-iso findfont 9 scalefont def
+/fnB /Helvetica-Bold-iso findfont 8 scalefont def
+/fnC /Helvetica-iso findfont 9 scalefont def
+/fnD /Helvetica-iso findfont 8 scalefont def
+/fnE /Helvetica-iso findfont 6 scalefont def
+%%EndSetup
 %%Page: 1 1
 %%PageBoundingBox: 25 20 587 772
 %%BeginPageSetup
