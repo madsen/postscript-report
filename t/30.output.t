@@ -676,18 +676,18 @@ page_footer:
 %!PS-Adobe-3.0
 %%Orientation: Landscape
 %%DocumentNeededResources:
-%%+ font Helvetica Helvetica-Bold
+%%+ font Courier-Bold Helvetica Helvetica-Bold
 %%DocumentSuppliedResources:
-%%+ procset PostScript__Report 0 0
-%%+ procset PostScript__Report__Checkbox 0 0
-%%+ procset PostScript__Report__Field 0 0
-%%+ procset PostScript__Report__FieldTL 0 0
+%%+ procset PostScript__Report 0.05 0
+%%+ procset PostScript__Report__Checkbox 0.01 0
+%%+ procset PostScript__Report__Field 0.02 0
+%%+ procset PostScript__Report__FieldTL 0.03 0
 %%Title: (Report)
 %%Pages: 2
 %%PageOrder: Ascend
 %%EndComments
 %%BeginProlog
-%%BeginProcSet: PostScript__Report 0 0
+%%BeginResource: procset PostScript__Report 0.05 0
 /boxpath
 {
 newpath
@@ -779,8 +779,8 @@ moveto
 rmoveto
 show
 } bind def
-%%EndProcSet
-%%BeginProcSet: PostScript__Report__Checkbox 0 0
+%%EndResource
+%%BeginResource: procset PostScript__Report__Checkbox 0.01 0
 /Checkbox
 {
 gsave
@@ -802,14 +802,14 @@ fill
 { pop } ifelse
 grestore
 } bind def
-%%EndProcSet
-%%BeginProcSet: PostScript__Report__Field 0 0
+%%EndResource
+%%BeginResource: procset PostScript__Report__Field 0.02 0
 /Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
 /Field-C { Field showcenter grestore } bind def
 /Field-L { Field showleft   grestore } bind def
 /Field-R { Field showright  grestore } bind def
-%%EndProcSet
-%%BeginProcSet: PostScript__Report__FieldTL 0 0
+%%EndResource
+%%BeginResource: procset PostScript__Report__FieldTL 0.03 0
 /FieldTL
 {
 gsave
@@ -856,7 +856,7 @@ sub exch pop		% Y CONTENT Xpos
 3 1 roll              % Xpos Y CONTENT
 showright
 } def
-%%EndProcSet
+%%EndResource
 %%EndProlog
 %%BeginSetup
 /fnA /Helvetica-Bold-iso findfont 9 scalefont def

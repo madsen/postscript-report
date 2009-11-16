@@ -525,8 +525,10 @@ get__PostScript_File
 
 This is a hashref of PostScript code blocks that should be added to
 the L<PostScript::File> object.  The key should begin with the package
-inserting the code.  Blocks are added in ASCIIbetical order.  A
-component's C<init> method may add an entry here.
+inserting the code.  If a package adds more than one such block, the
+package name should be followed by a hyphen and the block name.
+Blocks are added in ASCIIbetical order.  A component's C<init> method
+may add an entry here.
 
 =cut
 
@@ -1022,8 +1024,12 @@ sub _attach_ps_resources
   my $funcs = $self->ps_functions;
 
   foreach my $key (sort keys %$funcs) {
+    # Try to determine the version of this procset:
+    my $version;
+    $version = eval { $1->VERSION } if $key =~ /^([\w:]+)/;
+
     (my $name = $key) =~ s/:/_/g;
-    $ps->add_function($name, $funcs->{$key});
+    $ps->add_function($name, $funcs->{$key}, $version);
   } # end foreach $key
 
   %$funcs = ();                 # Clear out ps_functions
