@@ -17,7 +17,7 @@ package PostScript::Report::Field;
 # ABSTRACT: A simple field with no label
 #---------------------------------------------------------------------
 
-our $VERSION = '0.02';
+our $VERSION = '0.05';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);

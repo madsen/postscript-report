@@ -680,8 +680,8 @@ page_footer:
 %%DocumentSuppliedResources:
 %%+ procset PostScript__Report 0.05 0
 %%+ procset PostScript__Report__Checkbox 0.01 0
-%%+ procset PostScript__Report__Field 0.02 0
-%%+ procset PostScript__Report__FieldTL 0.03 0
+%%+ procset PostScript__Report__Field 0.05 0
+%%+ procset PostScript__Report__FieldTL 0.05 0
 %%Title: (Report)
 %%Pages: 2
 %%PageOrder: Ascend
@@ -803,13 +803,13 @@ fill
 grestore
 } bind def
 %%EndResource
-%%BeginResource: procset PostScript__Report__Field 0.02 0
+%%BeginResource: procset PostScript__Report__Field 0.05 0
 /Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
 /Field-C { Field showcenter grestore } bind def
 /Field-L { Field showleft   grestore } bind def
 /Field-R { Field showright  grestore } bind def
 %%EndResource
-%%BeginResource: procset PostScript__Report__FieldTL 0.03 0
+%%BeginResource: procset PostScript__Report__FieldTL 0.05 0
 /FieldTL
 {
 gsave
