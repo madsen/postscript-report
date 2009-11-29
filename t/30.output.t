@@ -358,7 +358,7 @@ unless ($generateResults eq 'ps') {
   $ps =~ s/^%%BeginResource: procset PostScript_File.*?^%%EndResource\n//msg;
   $ps =~ s/^%%\+ procset PostScript_File.*\n//mg;
   $ps =~ s/^% Handle font encoding:\n.*?^% end font encoding\n//ms;
-
+  $ps =~ s/^% Local Variables:\n.*?^% End:\n//ms;
 } # end unless generating PostScript to look at
 
 checkResults($ps, 'generated PostScript');
@@ -1655,9 +1655,6 @@ end
 pagelevel restore
 showpage
 %%Trailer
-% Local Variables:
-% coding: cp1252
-% End:
 %%EOF
 ---
 align         : center
