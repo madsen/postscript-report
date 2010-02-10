@@ -17,10 +17,9 @@ package PostScript::Report::Role::Container;
 # ABSTRACT: A component that has components
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 
 use Moose::Role;
-use MooseX::AttributeHelpers;
 use MooseX::Types::Moose qw(ArrayRef Bool Int Num Str);
 use PostScript::Report::Types ':all';
 
@@ -35,12 +34,12 @@ This is an arrayref containing the child Components.
 =cut
 
 has children => (
-  metaclass => 'Collection::Array',
+  traits    => ['Array'],
   is        => 'ro',
   isa       => ArrayRef[Component],
   default   => sub { [] },
-  provides  => {
-    push => 'add_child',
+  handles  => {
+    add_child => 'push',
   },
 );
 
