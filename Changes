@@ -9,6 +9,7 @@ Revision history for PostScript-Report
 	- Fixed memory leak (Font should have used a weak reference)
 	- Fixed Image to correctly initialize graphics state for EPS file
 	- Added get__PostScript_File method for PostScript::Convert
+	- Added examples/pdf_image.pl showing PostScript::Convert usage
 	- Require Moose 0.90 instead of MooseX::AttributeHelpers
 
 0.04   October 29, 2009

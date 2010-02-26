@@ -7,6 +7,7 @@ README
 examples/border_test.pl
 examples/image.pl
 examples/multiline_header.pl
+examples/pdf_image.pl
 examples/recycle.eps
 examples/simple.pl
 lib/PostScript/Report.pm

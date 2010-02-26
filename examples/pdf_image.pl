@@ -10,6 +10,7 @@
 use strict;
 use warnings;
 
+use PostScript::Convert;
 use PostScript::Report ();
 
 # Describe the report:
@@ -48,6 +49,8 @@ my @rows = map { my $r=[ $_, $letter, "$_ $letter", "Right $_" ];
 # Build the report and run it:
 my $rpt = PostScript::Report->build($desc);
 
-$rpt->run(\@rows)->output("image.ps");
+psconvert($rpt->run(\@rows), 'pdf_image.pdf');
+
+#$rpt->output("pdf_image.ps");
 
 #$rpt->dump;

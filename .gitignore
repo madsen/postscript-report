@@ -1,6 +1,7 @@
 /.build/
 /blib/
 /examples/*.ps
+/examples/*.pdf
 Makefile
 /pm_to_blib
 PostScript-Report-*.tar.gz
