@@ -3,8 +3,8 @@
 # This example report is hereby placed in the public domain.
 # You may copy from it freely.
 #
-# This adds a report_header with image to simple.pl
-# It also adds zebra striping in grey and yellow
+# This is the same as image.pl, but it uses PostScript::Convert
+# to generate a PDF file.
 #---------------------------------------------------------------------
 
 use strict;
