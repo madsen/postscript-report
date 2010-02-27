@@ -18,4 +18,4 @@
 ^dist\.ini$
 ^tools/
 ^[^/]*\.ps$
-^examples/[^/]*\.ps$
+^examples/[^/]*\.p(?:df|s)$
