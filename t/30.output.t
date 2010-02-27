@@ -351,15 +351,8 @@ checkResults(dumpReport($rpt), 'structure after build');
 
 $rpt->run($data, $rows);
 
-my $ps = $rpt->output;
-
-unless ($generateResults eq 'ps') {
-  # Remove PostScript::File generated code:
-  $ps =~ s/^%%BeginResource: procset PostScript_File.*?^%%EndResource\n//msg;
-  $ps =~ s/^%%\+ procset PostScript_File.*\n//mg;
-  $ps =~ s/^% Handle font encoding:\n.*?^% end font encoding\n//ms;
-  $ps =~ s/^% Local Variables:\n.*?^% End:\n//ms;
-} # end unless generating PostScript to look at
+# Use sanitized output (unless $generateResults eq 'ps'):
+my $ps = $rpt->ps->testable_output($generateResults eq 'ps');
 
 checkResults($ps, 'generated PostScript');
 
@@ -1654,7 +1647,6 @@ fnE 744 39 771 25 Field-L 0.5 db0
 end
 pagelevel restore
 showpage
-%%Trailer
 %%EOF
 ---
 align         : center
