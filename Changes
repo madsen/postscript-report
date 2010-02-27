@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.05   NOT
+0.05   February 26, 2010
 	- Use PostScript::File::Metrics (requires PostScript::File 2.00)
 	  You no longer need Font::AFM to get word wrapping.
 	- Call pstr as a method to take advantage of auto_hyphen
