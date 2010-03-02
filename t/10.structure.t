@@ -56,7 +56,7 @@ while (<DATA>) {
 
     my $rpt = PostScript::Report->build($param);
 
-    my $output;
+    my $output = '';
     open (my $out, '>', \$output);
     select $out;
     print "BEFORE _init:\n";

@@ -44,7 +44,7 @@ sub dumpReport
 {
   my ($rpt) = @_;
 
-  my $output;
+  my $output = '';
   open (my $out, '>', \$output);
   select $out;
   $rpt->dump;
