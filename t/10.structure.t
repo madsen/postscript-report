@@ -21,13 +21,15 @@ use warnings;
 
 use Test::More;
 
-my $diff;
-BEGIN { $diff = eval "use Test::Differences; 1" }
-
-# Not all versions of Test::Differences support changing the style:
-eval { Test::Differences::unified_diff() };
-
-use PostScript::Report ();
+# Load Test::Differences, if available:
+BEGIN {
+  if (eval "use Test::Differences; 1") {
+    # Not all versions of Test::Differences support changing the style:
+    eval { Test::Differences::unified_diff() }
+  } else {
+    eval '*eq_or_diff = \&is;'; # Just use "is" instead
+  }
+} # end BEGIN
 
 my $generateResults;
 
@@ -38,6 +40,8 @@ if (@ARGV and $ARGV[0] eq 'gen') {
 } else {
   plan tests => 6;
 }
+
+require PostScript::Report;
 
 my $code = '';
 
@@ -80,13 +84,8 @@ while (<DATA>) {
       my $expectedA = $1;
 
       # And compare them:
-      if ($diff) { # use Test::Differences
-        eq_or_diff($output,  $expected,  "$param->{title} before");
-        eq_or_diff($outputA, $expectedA, "$param->{title} after");
-      } else { # fall back to Test::More
-        is($output,  $expected,  "$param->{title} before");
-        is($outputA, $expectedA, "$param->{title} after");
-      }
+      eq_or_diff($output,  $expected,  "$param->{title} before");
+      eq_or_diff($outputA, $expectedA, "$param->{title} after");
     } # end else running tests
 
     # Clean up:
