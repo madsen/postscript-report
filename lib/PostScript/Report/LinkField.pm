@@ -48,12 +48,25 @@ has padding_side => (
   @inherited,
 );
 
+=attr link_color
+
+This is the color used by hyperlinks (default C<#00F>, meaning blue).
+See L<PostScript::Report::Types/Color>.
+
+=cut
+
 has link_color => (
   is       => 'ro',
   isa      => Color,
   coerce   => 1,
   default  => sub { [ 0, 0, 1 ] }, # Blue
 );
+
+=attr text_color
+
+This is the color used by regular text (default 0, meaning black).
+
+=cut
 
 has text_color => (
   is       => 'ro',
@@ -62,10 +75,16 @@ has text_color => (
   default  => 0, # Black
 );
 
+=attr underline
+
+If set to a true value, hyperlinks will be underlined.
+The default is true.
+
+=cut
+
 has underline => (
   is       => 'ro',
   isa      => Bool,
-  coerce   => 1,
   default  => 1,
 );
 
@@ -227,7 +246,8 @@ __END__
 =head1 DESCRIPTION
 
 This L<Component|PostScript::Report::Role::Component> is a text field
-that can contain hyperlinks.
+that can contain hyperlinks.  It's intended for use when the report
+will be converted to a PDF file.
 
 Note:  While you may use a LinkField as a label by giving it a
 L<constant value|PostScript::Report::Value::Constant>, it always uses
