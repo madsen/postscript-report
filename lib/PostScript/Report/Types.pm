@@ -17,7 +17,7 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Carp 'confess';
 
@@ -145,7 +145,7 @@ A L<PostScript::Report::Font>.
 
 =head2 FontMetrics
 
-A L<Font::AFM>.
+A L<PostScript::File::Metrics>.
 
 =head2 HAlign
 
