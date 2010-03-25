@@ -361,6 +361,8 @@ $rpt->run($data, $rows);
 # Use sanitized output (unless $generateResults eq 'ps'):
 my $ps = $rpt->ps->testable_output($generateResults eq 'ps');
 
+$ps =~ s/(procset PostScript__Report\S*) \d+\.\d+ 0/$1 0 0/g;
+
 checkResults($ps, 'generated PostScript');
 
 checkResults(dumpReport($rpt), 'structure after run');
@@ -674,16 +676,16 @@ page_footer:
 %%DocumentNeededResources:
 %%+ font Courier-Bold Helvetica Helvetica-Bold
 %%DocumentSuppliedResources:
-%%+ procset PostScript__Report 0.05 0
-%%+ procset PostScript__Report__Checkbox 0.01 0
-%%+ procset PostScript__Report__Field 0.05 0
-%%+ procset PostScript__Report__FieldTL 0.05 0
+%%+ procset PostScript__Report 0 0
+%%+ procset PostScript__Report__Checkbox 0 0
+%%+ procset PostScript__Report__Field 0 0
+%%+ procset PostScript__Report__FieldTL 0 0
 %%Title: (Report)
 %%Pages: 2
 %%PageOrder: Ascend
 %%EndComments
 %%BeginProlog
-%%BeginResource: procset PostScript__Report 0.05 0
+%%BeginResource: procset PostScript__Report 0 0
 /boxpath
 {
 newpath
@@ -776,7 +778,7 @@ rmoveto
 show
 } bind def
 %%EndResource
-%%BeginResource: procset PostScript__Report__Checkbox 0.01 0
+%%BeginResource: procset PostScript__Report__Checkbox 0 0
 /Checkbox
 {
 gsave
@@ -799,13 +801,13 @@ fill
 grestore
 } bind def
 %%EndResource
-%%BeginResource: procset PostScript__Report__Field 0.05 0
+%%BeginResource: procset PostScript__Report__Field 0 0
 /Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
 /Field-C { Field showcenter grestore } bind def
 /Field-L { Field showleft   grestore } bind def
 /Field-R { Field showright  grestore } bind def
 %%EndResource
-%%BeginResource: procset PostScript__Report__FieldTL 0.05 0
+%%BeginResource: procset PostScript__Report__FieldTL 0 0
 /FieldTL
 {
 gsave
