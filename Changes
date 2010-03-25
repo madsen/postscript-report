@@ -2,6 +2,7 @@ Revision history for PostScript-Report
 
 0.06   NOT
 	- Added the metrics attribute to Font
+	- Added the LinkField component
 
 0.05   February 26, 2010
 	- Use PostScript::File::Metrics (requires PostScript::File 2.00)

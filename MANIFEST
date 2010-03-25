@@ -18,6 +18,7 @@ lib/PostScript/Report/FieldTL.pm
 lib/PostScript/Report/Font.pm
 lib/PostScript/Report/HBox.pm
 lib/PostScript/Report/Image.pm
+lib/PostScript/Report/LinkField.pm
 lib/PostScript/Report/Role/Component.pm
 lib/PostScript/Report/Role/Container.pm
 lib/PostScript/Report/Role/Value.pm
