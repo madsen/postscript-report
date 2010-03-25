@@ -17,7 +17,7 @@ package PostScript::Report::Font;
 # ABSTRACT: Represents a PostScript font
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -67,7 +67,14 @@ has size => (
   required => 1,
 );
 
-has _metrics => (
+=attr metrics
+
+This is a L<PostScript::File::Metrics> object providing information
+about the dimensions of the font.
+
+=cut
+
+has metrics => (
   is       => 'ro',
   isa      => FontMetrics,
   handles  => [qw(width wrap)],
