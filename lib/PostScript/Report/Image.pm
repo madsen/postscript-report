@@ -17,7 +17,7 @@ package PostScript::Report::Image;
 # ABSTRACT: Include an EPS file
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -119,16 +119,24 @@ after init => sub {
         } else {
           my $actHeight = $self->height - 2 * $self->padding_bottom;
           $scale ||= $actHeight / $imgHeight;
-          $self->_set_width( $imgWidth * $scale + 2 * $self->padding_side );
+          $self->_set_width(
+            int($imgWidth * $scale + 2 * $self->padding_side + 0.5)
+          );
         } # end else have height but not width
       } elsif ($self->has_width) {
         my $actWidth = $self->width - 2 * $self->padding_side;
         $scale ||= $actWidth / $imgWidth;
-        $self->_set_height( $imgHeight * $scale + 2 * $self->padding_bottom );
+        $self->_set_height(
+          int($imgHeight * $scale + 2 * $self->padding_bottom + 0.5)
+        );
       } else {
         $scale ||= 1;
-        $self->_set_height( $imgHeight * $scale + 2 * $self->padding_bottom );
-        $self->_set_width(  $imgWidth  * $scale + 2 * $self->padding_side   );
+        $self->_set_height(
+          int($imgHeight * $scale + 2 * $self->padding_bottom + 0.5)
+        );
+        $self->_set_width(
+          int($imgWidth  * $scale + 2 * $self->padding_side + 0.5)
+        );
       }
 
       $self->_set_scale($scale);
