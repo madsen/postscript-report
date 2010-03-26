@@ -1,8 +1,8 @@
 Revision history for PostScript-Report
 
-0.06   NOT
-	- Added the metrics attribute to Font
+0.06   March 26, 2010
 	- Added the LinkField component
+	- Added the metrics attribute to Font
 	- Fixed Image to round calculated dimensions to nearest point
 	  (A Component's height & width must be integers.)
 
