@@ -43,6 +43,11 @@ my @tests = (
                                     url => 'mailto:foo@example.com' }, '>'],
   '<[foo@example.com](mailto:foo@example.com)>' =>
     [ '<', { text => 'foo@example.com', url => 'mailto:foo@example.com' }, '>'],
+  "[this will \[continue to ](work)" =>
+    [{ text => "this will [continue to ", url => 'work' }],
+  # This edge case might get removed someday; don't depend on it:
+  "[this probably [shouldn't ](work)" =>
+    [{ text => "this probably [shouldn't ", url => 'work' }],
 );
 
 my @failures = (
@@ -50,6 +55,7 @@ my @failures = (
   '[opened'       => 'expected closing bracket after [opened',
   'no [url]'      => 'expected (URL) after [url]',
   'empty [url]()' => 'expected (URL) after [url]',
+  '[double [open]](url)' => 'expected (URL) after [double [open]',
 );
 
 plan tests => @tests/2 + @failures/2;
