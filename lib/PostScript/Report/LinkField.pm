@@ -17,7 +17,7 @@ package PostScript::Report::LinkField;
 # ABSTRACT: A field that can contain hyperlinks
 #---------------------------------------------------------------------
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -59,7 +59,10 @@ has link_color => (
   is       => 'ro',
   isa      => Color,
   coerce   => 1,
-  default  => sub { [ 0, 0, 1 ] }, # Blue
+  traits   => [ TreeInherit => {
+    fetch_method => 'get_style',
+    default      => sub { [ 0, 0, 1 ] }, # Blue
+  } ],
 );
 
 =attr text_color
@@ -72,7 +75,10 @@ has text_color => (
   is       => 'ro',
   isa      => Color,
   coerce   => 1,
-  default  => 0, # Black
+  traits   => [ TreeInherit => {
+    fetch_method => 'get_style',
+    default      => 0, # Black
+  } ],
 );
 
 =attr underline
@@ -85,7 +91,10 @@ The default is true.
 has underline => (
   is       => 'ro',
   isa      => Bool,
-  default  => 1,
+  traits   => [ TreeInherit => {
+    fetch_method => 'get_style',
+    default      => 1,
+  } ],
 );
 
 after init => sub {
@@ -248,6 +257,7 @@ sub parse_value
 #=====================================================================
 no Moose;
 __PACKAGE__->meta->make_immutable;
+undef @inherited;
 1;
 
 __END__
@@ -284,6 +294,8 @@ hyperlink.
 A LinkField has all the normal
 L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
 including C<padding_bottom>, C<padding_side>, and C<value>.
+
+It also has the following attributes, whose values may be inherited.
 
 =for Pod::Coverage
 draw

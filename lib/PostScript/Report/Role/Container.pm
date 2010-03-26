@@ -17,15 +17,29 @@ package PostScript::Report::Role::Container;
 # ABSTRACT: A component that has components
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use Moose::Role;
-use MooseX::Types::Moose qw(ArrayRef Bool Int Num Str);
+use MooseX::Types::Moose qw(ArrayRef Bool HashRef Int Num Str);
 use PostScript::Report::Types ':all';
 
 with 'PostScript::Report::Role::Component';
 
 my @inherited = (traits => [qw/TreeInherit/]);
+
+=attr-std extra_styles
+
+This is a hash of additional attributes that can be inherited by child
+Components.  You wouldn't normally set this directly, because
+L<PostScript::Report::Builder> will automatically move any unknown
+attributes into this hash.
+
+=cut
+
+has extra_styles => (
+  is       => 'ro',
+  isa      => HashRef,
+);
 
 =attr-std children
 
@@ -91,9 +105,33 @@ after init => sub {
   $_->init($self, $report) for @{ $self->children };
 }; # end after init
 
+=method get_style
+
+  $parent->get_style($attribute)
+
+Child Components call this method to get the inherited value of any
+non-standard style attribute.
+
+=cut
+
+sub get_style
+{
+  my ($self, $attribute) = @_;
+
+  # See if we have the attribute:
+  my $styles = $self->extra_styles;
+
+  return $styles->{$attribute} if $styles and exists $styles->{$attribute};
+
+  # We don't have it, ask our parent:
+  my $parent = $self->parent;
+  return ($parent ? $parent->get_style($attribute) : undef);
+} # end get_style
+
 #=====================================================================
 # Package Return Value:
 
+undef @inherited;
 1;
 
 __END__

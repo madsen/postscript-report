@@ -17,7 +17,7 @@ package PostScript::Report::Builder;
 # ABSTRACT: Build a PostScript::Report object
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.07';
 
 use 5.008;
 use Moose;
@@ -153,6 +153,14 @@ sub build
     $rpt->$type( $self->get_font( $desc{$type} ) );
   }
 
+  # Create any extra fonts:
+  if (my $extra = $rpt->extra_styles) {
+    foreach my $type (keys %$extra) {
+      $extra->{$type} = $self->get_font( $extra->{$type} )
+          if $type =~ /(?:^|_)font$/;
+    } # end foreach key
+  } # end if extra_styles
+
   # Prepare the columns:
   $self->create_columns(\%desc) if $desc{columns};
 
@@ -180,6 +188,20 @@ sub get_report_parameters
   foreach my $key (@constructor_args) {
     $param{$key} = $desc->{$key} if exists $desc->{$key};
   }
+
+  # Move any extra attributes to extra_styles:
+  my %valid = (
+     (map { $_ => 1 } qw(columns fonts stripe_page stripe)),
+     (map { my $arg = $_->init_arg;
+                    ((defined $arg ? $arg : $_->name) => 1) }
+       $self->meta->get_all_attributes,
+       $self->report_class->meta->get_all_attributes)
+  );
+
+  while (my $key = each %$desc) {
+    $param{extra_styles}{$key} = $self->_extra_value($key, $desc->{$key})
+        unless $valid{$key};
+  } # end while each entry in %param
 
   # See if we're using zebra striping:
   my ($use_param, @colors) = 0;
@@ -322,9 +344,10 @@ sub build_box
     $boxType  = $desc->[0];
     %param = %{ $desc->[1] };
     $defaultClass = delete $param{_default} if exists $param{_default};
-    $self->_fixup_parms(\%param);
     $start = 2;
   }
+  my $class = $self->get_class($boxType);
+  $self->_fixup_parms(\%param, $class);
 
   my @children = map {
     ref $_ eq 'HASH'
@@ -334,7 +357,7 @@ sub build_box
   } @$desc[$start .. $#$desc];
 
   # Construct the box:
-  $self->get_class($boxType)->new(children => \@children, %param);
+  $class->new(children => \@children, %param);
 } # end build_box
 
 #---------------------------------------------------------------------
@@ -346,9 +369,8 @@ sub build_object
 
   $class = $self->get_class(delete($parms{_class}) || $class, $prefix);
 
-  $self->_fixup_parms(\%parms);
+  $self->_fixup_parms(\%parms, $class);
 
-  $self->require_class($class);
   $class->new(\%parms);
 } # end build_object
 
@@ -368,7 +390,15 @@ sub get_class
 #---------------------------------------------------------------------
 sub _fixup_parms
 {
-  my ($self, $parms) = @_;
+  my ($self, $parms, $class) = @_;
+
+  $self->require_class($class);
+
+  my %valid = map { my $arg = $_->init_arg;
+                    defined $arg ? ($arg => 1) : () }
+      $class->meta->get_all_attributes;
+
+  my $extra = $parms->{extra_styles};
 
   while (my ($key, $val) = each %$parms) {
     if ($key =~ /(?:^|_)font$/) {
@@ -384,8 +414,29 @@ sub _fixup_parms
                                              'PostScript::Report::Value::');
       }
     } # end elsif key 'value' and ref $val
+
+    # Move non-standard attributes to extra_styles:
+    $extra->{$key} = $self->_extra_value($key, delete $parms->{$key})
+        unless $valid{$key};
   } # end while each ($key, $val) in %$parms
+
+  $parms->{extra_styles} = $extra if $extra;
 } # end _fixup_parms
+
+#---------------------------------------------------------------------
+# Coerce a value for the extra_styles hash:
+
+sub _extra_value
+{
+  my ($self, $key, $val) = @_;
+
+  if ($key =~ /(?:^|_)color$/) {
+    defined(my $color = to_Color($val)) or die "Invalid $key $val";
+    return $color;
+  }
+
+  return $val;
+} # end _extra_value
 
 #---------------------------------------------------------------------
 sub require_class

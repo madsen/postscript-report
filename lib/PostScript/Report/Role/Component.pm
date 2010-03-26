@@ -17,7 +17,7 @@ package PostScript::Report::Role::Component;
 # ABSTRACT: Something that can be drawn
 #---------------------------------------------------------------------
 
-our $VERSION = '0.04';
+our $VERSION = '0.07';
 
 use Moose::Role;
 use MooseX::AttributeTree ();
@@ -315,6 +315,7 @@ sub dump
 #=====================================================================
 # Package Return Value:
 
+undef @inherited;
 1;
 
 __END__

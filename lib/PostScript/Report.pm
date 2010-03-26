@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use 5.008;
 use Moose;
@@ -472,6 +472,40 @@ has padding_side => (
   isa      => Num,
   default  => 3,
 );
+
+=attr-o extra_styles
+
+This is a hash of additional attributes that can be inherited by child
+Components.  You wouldn't normally set this directly, because
+L<PostScript::Report::Builder> will automatically move any unknown
+attributes into this hash.
+
+=cut
+
+has extra_styles => (
+  is       => 'ro',
+  isa      => HashRef,
+);
+
+=method get_style
+
+  $rpt->get_style($attribute)
+
+Child Components call this method to get the inherited value of any
+non-standard style attribute.
+
+=cut
+
+sub get_style
+{
+  my ($self, $attribute) = @_;
+
+  # See if we have the attribute:
+  my $styles = $self->extra_styles or return undef;
+
+  return $styles->{$attribute};
+} # end get_style
+
 #---------------------------------------------------------------------
 
 =attr-o ps
@@ -1081,26 +1115,53 @@ sub _dump_attr
   return unless $attr->has_value($instance);
 
   my $val = $attr->get_value($instance);
+  my $name = $attr->name;
+  my $conversion;
+
+  # Dump extra_styles hash:
+  if ($name eq 'extra_styles') {
+    printf "%s%s:\n", '  ' x $level, $name;
+    foreach my $key (sort keys %$val) {
+      $conversion = ($key =~ /(?:^|_)color$/ && 'color');
+      $selfOrClass->_dump_value($level+1, $key, $val->{$key}, $conversion);
+    } # end foreach $key
+    return;
+  } # end if extra_styles
+
+  # Convert RGB colors from array back to hex triplet:
+  if (ref $val and $attr->has_type_constraint and
+      $attr->type_constraint->name eq 'PostScript::Report::Types::Color') {
+    $conversion = 'color';
+  } # end if RGB color
+
+  # Print the attribute and value:
+  $selfOrClass->_dump_value($level, $name, $val, $conversion);
+} # end _dump_attr
+
+sub _dump_value
+{
+  my ($selfOrClass, $level, $name, $val, $conversion) = @_;
 
   if (my $attrClass = blessed $val) {
     if ($attrClass eq 'PostScript::Report::Font') {
       $val = $val->font . ' ' . $val->size;
     } else {
-      printf "%s%-14s: %s\n", '  ' x $level, $attr->name, $attrClass;
+      printf "%s%-14s: %s\n", '  ' x $level, $name, $attrClass;
       $val->dump($level+1);
       return;
     }
   } # end if blessed $val
 
-  # Convert RGB colors from array back to hex triplet:
-  if (ref $val and $attr->has_type_constraint and
-      $attr->type_constraint->name eq 'PostScript::Report::Types::Color') {
+  if (not $conversion) {
+    # do nothing
+  } elsif ($conversion eq 'color' and ref $val) {
+    # Convert RGB colors from array back to hex triplet:
     $val = join('', '#', map { sprintf '%02X', 255 * $_ + 0.5 } @$val);
-  } # end if RGB color
+  } # end elsif RGB color
 
   # Print the attribute and value:
-  printf "%s%-14s: %s\n", '  ' x $level, $attr->name, $val;
-} # end _dump_attr
+  printf "%s%-14s: %s\n", '  ' x $level, $name, $val;
+} # end _dump_value
 
 #=====================================================================
 # Package Return Value:
