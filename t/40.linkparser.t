@@ -27,10 +27,27 @@ my @tests = (
     [ 'prefix ', { text => 'link', url => 'to' }, ' postfix' ],
   'quote brackets \[\]' => ['quote brackets []'],
   'close ] bracket' => ['close ] bracket'],
+  'a < b' => ['a < b'],
+  '<http://example.com>' => [ { text => 'http://example.com',
+                                url => 'http://example.com' }],
+  '<foo@example.com>' => [ { text => 'foo@example.com',
+                             url => 'mailto:foo@example.com' }],
+  'not \[a](link)' => ['not [a](link)'],
+  'is \\\\[a](link)' => [ 'is \\', { text => 'a', url => 'link' } ],
+  '<noClose'         => [ '<noClose' ],
+  '<<http://example.com>>' => [ '<', { text => 'http://example.com',
+                                       url => 'http://example.com' }, '>'],
+  '\<<foo@example.com>>' => [ '<', { text => 'foo@example.com',
+                                     url => 'mailto:foo@example.com' }, '>'],
+  '<<foo@example.com>>' => [ '<', { text => 'foo@example.com',
+                                    url => 'mailto:foo@example.com' }, '>'],
+  '<[foo@example.com](mailto:foo@example.com)>' =>
+    [ '<', { text => 'foo@example.com', url => 'mailto:foo@example.com' }, '>'],
 );
 
 my @failures = (
   'just open ['   => 'expected closing bracket after just open [',
+  '[opened'       => 'expected closing bracket after [opened',
   'no [url]'      => 'expected (URL) after [url]',
   'empty [url]()' => 'expected (URL) after [url]',
 );

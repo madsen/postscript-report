@@ -221,12 +221,18 @@ sub parse_value
             or die "expected (URL) after " . substr($_, $startPos,
                                                     pos($_) - $startPos);
         push @list, { text => $text, url => $1 };
-      } elsif (/\G\\(.?)/gc or /\G([^\\\[]+)/gc) {
+      } elsif (/\G<([[:alpha:]]+:\S+?)>/gc) {
+        # Hyperlink: <http://foo>
+        push @list, { text => $1, url => $1 };
+      } elsif (/\G<([^\s\[<>]+\@[^\s\[<>]+)>/gc) {
+        # Email address: <foo@example.com>
+        push @list, { text => $1, url => "mailto:$1" };
+      } elsif (/\G\\(.?)/gc or /\G([^\\\[][^\\\[<]*)/gc) {
         # Regular text:
         push @list, '' if not @list or ref $list[-1];
         $list[-1] .= $1;
       } else {
-        die "unparsable input $_"
+        die "unparsable input $_" # This should be impossible to reach
       }
     } # end while not at end of string
   } # end for value
@@ -252,6 +258,25 @@ will be converted to a PDF file.
 Note:  While you may use a LinkField as a label by giving it a
 L<constant value|PostScript::Report::Value::Constant>, it always uses
 C<font> to draw the text, not C<label_font>.
+
+The hyperlink syntax is a tiny subset of Markdown syntax
+(L<http://daringfireball.net/projects/markdown/syntax>).  Only the
+following codes are recognized:
+
+  [link text](URL)
+  <SCHEME:URL>
+  <EMAIL@DOMAIN>
+
+The angle bracket forms cannot contain whitespace, or they will not be
+recognized.  If you want angle brackets surrounding the link in the
+text, use two angle brackets: C<<< <<EMAIL@DOMAIN>> >>>.
+
+You can escape any character by preceding it with a backslash.  The
+only characters that I<must> be escaped are C<\> and C<[> (and C<< < >>
+if it would otherwise appear to start a hyperlink).
+
+An unescaped C<[> must be the start of a C<[link text](URL)>
+form or it will generate an error.
 
 =head1 ATTRIBUTES
 
