@@ -48,17 +48,17 @@ my @tests = (
   # This edge case might get removed someday; don't depend on it:
   "[this probably [shouldn't ](work)" =>
     [{ text => "this probably [shouldn't ", url => 'work' }],
+  # These are not links:
+  'just open ['          => ['just open ['],
+  '[opened'              => ['[opened'],
+  'no [url]'             => ['no [url]'],
+  'empty [url]()'        => ['empty [url]()'],
+  '[double [open]](url)' => ['[double [open]](url)'],
+  # But this is:
+  '[double \[open\]](url)' => [{ text => 'double [open]', url => 'url' }],
 );
 
-my @failures = (
-  'just open ['   => 'expected closing bracket after just open [',
-  '[opened'       => 'expected closing bracket after [opened',
-  'no [url]'      => 'expected (URL) after [url]',
-  'empty [url]()' => 'expected (URL) after [url]',
-  '[double [open]](url)' => 'expected (URL) after [double [open]',
-);
-
-plan tests => @tests/2 + @failures/2;
+plan tests => @tests/2;
 
 #---------------------------------------------------------------------
 # These should succeed:
@@ -69,15 +69,3 @@ while (@tests) {
   is_deeply(PostScript::Report::LinkField->parse_value($text),
             shift @tests, $text);
 } # end while @tests
-
-#---------------------------------------------------------------------
-# These should fail:
-
-while (@failures) {
-  my $text  = shift @failures;
-  my $error = shift @failures;
-
-  eval { PostScript::Report::LinkField->parse_value($text) };
-
-  like($@, qr/^\Q$error\E at /, $text);
-} # end while @failures

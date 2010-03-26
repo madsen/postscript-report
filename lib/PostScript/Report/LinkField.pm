@@ -210,17 +210,20 @@ sub parse_value
     while (not /\G\z/gc) {
       if (/\G\[/gc) {
         # Start of link: [text](url)
-        my $startPos = pos($_) - 1;
+        my $startPos = pos $_;
         my $text = '';
         while (not /\G\]/gc) {
-          /\G\\(.?)/gc or /\G([^\\\]]+)/gc
-              or die "expected closing bracket after " . substr($_, 0, pos $_);
+          /\G\\(.?)/gc or /\G([^\\\]]+)/gc or goto not_a_link;
           $text .= $1;
         }
-        /\G\(([^)]+)\)/gc
-            or die "expected (URL) after " . substr($_, $startPos,
-                                                    pos($_) - $startPos);
-        push @list, { text => $text, url => $1 };
+        if (/\G\(([^)]+)\)/gc) {
+          push @list, { text => $text, url => $1 };
+        } else {
+        not_a_link:
+          pos $_ = $startPos;
+          push @list, '' if not @list or ref $list[-1];
+          $list[-1] .= '[';
+        }
       } elsif (/\G<([[:alpha:]]+:\S+?)>/gc) {
         # Hyperlink: <http://foo>
         push @list, { text => $1, url => $1 };
@@ -264,7 +267,7 @@ The hyperlink syntax is a tiny subset of Markdown syntax
 following codes are recognized:
 
   [link text](URL)
-  <SCHEME:URL>
+  <SCHEME:URL>     (e.g. <http://perl.org>)
   <EMAIL@DOMAIN>
 
 The angle bracket forms cannot contain whitespace, or they will not be
@@ -272,11 +275,9 @@ recognized.  If you want angle brackets surrounding the link in the
 text, use two angle brackets: C<<< <<EMAIL@DOMAIN>> >>>.
 
 You can escape any character by preceding it with a backslash.  The
-only characters that I<must> be escaped are C<\> and C<[> (and C<< < >>
-if it would otherwise appear to start a hyperlink).
-
-An unescaped C<[> must be the start of a C<[link text](URL)>
-form or it will generate an error.
+only character that I<must> always be escaped is C<\>.  You only need
+to escape C<[> and C<< < >> if they would otherwise appear to start a
+hyperlink.
 
 =head1 ATTRIBUTES
 
