@@ -4,6 +4,8 @@ Revision history for PostScript-Report
 	- Added extra_styles & get_style, which allows Components to
 	  inherit attributes without Containers and the Report needing
 	  to know every possible attribute
+	- Removed label_font from Report & Component
+	  (It's only used by FieldTL, and can be handled by extra_styles.)
 
 0.06   March 26, 2010
 	- Added the LinkField component

@@ -17,7 +17,7 @@ package PostScript::Report::FieldTL;
 # ABSTRACT: A field with a label in the top left corner
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -39,6 +39,22 @@ has label => (
   is      => 'ro',
   isa     => Str,
   default => '',
+);
+
+=attr label_font
+
+This is the font used to draw the label.  It defaults to Helvetica 6.
+The value may be inherited.
+
+=cut
+
+has label_font => (
+  is  => 'ro',
+  isa => FontObj,
+  traits   => [ TreeInherit => {
+    fetch_method => 'get_style',
+    default      => sub { shift->report->get_font(Helvetica => 6) },
+  } ],
 );
 
 has value => (
@@ -154,7 +170,8 @@ sub draw
 
   my $FieldTL   = $self->id;
   my $font      = $self->font;
-  my $labelSize = $self->label_font->size;
+  my $labelFont = $self->label_font;
+  my $labelSize = $labelFont->size;
 
   if ($self->multiline) {
     @lines = $font->wrap($self->width - 1.5 * $self->padding_text_side,
@@ -175,7 +192,7 @@ sub draw
     $self->padding_label_side,
     $labelSize + $self->padding_label_top,
     $x, $y, $x + $self->width, $y - $self->height,
-    $self->label_font->id,
+    $labelFont->id,
     $FieldTL,
     $self->line_width, $self->border,
   ));

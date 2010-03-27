@@ -147,13 +147,13 @@ sub build
   $self->create_fonts( $rpt, $desc{fonts} );
 
   # Set the report's default fonts:
-  foreach my $type (qw(font label_font)) {
+  foreach my $type (qw(font)) {
     next unless exists $desc{$type};
 
     $rpt->$type( $self->get_font( $desc{$type} ) );
   }
 
-  # Create any extra fonts:
+  # Set any extra fonts:
   if (my $extra = $rpt->extra_styles) {
     foreach my $type (keys %$extra) {
       $extra->{$type} = $self->get_font( $extra->{$type} )

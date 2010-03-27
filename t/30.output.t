@@ -42,7 +42,7 @@ if (@ARGV and $ARGV[0] eq 'gen') {
   $generateResults = 'ps';
   open(OUT, '>', '/tmp/30.output.ps') or die $!;
 } else {
-  plan tests => 3;
+  plan tests => 6;
 }
 
 require PostScript::Report;
@@ -352,6 +352,9 @@ my $rows = [
   [ 26, 'I1', "${mdash}Abraham Lincoln", 'XXXXXXXX', '' ],
 ];
 
+#---------------------------------------------------------------------
+my $startingPos = tell(DATA);
+
 my $rpt = PostScript::Report->build($desc);
 
 checkResults(dumpReport($rpt), 'structure after build');
@@ -368,9 +371,37 @@ checkResults($ps, 'generated PostScript');
 checkResults(dumpReport($rpt), 'structure after run');
 
 #---------------------------------------------------------------------
+# Now try it again using the default value for label_font:
+#
+# We should get the same results, except for the extra_styles being
+# absent in the dump output.
+
+unless ($generateResults) {
+  seek(DATA, $startingPos, 0) or die "seek failed: $!";
+
+  delete $desc->{label_font};
+  delete $desc->{fonts}{label};
+
+  $rpt = PostScript::Report->build($desc);
+
+  checkResults(dumpReport($rpt), 'structure after rebuild', 1);
+
+  $rpt->run($data, $rows);
+
+  # Use sanitized output (unless $generateResults eq 'ps'):
+  my $ps = $rpt->ps->testable_output($generateResults eq 'ps');
+
+  $ps =~ s/(procset PostScript__Report\S*) \d+\.\d+ 0/$1 0 0/g;
+
+  checkResults($ps, 'regenerated PostScript');
+
+  checkResults(dumpReport($rpt), 'structure after second run', 1);
+} # end unless $generateResults
+
+#---------------------------------------------------------------------
 sub checkResults
 {
-  my ($got, $name) = @_;
+  my ($got, $name, $removeLabelFont) = @_;
 
   if ($generateResults) {
     # Write out the actual results:
@@ -387,6 +418,9 @@ sub checkResults
       $expected .= $_;
     }
 
+    $expected =~ s/^extra_styles:\n\s+label_font\s*: Helvetica-iso 6\n//m
+        if $removeLabelFont;
+
     # And compare it:
     eq_or_diff($got, $expected, $name);
   } # end else running tests
@@ -397,8 +431,9 @@ sub checkResults
 __DATA__
 align         : center
 border        : 1
+extra_styles:
+  label_font    : Helvetica-iso 6
 font          : Helvetica-iso 9
-label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
@@ -1656,8 +1691,9 @@ showpage
 ---
 align         : center
 border        : 1
+extra_styles:
+  label_font    : Helvetica-iso 6
 font          : Helvetica-iso 9
-label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3

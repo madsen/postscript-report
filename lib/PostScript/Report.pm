@@ -404,20 +404,6 @@ has font => (
   init_arg => undef,
 );
 
-=attr-in label_font
-
-This is the default label font.  It defaults to Helvetica 6.
-
-=cut
-
-has label_font => (
-  is       => 'rw',
-  isa      => FontObj,
-  lazy     => 1,
-  default  => sub { shift->get_font(Helvetica => 6) },
-  init_arg => undef,
-);
-
 my $coerce_font = sub {
   my $orig = shift;
   my $self = shift;
@@ -429,7 +415,6 @@ my $coerce_font = sub {
 };
 
 around font       => $coerce_font;
-around label_font => $coerce_font;
 
 =attr-in line_width
 

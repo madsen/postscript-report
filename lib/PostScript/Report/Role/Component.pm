@@ -141,19 +141,6 @@ has font => (
   @inherited,
 );
 
-=attr label_font
-
-This is the font used to draw the label.  Not all components have a
-label.
-
-=cut
-
-has label_font => (
-  is  => 'ro',
-  isa => FontObj,
-  @inherited,
-);
-
 =attr line_width
 
 This is the line width.  It's used mainly as the border width.
@@ -257,6 +244,30 @@ sub init
 
   $self->_set_parent($parent);
 } # end init
+#---------------------------------------------------------------------
+
+=method report
+
+  $component->report;
+
+This returns the PostScript::Report object that this Component
+ultimately belongs to, or C<undef> if it is not currently owned by a
+Report.  (You should only call this after the C<init> method has been
+called.)
+
+=cut
+
+sub report
+{
+  my $report = shift;
+
+  while (my $parent = $report->can('parent')) {
+    $report = $report->$parent or return undef;
+  }
+
+  return $report;
+} # end report
+
 #---------------------------------------------------------------------
 
 =method dump

@@ -36,7 +36,8 @@ my $generateResults;
 if (@ARGV and $ARGV[0] eq 'gen') {
   # Just output the actual results, so they can be diffed against this file
   $generateResults = 1;
-  printf "#%s\n\n__DATA__\n", '=' x 69;
+  open(OUT, '>', '/tmp/10.structure.t') or die $!;
+  printf OUT "#%s\n\n__DATA__\n", '=' x 69;
 } else {
   plan tests => 6;
 }
@@ -47,7 +48,7 @@ my $code = '';
 
 while (<DATA>) {
 
-  print $_ if $generateResults;
+  print OUT $_ if $generateResults;
 
   if ($_ eq "<<'---'\n") {
     # Read the expected results:
@@ -75,7 +76,7 @@ while (<DATA>) {
     $output =~ s/ +$//mg;       # Remove trailing space
 
     if ($generateResults) {
-      print "$output---\n";
+      print OUT "$output---\n";
     } else {
       # Split results into before & after:
       $output =~ s/\n(AFTER _init:\n.*)//s;
@@ -620,8 +621,9 @@ detail:
 BEFORE _init:
 align         : center
 border        : 1
+extra_styles:
+  label_font    : Helvetica-iso 6
 font          : Helvetica-iso 9
-label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
@@ -897,8 +899,9 @@ page_footer:
 AFTER _init:
 align         : center
 border        : 1
+extra_styles:
+  label_font    : Helvetica-iso 6
 font          : Helvetica-iso 9
-label_font    : Helvetica-iso 6
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
