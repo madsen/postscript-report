@@ -767,7 +767,8 @@ has _fonts => (
 Because a report needs to know what fonts will be used in it, you must
 use this method to construct L<PostScript::Report::Font> objects.  If
 the specified font has already been used in this report, the same
-C<$font_object> will be returned.
+C<$font_object> will be returned.  (Normally, fonts are constructed by
+L<PostScript::Report::Builder>.)
 
 =cut
 
