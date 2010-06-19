@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.07   NOT
+0.07   June 19, 2010
 	- Added extra_styles & get_style, which allows Components to
 	  inherit attributes without Containers and the Report needing
 	  to know every possible attribute
