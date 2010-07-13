@@ -17,7 +17,7 @@ package PostScript::Report::Builder;
 # ABSTRACT: Build a PostScript::Report object
 #---------------------------------------------------------------------
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use 5.008;
 use Moose;
@@ -101,6 +101,7 @@ our @constructor_args = qw(
   border
   bottom_margin
   detail_background
+  first_footer
   footer_align
   landscape
   left_margin

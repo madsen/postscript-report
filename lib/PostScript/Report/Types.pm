@@ -17,14 +17,14 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 use Carp 'confess';
 
 use MooseX::Types -declare => [qw(
   BorderStyle BorderStyleNC BWColor Color Component Container
-  FontObj FontMetrics HAlign
-  Parent Report RGBColor RGBColorHex RptValue VAlign
+  FontObj FontMetrics FooterPos HAlign
+  Parent Report RGBColor RGBColorHex RptValue SectionType VAlign
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
@@ -61,6 +61,8 @@ subtype FontObj,
 subtype FontMetrics,
   as class_type('PostScript::File::Metrics');
 
+enum(FooterPos, qw(bottom split top));
+
 enum(HAlign, qw(center left right));
 
 subtype Report,
@@ -71,6 +73,8 @@ subtype RptValue,
 
 subtype Parent,
   as Container|Report;
+
+enum(SectionType, qw(page report));
 
 enum(VAlign, qw(bottom top));
 
