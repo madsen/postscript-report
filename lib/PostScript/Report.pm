@@ -906,7 +906,8 @@ sub _calculate_page_count
 
   # If the report_footer won't fit on the last page, add another page:
   ++$pageCount
-      if $height{report_footer} > $available - $rowsThisPage * $detail;
+      if $height{report_footer} > $available - $rowsThisPage * $detail -
+                                  ($pageCount == 1 ? $height{report_header} : 0);
 
   $self->_set_page_count($pageCount);
 } # end _calculate_page_count
