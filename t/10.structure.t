@@ -118,10 +118,19 @@ __DATA__
 BEFORE _init:
 align         : left
 border        : 1
+first_footer  : page
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 15
+paper_size    : Letter
+landscape     : 0
+top_margin    : 72
+bottom_margin : 72
+left_margin   : 72
+right_margin  : 72
 
 page_header:
   PostScript::Report::HBox:
@@ -166,10 +175,19 @@ detail:
 AFTER _init:
 align         : left
 border        : 1
+first_footer  : page
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 15
+paper_size    : Letter
+landscape     : 0
+top_margin    : 72
+bottom_margin : 72
+left_margin   : 72
+right_margin  : 72
 
 page_header:
   PostScript::Report::HBox:
@@ -243,10 +261,19 @@ detail:
 BEFORE _init:
 align         : left
 border        : 1
+first_footer  : page
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 15
+paper_size    : Letter
+landscape     : 0
+top_margin    : 72
+bottom_margin : 72
+left_margin   : 72
+right_margin  : 72
 
 report_header:
   PostScript::Report::HBox:
@@ -312,10 +339,19 @@ detail:
 AFTER _init:
 align         : left
 border        : 1
+first_footer  : page
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 15
+paper_size    : Letter
+landscape     : 0
+top_margin    : 72
+bottom_margin : 72
+left_margin   : 72
+right_margin  : 72
 
 report_header:
   PostScript::Report::HBox:
@@ -623,11 +659,20 @@ align         : center
 border        : 1
 extra_styles:
   label_font    : Helvetica-iso 6
+first_footer  : page
 font          : Helvetica-iso 9
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 22
+paper_size    : Letter
+landscape     : 1
+top_margin    : 25
+bottom_margin : 25
+left_margin   : 20
+right_margin  : 20
 
 report_header:
   PostScript::Report::HBox:
@@ -901,11 +946,20 @@ align         : center
 border        : 1
 extra_styles:
   label_font    : Helvetica-iso 6
+first_footer  : page
 font          : Helvetica-iso 9
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
 row_height    : 22
+paper_size    : Letter
+landscape     : 1
+top_margin    : 25
+bottom_margin : 25
+left_margin   : 20
+right_margin  : 20
 
 report_header:
   PostScript::Report::HBox:

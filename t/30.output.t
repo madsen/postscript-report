@@ -431,13 +431,24 @@ sub checkResults
 __DATA__
 align         : center
 border        : 1
+detail_background: CODEREF
 extra_styles:
   label_font    : Helvetica-iso 6
+first_footer  : page
 font          : Helvetica-iso 9
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
+  strip         : comments
 row_height    : 22
+paper_size    : Letter
+landscape     : 1
+top_margin    : 25
+bottom_margin : 25
+left_margin   : 20
+right_margin  : 20
 
 report_header:
   PostScript::Report::HBox:
@@ -1691,13 +1702,24 @@ showpage
 ---
 align         : center
 border        : 1
+detail_background: CODEREF
 extra_styles:
   label_font    : Helvetica-iso 6
+first_footer  : page
 font          : Helvetica-iso 9
+footer_align  : bottom
 line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
+ps_parameters:
+  strip         : comments
 row_height    : 22
+paper_size    : Letter
+landscape     : 1
+top_margin    : 25
+bottom_margin : 25
+left_margin   : 20
+right_margin  : 20
 
 report_header:
   PostScript::Report::HBox:

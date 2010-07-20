@@ -1112,11 +1112,18 @@ sub dump
 {
   my ($self) = @_;
 
-  my $conMeta = PostScript::Report::Role::Container->meta;
+  my %ignore = map { $_ => 1 } ($self->_sections, qw(
+    parent children page_count page_number ps ps_functions title
+  ));
 
-  my @attrs = sort { $a->name cmp $b->name }
-              grep { not $_->name =~ /^(?:_|parent|children)/ and
-                     $conMeta->has_attribute($_->name) }
+  my $i = 0;
+  my %order = map { $_ => ++$i } qw(
+    paper_size landscape top_margin bottom_margin left_margin right_margin
+  );
+
+  my @attrs = sort { ($order{$a->name}||0) <=> ($order{$b->name}||0)
+                     or $a->name cmp $b->name }
+              grep { not $ignore{$_->name} and not $_->name =~ /^_/ }
               $self->meta->get_all_attributes;
 
   $self->_dump_attr($self, $_, 0) for @attrs;
@@ -1176,12 +1183,33 @@ sub _dump_value
     }
   } # end if blessed $val
 
-  if (not $conversion) {
-    # do nothing
-  } elsif ($conversion eq 'color' and ref $val) {
-    # Convert RGB colors from array back to hex triplet:
-    $val = join('', '#', map { sprintf '%02X', 255 * $_ + 0.5 } @$val);
-  } # end elsif RGB color
+  if (ref $val) {
+    if (not $conversion) {
+      my $reftype = reftype($val);
+
+      if ($reftype eq 'HASH') {
+        printf "%s%s:\n", '  ' x $level, $name;
+        foreach my $key (sort keys %$val) {
+          $selfOrClass->_dump_value($level+1, $key, $val->{$key});
+        } # end foreach $key
+        return;
+      } # end if HASH
+      elsif ($reftype eq 'ARRAY') {
+        printf "%s%s:\n", '  ' x $level, $name;
+        my $prefix = ('  ' x $level) . '  - ';
+        foreach (@$val) {
+          print $prefix . $_ . "\n";
+        } # end foreach $key
+        return;
+      } # end elsif ARRAY
+      elsif ($reftype eq 'CODE') {
+        $val = 'CODEREF';
+      }
+    } elsif ($conversion eq 'color') {
+      # Convert RGB colors from array back to hex triplet:
+      $val = join('', '#', map { sprintf '%02X', 255 * $_ + 0.5 } @$val);
+    } # end elsif RGB color
+  } # end if value is a reference
 
   # Print the attribute and value:
   printf "%s%-14s: %s\n", '  ' x $level, $name, $val;

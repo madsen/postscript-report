@@ -3,6 +3,7 @@ Revision history for PostScript-Report
 0.08   NOT
 	- Added first_footer attribute
 	- Added "split" as a possible value for footer_align
+	- Include more report attributes in dump output
 	- Fixed bug in calculating required page count
 	  (could cause report footer to overlap report)
 
