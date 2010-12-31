@@ -1,5 +1,8 @@
 Revision history for PostScript-Report
 
+0.09   NOT
+	- Documentation fixes
+
 0.08   July 20, 2010
 	- Added first_footer attribute
 	- Added "split" as a possible value for footer_align

@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use 5.008;
 use Moose;
@@ -606,19 +606,19 @@ has paper_size => (
 
 =attr-fmt top_margin
 
-This the top margin (default 72, or one inch).
+This is the top margin (default 72, or one inch).
 
 =attr-fmt bottom_margin
 
-This the bottom margin (default 72, or one inch).
+This is the bottom margin (default 72, or one inch).
 
 =attr-fmt left_margin
 
-This the left margin (default 72, or one inch).
+This is the left margin (default 72, or one inch).
 
 =attr-fmt right_margin
 
-This the bottom margin (default 72, or one inch).
+This is the right margin (default 72, or one inch).
 
 =cut
 
