@@ -23,7 +23,7 @@ use 5.008;
 use Moose;
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 2.00 'pstr'; # Need metrics support
+use PostScript::File 2.10 'pstr'; # Use improved API
 
 use PostScript::Report::Font ();
 use List::Util 'min';
@@ -343,6 +343,7 @@ sub _init
 END PS
 } # end _init
 #---------------------------------------------------------------------
+# NOTE: width and height are now handled by the ps attribute:
 
 =method width
 
@@ -355,11 +356,6 @@ This returns the width of the report (the paper width minus the margins).
   $height = $rpt->height;
 
 This returns the height of the report (the paper height minus the margins).
-
-=cut
-
-sub width  { my @bb = shift->ps->get_bounding_box;  $bb[2] - $bb[0] }
-sub height { my @bb = shift->ps->get_bounding_box;  $bb[3] - $bb[1] }
 
 =attr-in row_height
 
@@ -549,7 +545,11 @@ has ps => (
   isa     => 'PostScript::File',
   writer  => '_set_ps',
   clearer => 'clear',
-  handles => ['output'],
+  handles => {
+    output => 'output',
+    width  => 'get_printable_width',
+    height => 'get_printable_height',
+  },
   init_arg=> undef,
 );
 
@@ -689,6 +689,7 @@ sub _build_ps
     file_ext    => '',
     font_suffix => '-iso',
     landscape   => $self->landscape,
+    newpage     => 0,
     %{ $self->ps_parameters },
   );
 } # end _build_ps
@@ -969,7 +970,7 @@ sub run
   my $y;
   for my $page (1 .. $self->page_count) {
     $self->_set_page_number($page);
-    $ps->newpage($page) if $page > 1;
+    $ps->newpage($page);
 
     $y = $yTop;
 

@@ -1,7 +1,7 @@
 Revision history for PostScript-Report
 
 0.09   NOT
-	- Documentation fixes
+	- Use the improved API in PostScript::File 2.10
 
 0.08   July 20, 2010
 	- Added first_footer attribute
