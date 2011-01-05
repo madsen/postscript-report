@@ -2,6 +2,7 @@ Revision history for PostScript-Report
 
 0.09   NOT
 	- Use the improved API in PostScript::File 2.10
+	- Fixed LinkField to avoid deprecation warnings in Perl 5.12
 
 0.08   July 20, 2010
 	- Added first_footer attribute

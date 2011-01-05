@@ -17,7 +17,7 @@ package PostScript::Report::LinkField;
 # ABSTRACT: A field that can contain hyperlinks
 #---------------------------------------------------------------------
 
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -222,13 +222,12 @@ sub parse_value
         my $startPos = pos $_;
         my $text = '';
         while (not /\G\]/gc) {
-          /\G\\(.?)/gc or /\G([^\\\]]+)/gc or goto not_a_link;
+          /\G\\(.?)/gc or /\G([^\\\]]+)/gc or undef($text), last;
           $text .= $1;
         }
-        if (/\G\(([^)]+)\)/gc) {
+        if (defined $text and /\G\(([^)]+)\)/gc) {
           push @list, { text => $text, url => $1 };
-        } else {
-        not_a_link:
+        } else { # this bracket did not begin a link
           pos $_ = $startPos;
           push @list, '' if not @list or ref $list[-1];
           $list[-1] .= '[';
