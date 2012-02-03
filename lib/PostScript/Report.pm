@@ -24,7 +24,7 @@ use 5.008;
 use Moose 0.90;                 # Moose::Meta::Attribute::Native
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
-use PostScript::File 2.10 'pstr'; # Use improved API
+use PostScript::File 2.20 'pstr'; # Use function library
 
 use PostScript::Report::Font ();
 use List::Util 'min';
@@ -173,7 +173,7 @@ sub _init
 {
   my ($self) = @_;
 
-  $self->_set_ps( $self->_build_ps );
+  $self->_set_ps( my $ps = $self->_build_ps );
 
   foreach my $sectionName ($self->_sections) {
     my $section = $self->$sectionName or next;
@@ -181,41 +181,14 @@ sub _init
     $section->_set_height($self->row_height) unless $section->has_height;
   } # end foreach $sectionName
 
+  $ps->use_functions(qw(drawBox));
+
   $self->ps_functions->{+__PACKAGE__} = <<'END PS';
-%---------------------------------------------------------------------
-% Create a rectangular path:  Left Top Right Bottom boxpath
-
-/boxpath
-{
-  % stack L T R B
-  newpath
-  2 copy moveto                 % move to BR
-  3 index exch lineto	        % line to BL
-  % stack L T R
-  1 index
-  % stack L T R T
-  4 2 roll
-  % stack R T L T
-  lineto                        % line to TL
-  lineto                        % line to TR
-  closepath
-} bind def
-
-%---------------------------------------------------------------------
-% Clip to a rectangle:   Left Top Right Bottom clipbox
-
-/clipbox { boxpath clip } bind def
-
-%---------------------------------------------------------------------
-% Draw a rectangle:   Left Top Right Bottom drawbox
-
-/drawbox { boxpath stroke } bind def
-
 %---------------------------------------------------------------------
 % Draw border styles: Left Top Right Bottom Linewidth dbX
 
 /db0 { 5 { pop } repeat } bind def
-/db1 { gsave setlinewidth drawbox grestore } bind def
+/db1 { gsave setlinewidth drawBox grestore } bind def
 
 % Easy access to the corners of a box:
 % 3 3 1 1
@@ -254,93 +227,6 @@ sub _init
 /dbTBL { bdrB  boxRT moveto  boxLT lineto  boxLB lineto  boxRB bdrE } bind def
 /dbTBR { bdrB  boxLT moveto  boxRT lineto  boxRB lineto  boxLB bdrE } bind def
 
-%---------------------------------------------------------------------
-% Set the color:  RGBarray|BWnumber setColor
-
-/setColor
-{
-  dup type (arraytype) eq {
-    % We have an array, so it's RGB:
-    aload pop
-    setrgbcolor
-  }{
-    % Otherwise, it must be a gray level:
-    setgray
-  } ifelse
-} bind def
-
-%---------------------------------------------------------------------
-% Fill a box with color:  Left Top Right Bottom Color fillbox
-
-/fillbox
-{
-  gsave
-  setColor
-  boxpath
-  fill
-  grestore
-} bind def
-
-%---------------------------------------------------------------------
-% Print text centered at a point:  X Y STRING showcenter
-%
-% Centers text horizontally
-
-/showcenter
-{
-  newpath
-  0 0 moveto
-  % stack X Y STRING
-  dup 4 1 roll                          % Put a copy of STRING on bottom
-  % stack STRING X Y STRING
-  false charpath flattenpath pathbbox   % Compute bounding box of STRING
-  % stack STRING X Y Lx Ly Ux Uy
-  pop exch pop                          % Discard Y values (... Lx Ux)
-  add 2 div neg                         % Compute X offset
-  % stack STRING X Y Ox
-  0                                     % Use 0 for y offset
-  newpath
-  moveto
-  rmoveto
-  show
-} bind def
-
-%---------------------------------------------------------------------
-% Print left justified text:  X Y STRING showleft
-%
-% Does not adjust vertical placement.
-
-/showleft
-{
-  newpath
-  3 1 roll  % STRING X Y
-  moveto
-  show
-} bind def
-
-%---------------------------------------------------------------------
-% Print right justified text:  X Y STRING showright
-%
-% Does not adjust vertical placement.
-
-/showright
-{
-  newpath
-  0 0 moveto
-  % stack X Y STRING
-  dup 4 1 roll                          % Put a copy of STRING on bottom
-  % stack STRING X Y STRING
-  false charpath flattenpath pathbbox   % Compute bounding box of STRING
-  % stack STRING X Y Lx Ly Ux Uy
-  pop exch pop                          % Discard Y values (... Lx Ux)
-  add neg                               % Compute X offset
-  % stack STRING X Y Ox
-  0                                     % Use 0 for y offset
-  newpath
-  moveto
-  rmoveto
-  show
-} bind def
 END PS
 } # end _init
 #---------------------------------------------------------------------
@@ -1089,7 +975,7 @@ sub _attach_ps_resources
     $version = eval { $1->VERSION } if $key =~ /^([\w:]+)/;
 
     (my $name = $key) =~ s/:/_/g;
-    $ps->add_function($name, $funcs->{$key}, $version);
+    $ps->add_procset($name, $funcs->{$key}, $version);
   } # end foreach $key
 
   %$funcs = ();                 # Clear out ps_functions

@@ -17,7 +17,8 @@ package PostScript::Report::Checkbox;
 # ABSTRACT: A checkbox with no label
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.10';
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -76,6 +77,8 @@ after init => sub {
   $self->width( $self->size + 2 * $self->padding_side )
       unless $self->has_width;
 
+  $report->ps->use_functions('drawBox');
+
   # Use __PACKAGE__ instead of blessed $self because the string is
   # constant.  Subclasses should either use sub id { 'Checkbox' } or
   # define their own comparable functions:
@@ -90,7 +93,7 @@ after init => sub {
   translate			% SIZE VALUE
   0  2 index			% SIZE VALUE L T
   dup  0			% SIZE VALUE L T R B
-  drawbox			% SIZE VALUE
+  drawBox			% SIZE VALUE
   {				% SIZE
     600 div  dup  scale		% stack empty
     newpath

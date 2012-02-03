@@ -17,7 +17,8 @@ package PostScript::Report::Field;
 # ABSTRACT: A simple field with no label
 #---------------------------------------------------------------------
 
-our $VERSION = '0.05';
+our $VERSION = '0.10';
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -50,6 +51,8 @@ has padding_side => (
 after init => sub {
   my ($self, $parent, $report) = @_;
 
+  $report->ps->use_functions(qw(clipBox showCenter showLeft showRight));
+
   # Use __PACKAGE__ instead of blessed $self because the string is
   # constant.  Subclasses should either use sub id { 'Field' } or
   # define their own comparable functions:
@@ -57,10 +60,10 @@ after init => sub {
 %---------------------------------------------------------------------
 % X Y STRING FONT L T R B Field-X
 
-/Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
-/Field-C { Field showcenter grestore } bind def
-/Field-L { Field showleft   grestore } bind def
-/Field-R { Field showright  grestore } bind def
+/Field { gsave  4 copy  clipBox  8 4 roll setfont } bind def
+/Field-C { Field showCenter grestore } bind def
+/Field-L { Field showLeft   grestore } bind def
+/Field-R { Field showRight  grestore } bind def
 END PS
 }; # end after init
 

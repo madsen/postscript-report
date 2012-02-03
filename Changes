@@ -1,7 +1,7 @@
 Revision history for PostScript-Report
 
 0.10   NOT
-	-
+	- Use the function library provided by PostScript::File 2.20
 
 0.09   May 5, 2011
 	- Use the improved API in PostScript::File 2.10

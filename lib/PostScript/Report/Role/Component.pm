@@ -173,7 +173,7 @@ before draw => sub {
 
   if (defined(my $background = $self->background)) {
     $rpt->ps->add_to_page( sprintf(
-      "%d %d %d %d %s fillbox\n",
+      "%d %d %d %d %s fillBox\n",
       $x, $y, $x + $self->width, $y - $self->height,
       PostScript::File::str($background)
     ));
@@ -244,6 +244,7 @@ sub init
   my ($self, $parent, $report) = @_;
 
   $self->_set_parent($parent);
+  $report->ps->use_functions('fillBox');
 } # end init
 #---------------------------------------------------------------------
 

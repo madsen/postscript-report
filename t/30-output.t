@@ -37,11 +37,11 @@ my $generateResults = '';
 if (@ARGV and $ARGV[0] eq 'gen') {
   # Just output the actual results, so they can be diffed against this file
   $generateResults = 1;
-  open(OUT, '>', '/tmp/30.output.t') or die $!;
+  open(OUT, '>', '/tmp/30-output.t') or die $!;
   printf OUT "#%s\n\n__DATA__\n", '=' x 69;
 } elsif (@ARGV and $ARGV[0] eq 'ps') {
   $generateResults = 'ps';
-  open(OUT, '>', '/tmp/30.output.ps') or die $!;
+  open(OUT, '>', '/tmp/30-output.ps') or die $!;
 } else {
   plan tests => 6;
 }
@@ -75,7 +75,7 @@ my $desc = {
     disclaimerText => 'Helvetica-Bold-8',
   },
 
-  ps_parameters => { strip => 'comments' },
+  ps_parameters => { strip => 'all_comments' },
 
   font       => 'text',
   label_font => 'label',
@@ -442,7 +442,7 @@ line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
 ps_parameters:
-  strip         : comments
+  strip         : all_comments
 row_height    : 22
 paper_size    : Letter
 landscape     : 1
@@ -733,29 +733,16 @@ page_footer:
 %%EndComments
 %%BeginProlog
 %%BeginResource: procset PostScript__Report 0 0
-/boxpath
-{
-newpath
-2 copy moveto                 % move to BR
-3 index exch lineto	        % line to BL
-1 index
-4 2 roll
-lineto                        % line to TL
-lineto                        % line to TR
-closepath
-} bind def
-/clipbox { boxpath clip } bind def
-/drawbox { boxpath stroke } bind def
 /db0 { 5 { pop } repeat } bind def
-/db1 { gsave setlinewidth drawbox grestore } bind def
+/db1 { gsave setlinewidth drawBox grestore } bind def
 /boxLT { 3 index  3 index } bind def
 /boxRT { 1 index  3 index } bind def
 /boxLB { 3 index  1 index } bind def
 /boxRB { 2 copy           } bind def
 /bdrB { gsave setlinewidth } bind def
 /bdrE {
-lineto stroke			% Finish the line and stroke it
-pop pop pop pop		% Remove L T R B
+lineto stroke
+pop pop pop pop
 grestore
 } bind def
 /dbT { bdrB  boxLT moveto  boxRT bdrE } bind def
@@ -772,70 +759,18 @@ grestore
 /dbBLR { bdrB  boxLT moveto  boxLB lineto  boxRB lineto  boxRT bdrE } bind def
 /dbTBL { bdrB  boxRT moveto  boxLT lineto  boxLB lineto  boxRB bdrE } bind def
 /dbTBR { bdrB  boxLT moveto  boxRT lineto  boxRB lineto  boxLB bdrE } bind def
-/setColor
-{
-dup type (arraytype) eq {
-aload pop
-setrgbcolor
-}{
-setgray
-} ifelse
-} bind def
-/fillbox
-{
-gsave
-setColor
-boxpath
-fill
-grestore
-} bind def
-/showcenter
-{
-newpath
-0 0 moveto
-dup 4 1 roll                          % Put a copy of STRING on bottom
-false charpath flattenpath pathbbox   % Compute bounding box of STRING
-pop exch pop                          % Discard Y values (... Lx Ux)
-add 2 div neg                         % Compute X offset
-0                                     % Use 0 for y offset
-newpath
-moveto
-rmoveto
-show
-} bind def
-/showleft
-{
-newpath
-3 1 roll  % STRING X Y
-moveto
-show
-} bind def
-/showright
-{
-newpath
-0 0 moveto
-dup 4 1 roll                          % Put a copy of STRING on bottom
-false charpath flattenpath pathbbox   % Compute bounding box of STRING
-pop exch pop                          % Discard Y values (... Lx Ux)
-add neg                               % Compute X offset
-0                                     % Use 0 for y offset
-newpath
-moveto
-rmoveto
-show
-} bind def
 %%EndResource
 %%BeginResource: procset PostScript__Report__Checkbox 0 0
 /Checkbox
 {
 gsave
 setlinewidth
-translate			% SIZE VALUE
-0  2 index			% SIZE VALUE L T
-dup  0			% SIZE VALUE L T R B
-drawbox			% SIZE VALUE
-{				% SIZE
-600 div  dup  scale		% stack empty
+translate
+0  2 index
+dup  0
+drawBox
+{
+600 div  dup  scale
 newpath
 75 257 moveto
 219 90 lineto
@@ -849,57 +784,57 @@ grestore
 } bind def
 %%EndResource
 %%BeginResource: procset PostScript__Report__Field 0 0
-/Field { gsave  4 copy  clipbox  8 4 roll setfont } bind def
-/Field-C { Field showcenter grestore } bind def
-/Field-L { Field showleft   grestore } bind def
-/Field-R { Field showright  grestore } bind def
+/Field { gsave  4 copy  clipBox  8 4 roll setfont } bind def
+/Field-C { Field showCenter grestore } bind def
+/Field-L { Field showLeft   grestore } bind def
+/Field-R { Field showRight  grestore } bind def
 %%EndResource
 %%BeginResource: procset PostScript__Report__FieldTL 0 0
 /FieldTL
 {
 gsave
 setfont
-4 copy clipbox	% C... Csp Cx Cy FUNC LINES CF LABEL Lx Ly L T R B
-3 index		% C... Csp Cx Cy FUNC LINES CF LABEL Lx Ly L T R B L
-7 -1 roll add		% C... Csp Cx Cy FUNC LINES CF LABEL Ly L T R B LblX
-3 index		% C... Csp Cx Cy FUNC LINES CF LABEL Ly L T R B LblX T
-7 -1 roll sub		% C... Csp Cx Cy FUNC LINES CF LABEL L T R B LblX LblY
-7 -1 roll showleft	% C... Csp Cx Cy FUNC LINES CF L T R B
-5 -1 roll setfont	% C... Csp Cx Cy FUNC LINES L T R B
-2 index		% C... Csp Cx Cy FUNC LINES L T R B T
-8 -1 roll sub		% C... Csp Cx FUNC LINES L T R B Ypos
-4 index		% C... Csp Cx FUNC LINES L T R B Ypos L
-3 index		% C... Csp Cx FUNC LINES L T R B Ypos L R
-3 -1 roll		% C... Csp Cx FUNC LINES L T R B L R Ypos
-8 -1 roll		% C... Csp Cx FUNC L T R B L R Ypos LINES
-{			% C... Csp Cx FUNC L T R B L R Ypos
-3 copy		% C... Csp Cx FUNC L T R B L R Ypos L R Ypos
-14 -1 roll		% C... Csp Cx FUNC L T R B L R Ypos L R Ypos CONTENT
-4 2 roll		% C... Csp Cx FUNC L T R B L R Ypos Ypos CONTENT L R
-12 index		% C... Csp Cx FUNC L T R B L R Ypos Ypos CONTENT L R Cx
-12 index cvx exec	% C... Csp Cx FUNC L T R B L R Ypos
-9 index sub		% C... Csp Cx FUNC L T R B L R YposNext
+4 copy clipBox
+3 index
+7 -1 roll add
+3 index
+7 -1 roll sub
+7 -1 roll showLeft
+5 -1 roll setfont
+2 index
+8 -1 roll sub
+4 index
+3 index
+3 -1 roll
+8 -1 roll
+{
+3 copy
+14 -1 roll
+4 2 roll
+12 index
+12 index cvx exec
+9 index sub
 } repeat
-pop pop pop		% Csp Cx FUNC L T R B
-7 -3 roll		% L T R B Csp Cx FUNC
-pop pop pop		% L T R B
+pop pop pop
+7 -3 roll
+pop pop pop
 grestore
 } def
 /FieldTL-C {
-pop                   % Y CONTENT L R
-add 2 div             % Y CONTENT Xpos
-3 1 roll              % Xpos Y CONTENT
-showcenter
+pop
+add 2 div
+3 1 roll
+showCenter
 } def
 /FieldTL-L {
-exch pop add		% Y CONTENT Xpos
-3 1 roll              % Xpos Y CONTENT
-showleft
+exch pop add
+3 1 roll
+showLeft
 } def
 /FieldTL-R {
-sub exch pop		% Y CONTENT Xpos
-3 1 roll              % Xpos Y CONTENT
-showright
+sub exch pop
+3 1 roll
+showRight
 } def
 %%EndResource
 %%EndProlog
@@ -1019,7 +954,7 @@ fnA 612 509 692 490 Field-C 0.5 db1
 fnA 692 509 771 490 Field-C 0.5 db1
 20 509 771 490 0.5 db1
 20 575 771 490 0.5 db1
-20 490 771 471 1 fillbox
+20 490 771 471 1 fillBox
 34.5 477
 (1)
 fnC 20 490 49 471 Field-C 0.5 db1
@@ -1037,7 +972,7 @@ fnC 539 490 612 471 Field-C 0.5 db1
 fnC 612 490 692 471 Field-C 0.5 db1
 692 490 771 471 0.5 db1
 20 490 771 471 0.5 db1
-20 471 771 452 [ 1 0.667 0.267 ] fillbox
+20 471 771 452 [ 1 0.667 0.267 ] fillBox
 34.5 458
 (2)
 fnC 20 471 49 452 Field-C 0.5 db1
@@ -1055,7 +990,7 @@ fnC 539 471 612 452 Field-C 0.5 db1
 fnC 612 471 692 452 Field-C 0.5 db1
 692 471 771 452 0.5 db1
 20 471 771 452 0.5 db1
-20 452 771 433 1 fillbox
+20 452 771 433 1 fillBox
 34.5 439
 (3)
 fnC 20 452 49 433 Field-C 0.5 db1
@@ -1073,7 +1008,7 @@ fnC 539 452 612 433 Field-C 0.5 db1
 fnC 612 452 692 433 Field-C 0.5 db1
 692 452 771 433 0.5 db1
 20 452 771 433 0.5 db1
-20 433 771 414 [ 1 0.667 0.267 ] fillbox
+20 433 771 414 [ 1 0.667 0.267 ] fillBox
 34.5 420
 (4)
 fnC 20 433 49 414 Field-C 0.5 db1
@@ -1091,7 +1026,7 @@ fnC 539 433 612 414 Field-C 0.5 db1
 fnC 612 433 692 414 Field-C 0.5 db1
 692 433 771 414 0.5 db1
 20 433 771 414 0.5 db1
-20 414 771 395 1 fillbox
+20 414 771 395 1 fillBox
 34.5 401
 (5)
 fnC 20 414 49 395 Field-C 0.5 db1
@@ -1109,7 +1044,7 @@ fnC 539 414 612 395 Field-C 0.5 db1
 fnC 612 414 692 395 Field-C 0.5 db1
 692 414 771 395 0.5 db1
 20 414 771 395 0.5 db1
-20 395 771 376 [ 1 0.667 0.267 ] fillbox
+20 395 771 376 [ 1 0.667 0.267 ] fillBox
 34.5 382
 (6)
 fnC 20 395 49 376 Field-C 0.5 db1
@@ -1127,7 +1062,7 @@ fnC 539 395 612 376 Field-C 0.5 db1
 fnC 612 395 692 376 Field-C 0.5 db1
 692 395 771 376 0.5 db1
 20 395 771 376 0.5 db1
-20 376 771 357 1 fillbox
+20 376 771 357 1 fillBox
 34.5 363
 (7)
 fnC 20 376 49 357 Field-C 0.5 db1
@@ -1145,7 +1080,7 @@ fnC 539 376 612 357 Field-C 0.5 db1
 fnC 612 376 692 357 Field-C 0.5 db1
 692 376 771 357 0.5 db1
 20 376 771 357 0.5 db1
-20 357 771 338 [ 1 0.667 0.267 ] fillbox
+20 357 771 338 [ 1 0.667 0.267 ] fillBox
 34.5 344
 (8)
 fnC 20 357 49 338 Field-C 0.5 db1
@@ -1163,7 +1098,7 @@ fnC 539 357 612 338 Field-C 0.5 db1
 fnC 612 357 692 338 Field-C 0.5 db1
 692 357 771 338 0.5 db1
 20 357 771 338 0.5 db1
-20 338 771 319 1 fillbox
+20 338 771 319 1 fillBox
 34.5 325
 (9)
 fnC 20 338 49 319 Field-C 0.5 db1
@@ -1181,7 +1116,7 @@ fnC 539 338 612 319 Field-C 0.5 db1
 fnC 612 338 692 319 Field-C 0.5 db1
 692 338 771 319 0.5 db1
 20 338 771 319 0.5 db1
-20 319 771 300 [ 1 0.667 0.267 ] fillbox
+20 319 771 300 [ 1 0.667 0.267 ] fillBox
 34.5 306
 (10)
 fnC 20 319 49 300 Field-C 0.5 db1
@@ -1199,7 +1134,7 @@ fnC 539 319 612 300 Field-C 0.5 db1
 fnC 612 319 692 300 Field-C 0.5 db1
 692 319 771 300 0.5 db1
 20 319 771 300 0.5 db1
-20 300 771 281 1 fillbox
+20 300 771 281 1 fillBox
 34.5 287
 (11)
 fnC 20 300 49 281 Field-C 0.5 db1
@@ -1217,7 +1152,7 @@ fnC 539 300 612 281 Field-C 0.5 db1
 fnC 612 300 692 281 Field-C 0.5 db1
 692 300 771 281 0.5 db1
 20 300 771 281 0.5 db1
-20 281 771 262 [ 1 0.667 0.267 ] fillbox
+20 281 771 262 [ 1 0.667 0.267 ] fillBox
 34.5 268
 (12)
 fnC 20 281 49 262 Field-C 0.5 db1
@@ -1235,7 +1170,7 @@ fnC 539 281 612 262 Field-C 0.5 db1
 fnC 612 281 692 262 Field-C 0.5 db1
 692 281 771 262 0.5 db1
 20 281 771 262 0.5 db1
-20 262 771 243 1 fillbox
+20 262 771 243 1 fillBox
 34.5 249
 (13)
 fnC 20 262 49 243 Field-C 0.5 db1
@@ -1253,7 +1188,7 @@ fnC 539 262 612 243 Field-C 0.5 db1
 fnC 612 262 692 243 Field-C 0.5 db1
 692 262 771 243 0.5 db1
 20 262 771 243 0.5 db1
-20 243 771 224 [ 1 0.667 0.267 ] fillbox
+20 243 771 224 [ 1 0.667 0.267 ] fillBox
 34.5 230
 (14)
 fnC 20 243 49 224 Field-C 0.5 db1
@@ -1271,7 +1206,7 @@ fnC 539 243 612 224 Field-C 0.5 db1
 fnC 612 243 692 224 Field-C 0.5 db1
 692 243 771 224 0.5 db1
 20 243 771 224 0.5 db1
-20 224 771 205 1 fillbox
+20 224 771 205 1 fillBox
 34.5 211
 (15)
 fnC 20 224 49 205 Field-C 0.5 db1
@@ -1289,7 +1224,7 @@ fnC 539 224 612 205 Field-C 0.5 db1
 fnC 612 224 692 205 Field-C 0.5 db1
 692 224 771 205 0.5 db1
 20 224 771 205 0.5 db1
-20 205 771 186 [ 1 0.667 0.267 ] fillbox
+20 205 771 186 [ 1 0.667 0.267 ] fillBox
 34.5 192
 (16)
 fnC 20 205 49 186 Field-C 0.5 db1
@@ -1307,7 +1242,7 @@ fnC 539 205 612 186 Field-C 0.5 db1
 fnC 612 205 692 186 Field-C 0.5 db1
 692 205 771 186 0.5 db1
 20 205 771 186 0.5 db1
-20 186 771 167 1 fillbox
+20 186 771 167 1 fillBox
 34.5 173
 (17)
 fnC 20 186 49 167 Field-C 0.5 db1
@@ -1325,7 +1260,7 @@ fnC 539 186 612 167 Field-C 0.5 db1
 fnC 612 186 692 167 Field-C 0.5 db1
 692 186 771 167 0.5 db1
 20 186 771 167 0.5 db1
-20 167 771 148 [ 1 0.667 0.267 ] fillbox
+20 167 771 148 [ 1 0.667 0.267 ] fillBox
 34.5 154
 (18)
 fnC 20 167 49 148 Field-C 0.5 db1
@@ -1343,7 +1278,7 @@ fnC 539 167 612 148 Field-C 0.5 db1
 fnC 612 167 692 148 Field-C 0.5 db1
 692 167 771 148 0.5 db1
 20 167 771 148 0.5 db1
-20 148 771 129 1 fillbox
+20 148 771 129 1 fillBox
 34.5 135
 (19)
 fnC 20 148 49 129 Field-C 0.5 db1
@@ -1361,7 +1296,7 @@ fnC 539 148 612 129 Field-C 0.5 db1
 fnC 612 148 692 129 Field-C 0.5 db1
 692 148 771 129 0.5 db1
 20 148 771 129 0.5 db1
-20 129 771 110 [ 1 0.667 0.267 ] fillbox
+20 129 771 110 [ 1 0.667 0.267 ] fillBox
 34.5 116
 (20)
 fnC 20 129 49 110 Field-C 0.5 db1
@@ -1379,7 +1314,7 @@ fnC 539 129 612 110 Field-C 0.5 db1
 fnC 612 129 692 110 Field-C 0.5 db1
 692 129 771 110 0.5 db1
 20 129 771 110 0.5 db1
-20 110 771 91 1 fillbox
+20 110 771 91 1 fillBox
 34.5 97
 (21)
 fnC 20 110 49 91 Field-C 0.5 db1
@@ -1553,7 +1488,7 @@ fnA 612 521 692 502 Field-C 0.5 db1
 fnA 692 521 771 502 Field-C 0.5 db1
 20 521 771 502 0.5 db1
 20 587 771 502 0.5 db1
-20 502 771 483 [ 1 0.667 0.267 ] fillbox
+20 502 771 483 [ 1 0.667 0.267 ] fillBox
 34.5 489
 (22)
 fnC 20 502 49 483 Field-C 0.5 db1
@@ -1571,7 +1506,7 @@ fnC 539 502 612 483 Field-C 0.5 db1
 fnC 612 502 692 483 Field-C 0.5 db1
 692 502 771 483 0.5 db1
 20 502 771 483 0.5 db1
-20 483 771 464 1 fillbox
+20 483 771 464 1 fillBox
 34.5 470
 (23)
 fnC 20 483 49 464 Field-C 0.5 db1
@@ -1589,7 +1524,7 @@ fnC 539 483 612 464 Field-C 0.5 db1
 fnC 612 483 692 464 Field-C 0.5 db1
 692 483 771 464 0.5 db1
 20 483 771 464 0.5 db1
-20 464 771 445 [ 1 0.667 0.267 ] fillbox
+20 464 771 445 [ 1 0.667 0.267 ] fillBox
 34.5 451
 (24)
 fnC 20 464 49 445 Field-C 0.5 db1
@@ -1607,7 +1542,7 @@ fnC 539 464 612 445 Field-C 0.5 db1
 fnC 612 464 692 445 Field-C 0.5 db1
 692 464 771 445 0.5 db1
 20 464 771 445 0.5 db1
-20 445 771 426 1 fillbox
+20 445 771 426 1 fillBox
 34.5 432
 (25)
 fnC 20 445 49 426 Field-C 0.5 db1
@@ -1625,7 +1560,7 @@ fnC 539 445 612 426 Field-C 0.5 db1
 fnC 612 445 692 426 Field-C 0.5 db1
 692 445 771 426 0.5 db1
 20 445 771 426 0.5 db1
-20 426 771 407 [ 1 0.667 0.267 ] fillbox
+20 426 771 407 [ 1 0.667 0.267 ] fillBox
 34.5 413
 (26)
 fnC 20 426 49 407 Field-C 0.5 db1
@@ -1713,7 +1648,7 @@ line_width    : 0.5
 padding_bottom: 4
 padding_side  : 3
 ps_parameters:
-  strip         : comments
+  strip         : all_comments
 row_height    : 22
 paper_size    : Letter
 landscape     : 1
@@ -2020,3 +1955,7 @@ page_footer:
                 value         : qty
                 width         : 27
 ---
+
+# Local Variables:
+# compile-command: "perl 30-output.t gen"
+# End:

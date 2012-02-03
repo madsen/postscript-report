@@ -17,7 +17,8 @@ package PostScript::Report::LinkField;
 # ABSTRACT: A field that can contain hyperlinks
 #---------------------------------------------------------------------
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -100,6 +101,8 @@ has underline => (
 after init => sub {
   my ($self, $parent, $report) = @_;
 
+  $report->ps->use_functions(qw(clipBox));
+
   # Use __PACKAGE__ instead of blessed $self because the string is
   # constant.  Subclasses should either use sub id { 'LinkField' } or
   # define their own comparable functions:
@@ -108,7 +111,7 @@ after init => sub {
 % PROC X Y FONT L T R B LinkField
 
 /LinkField {
-  gsave clipbox setfont translate 0 0 moveto exec grestore
+  gsave clipBox setfont translate 0 0 moveto exec grestore
 } bind def
 
 % STRING Yoff LinkField-UL
