@@ -17,7 +17,8 @@ package PostScript::Report::Builder;
 # ABSTRACT: Build a PostScript::Report object
 #---------------------------------------------------------------------
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
 use Moose;
@@ -651,7 +652,7 @@ C<columns> hash, because they can be used even if you define the
 C<detail> section manually.
 
 =for Pod::Coverage
-build_
-create_
-get_
+build_.*
+create_.*
+get_.*
 require_class

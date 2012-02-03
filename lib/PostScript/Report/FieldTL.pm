@@ -17,7 +17,8 @@ package PostScript::Report::FieldTL;
 # ABSTRACT: A field with a label in the top left corner
 #---------------------------------------------------------------------
 
-our $VERSION = '0.07';
+our $VERSION = '0.10';
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use Moose;
 use MooseX::Types::Moose qw(Bool Int Num Str);
@@ -220,7 +221,9 @@ A FieldTL has all the normal
 L<component attributes|PostScript::Report::Role::Component/ATTRIBUTES>,
 including C<padding_side>, and C<value>, plus the following:
 
-=for Pod::Coverage draw padding_
+=for Pod::Coverage
+draw
+padding_.*
 
 =for Pod::Loom-omit
 CONFIGURATION AND ENVIRONMENT
