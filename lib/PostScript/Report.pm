@@ -21,7 +21,7 @@ our $VERSION = '0.10';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
-use Moose;
+use Moose 0.90;                 # Moose::Meta::Attribute::Native
 use MooseX::Types::Moose qw(ArrayRef Bool CodeRef HashRef Int Num Str);
 use PostScript::Report::Types ':all';
 use PostScript::File 2.10 'pstr'; # Use improved API

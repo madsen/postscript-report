@@ -10,6 +10,7 @@ use warnings;
 use Test::More;
 
 BEGIN {
+  # RECOMMEND PREREQ: Test::Warn
   eval "use Test::Warn";
   plan skip_all => "Test::Warn required for testing warnings" if $@;
 }
