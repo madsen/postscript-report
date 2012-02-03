@@ -28,10 +28,11 @@ lib/PostScript/Report/Types.pm
 lib/PostScript/Report/VBox.pm
 lib/PostScript/Report/Value/Constant.pm
 lib/PostScript/Report/Value/Page.pm
-t/00.load.t
-t/10.structure.t
-t/20.warnings.t
-t/30.output.t
-t/40.linkparser.t
+t/00-all_prereqs.t
+t/00-load.t
+t/10-structure.t
+t/20-warnings.t
+t/30-output.t
+t/40-linkparser.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t
