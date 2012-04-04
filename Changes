@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.10   NOT
+0.10   April 4, 2012
 	- Use the function library provided by PostScript::File 2.20
 
 0.09   May 5, 2011
