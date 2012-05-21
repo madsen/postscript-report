@@ -1,5 +1,8 @@
 Revision history for PostScript-Report
 
+0.11   NOT
+	- Compatibility fixes for MooseX::Types 0.32+
+
 0.10   April 4, 2012
 	- Use the function library provided by PostScript::File 2.20
 

@@ -17,14 +17,14 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.08';
+our $VERSION = '0.11';
 
 use Carp 'confess';
 
 use MooseX::Types -declare => [qw(
   BorderStyle BorderStyleNC BWColor Color Component Container
   FontObj FontMetrics FooterPos HAlign
-  Parent Report RGBColor RGBColorHex RptValue SectionType VAlign
+  Parent Report RGBColor RGBColorHex RptValueRole RptValue SectionType VAlign
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
@@ -49,27 +49,24 @@ coerce BorderStyle,
     $style;
   }; # end coerce BorderStyle from BorderStyleNC
 
-subtype Component,
-  as role_type('PostScript::Report::Role::Component');
+role_type Component, { role => 'PostScript::Report::Role::Component' };
 
-subtype Container,
-  as role_type('PostScript::Report::Role::Container');
+role_type Container, { role => 'PostScript::Report::Role::Container' };
 
-subtype FontObj,
-  as class_type('PostScript::Report::Font');
+class_type FontObj,  { class => 'PostScript::Report::Font' };
 
-subtype FontMetrics,
-  as class_type('PostScript::File::Metrics');
+class_type FontMetrics, { class => 'PostScript::File::Metrics' };
 
 enum(FooterPos, qw(bottom split top));
 
 enum(HAlign, qw(center left right));
 
-subtype Report,
-  as class_type('PostScript::Report');
+class_type Report, { class => 'PostScript::Report' };
+
+role_type RptValueRole, { role => 'PostScript::Report::Role::Value' };
 
 subtype RptValue,
-  as Str|role_type('PostScript::Report::Role::Value');
+  as Str|RptValueRole;
 
 subtype Parent,
   as Container|Report;
