@@ -24,7 +24,7 @@ use Carp 'confess';
 use MooseX::Types -declare => [qw(
   BorderStyle BorderStyleNC BWColor Color Component Container
   FontObj FontMetrics FooterPos HAlign
-  Parent Report RGBColor RGBColorHex RptValueRole RptValue SectionType VAlign
+  Parent Report RGBColor RGBColorHex RptValue SectionType VAlign
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
@@ -49,6 +49,11 @@ coerce BorderStyle,
     $style;
   }; # end coerce BorderStyle from BorderStyleNC
 
+# First half of nasty hack to make MooseX::Types 0.35+ work right:
+{ package PostScript::Report::Role::Component; use Moose::Role; }
+{ package PostScript::Report::Role::Container; use Moose::Role; }
+{ package PostScript::Report::Role::Value;     use Moose::Role; }
+
 role_type Component, { role => 'PostScript::Report::Role::Component' };
 
 role_type Container, { role => 'PostScript::Report::Role::Container' };
@@ -63,10 +68,8 @@ enum(HAlign, qw(center left right));
 
 class_type Report, { class => 'PostScript::Report' };
 
-role_type RptValueRole, { role => 'PostScript::Report::Role::Value' };
-
 subtype RptValue,
-  as Str|RptValueRole;
+  as Str|role_type('PostScript::Report::Role::Value');
 
 subtype Parent,
   as Container|Report;
@@ -107,6 +110,11 @@ coerce RGBColor,
 
 subtype Color,
   as BWColor|RGBColor;
+
+# Second half of nasty hack to make MooseX::Types 0.35+ work right:
+require PostScript::Report::Role::Value;
+require PostScript::Report::Role::Component;
+require PostScript::Report::Role::Container;
 
 1;
 
