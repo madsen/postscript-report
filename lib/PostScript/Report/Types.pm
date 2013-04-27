@@ -17,7 +17,7 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.08';
+our $VERSION = '0.11';
 
 use Carp 'confess';
 
@@ -49,24 +49,15 @@ coerce BorderStyle,
     $style;
   }; # end coerce BorderStyle from BorderStyleNC
 
-subtype Component,
-  as role_type('PostScript::Report::Role::Component');
-
-subtype Container,
-  as role_type('PostScript::Report::Role::Container');
-
-subtype FontObj,
-  as class_type('PostScript::Report::Font');
-
-subtype FontMetrics,
-  as class_type('PostScript::File::Metrics');
+role_type  Component,   { role  => 'PostScript::Report::Role::Component' };
+role_type  Container,   { role  => 'PostScript::Report::Role::Container' };
+class_type FontObj,     { class => 'PostScript::Report::Font' };
+class_type FontMetrics, { class => 'PostScript::File::Metrics' };
+class_type Report,      { class => 'PostScript::Report' };
 
 enum(FooterPos, qw(bottom split top));
 
 enum(HAlign, qw(center left right));
-
-subtype Report,
-  as class_type('PostScript::Report');
 
 subtype RptValue,
   as Str|role_type('PostScript::Report::Role::Value');

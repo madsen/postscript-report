@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
