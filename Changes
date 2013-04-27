@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.11   NOT
+0.11   April 27, 2013
 	- Clean up type library
 	- Warn about conflict between MooseX::Types 0.32 and greater
 	  with Moose versions before 2.0800 (fixes RT#77299)
