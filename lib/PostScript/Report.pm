@@ -1193,3 +1193,8 @@ PostScript::Report does not support characters outside of Windows code
 page 1252 (aka WinLatin1), which is a superset of the printable
 characters in ISO-8859-1 (aka Latin1).  Unfortunately, supporting
 Unicode in PostScript is non-trivial.
+
+There is a conflict between versions of MooseX::Types 0.32 and greater
+with Moose versions before 2.0800.  PostScript::Report's type library
+will trigger that bug.  Either upgrade Moose to 2.0800 or greater, or
+downgrade MooseX::Types to 0.31 or below.
