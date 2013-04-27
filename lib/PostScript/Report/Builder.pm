@@ -17,7 +17,7 @@ package PostScript::Report::Builder;
 # ABSTRACT: Build a PostScript::Report object
 #---------------------------------------------------------------------
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
@@ -254,9 +254,9 @@ sub create_fonts
 
   my %font;
 
-  while (my ($name, $desc) = each %$desc) {
-    $desc =~ /^(.+)-(\d+(?:\.\d+)?)/
-        or die "Invalid font description $desc for $name";
+  for my $name (sort keys %$desc) {
+    $desc->{$name} =~ /^(.+)-(\d+(?:\.\d+)?)/
+        or die "Invalid font description $desc->{$name} for $name";
 
     $font{$name} = $rpt->get_font($1, $2);
   }

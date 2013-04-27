@@ -3,7 +3,10 @@ Revision history for PostScript-Report
 0.11   NOT
 	- Clean up type library
 	- Warn about conflict between MooseX::Types 0.32 and greater
-	  with Moose versions before 2.0800
+	  with Moose versions before 2.0800 (fixes RT#77299)
+	- Stabilize order of font creation.  Didn't affect printed
+	  output, but generated code could be different between runs,
+	  causing test failures on Perl 5.17.
 
 0.10   April 4, 2012
 	- Use the function library provided by PostScript::File 2.20
