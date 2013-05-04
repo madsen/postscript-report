@@ -1,5 +1,14 @@
 Revision history for PostScript-Report
 
+0.12   NOT
+	- Add Moose & MooseX::Types to configure_requires.
+	  They're not actually required by Makefile.PL, but if they're
+	  not installed, it skips the version check introduced in
+	  version 0.11.  Since many CPAN testers don't install modules
+	  normally, but just build an @INC containing only the listed
+	  requirements, they always skipped the version check and
+	  continued to send reports for that Moose bug.
+
 0.11   April 27, 2013
 	- Clean up type library
 	- Warn about conflict between MooseX::Types 0.32 and greater
