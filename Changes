@@ -1,6 +1,7 @@
 Revision history for PostScript-Report
 
-0.12   NOT
+0.12   May 4, 2013
+	- No functional changes; just updated metadata
 	- Add Moose & MooseX::Types to configure_requires.
 	  They're not actually required by Makefile.PL, but if they're
 	  not installed, it skips the version check introduced in
