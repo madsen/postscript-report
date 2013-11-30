@@ -17,7 +17,7 @@ package PostScript::Report::Builder;
 # ABSTRACT: Build a PostScript::Report object
 #---------------------------------------------------------------------
 
-our $VERSION = '0.11';
+our $VERSION = '0.13';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
@@ -25,6 +25,7 @@ use Moose;
 use MooseX::Types::Moose qw(Bool HashRef Int Str);
 use PostScript::Report::Types ':all';
 
+use Module::Runtime qw( require_module );
 use PostScript::Report::HBox ();
 use PostScript::Report::VBox ();
 use String::RewritePrefix ();
@@ -446,9 +447,7 @@ sub require_class
   my ($self, $class) = @_;
 
   return if $loaded_class{$class};
-
-  die "Invalid class name $class" unless $class =~ /^[:_A-Z0-9]+$/i;
-  eval "require $class;" or die "Unable to load $class: $@";
+  require_module($class);
 
   $loaded_class{$class} = 1;
 } # end require_class
