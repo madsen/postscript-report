@@ -17,7 +17,7 @@ package PostScript::Report;
 # ABSTRACT: Produce formatted reports in PostScript
 #---------------------------------------------------------------------
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use 5.008;
@@ -972,7 +972,7 @@ sub _attach_ps_resources
   foreach my $key (sort keys %$funcs) {
     # Try to determine the version of this procset:
     my $version;
-    $version = eval { $1->VERSION } if $key =~ /^([\w:]+)/;
+    $version = do { local $@; eval { $1->VERSION } } if $key =~ /^([\w:]+)/;
 
     (my $name = $key) =~ s/:/_/g;
     $ps->add_procset($name, $funcs->{$key}, $version);

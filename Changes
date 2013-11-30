@@ -1,5 +1,8 @@
 Revision history for PostScript-Report
 
+0.13   NOT
+	- Localize $@ before eval
+
 0.12   2013-05-04
 	- No functional changes; just updated metadata
 	- Add Moose & MooseX::Types to configure_requires.
