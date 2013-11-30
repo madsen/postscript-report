@@ -17,7 +17,7 @@ package PostScript::Report::Types;
 # ABSTRACT: type library for PostScript::Report
 #---------------------------------------------------------------------
 
-our $VERSION = '0.11';
+our $VERSION = '0.13';
 
 use Carp 'confess';
 
@@ -28,7 +28,7 @@ use MooseX::Types -declare => [qw(
 )];
 use MooseX::Types::Moose qw(ArrayRef Num Str);
 
-enum(BorderStyle, qw(0 1 T B L R TB LR TL TR BL BR TLR BLR TBL TBR));
+enum(BorderStyle, [qw(0 1 T B L R TB LR TL TR BL BR TLR BLR TBL TBR)]);
 
 subtype BorderStyleNC,
   as Str,
@@ -55,9 +55,9 @@ class_type FontObj,     { class => 'PostScript::Report::Font' };
 class_type FontMetrics, { class => 'PostScript::File::Metrics' };
 class_type Report,      { class => 'PostScript::Report' };
 
-enum(FooterPos, qw(bottom split top));
+enum(FooterPos, [qw(bottom split top)]);
 
-enum(HAlign, qw(center left right));
+enum(HAlign, [qw(center left right)]);
 
 subtype RptValue,
   as Str|role_type('PostScript::Report::Role::Value');
@@ -65,9 +65,9 @@ subtype RptValue,
 subtype Parent,
   as Container|Report;
 
-enum(SectionType, qw(page report));
+enum(SectionType, [qw(page report)]);
 
-enum(VAlign, qw(bottom top));
+enum(VAlign, [qw(bottom top)]);
 
 #---------------------------------------------------------------------
 subtype BWColor,
