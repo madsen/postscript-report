@@ -1,6 +1,6 @@
 Revision history for PostScript-Report
 
-0.13   NOT
+0.13   2013-11-30
 	- Builder now uses Module::Runtime to load classes
 	- Fix type library to be compatible with upcoming Moose 2.1200
 	  (fixes RT#90697 & RT#90698)
