@@ -34,5 +34,5 @@ t/10-structure.t
 t/20-warnings.t
 t/30-output.t
 t/40-linkparser.t
-t/release-pod-coverage.t
-t/release-pod-syntax.t
+xt/release/pod-coverage.t
+xt/release/pod-syntax.t
